@@ -1,0 +1,145 @@
+name: Build SUSA IDE for All Platforms
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-linux-cli:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Build Linux CLI
+        run: |
+          cd cpp-core
+          g++ -std=c++17 -O2 main.cpp -o susa
+          chmod +x susa
+      
+      - name: Create CLI Package
+        run: |
+          mkdir -p SUSA-CLI-Linux/bin
+          mkdir -p SUSA-CLI-Linux/modules
+          mkdir -p SUSA-CLI-Linux/examples
+          cp cpp-core/susa SUSA-CLI-Linux/bin/
+          cp -r modules/* SUSA-CLI-Linux/modules/
+          cp -r examples/* SUSA-CLI-Linux/examples/
+          tar -czf SUSA-CLI-Linux-1.0.0.tar.gz SUSA-CLI-Linux
+      
+      - name: Upload Linux CLI
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-cli
+          path: SUSA-CLI-Linux-1.0.0.tar.gz
+
+  build-macos-cli:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Build macOS CLI
+        run: |
+          cd cpp-core
+          clang++ -std=c++17 -O2 -arch x86_64 -arch arm64 main.cpp -o susa 2>/dev/null || \
+          clang++ -std=c++17 -O2 -arch x86_64 main.cpp -o susa
+          chmod +x susa
+      
+      - name: Create CLI Package
+        run: |
+          mkdir -p SUSA-CLI-macOS/bin
+          mkdir -p SUSA-CLI-macOS/modules
+          mkdir -p SUSA-CLI-macOS/examples
+          cp cpp-core/susa SUSA-CLI-macOS/bin/
+          cp -r modules/* SUSA-CLI-macOS/modules/
+          cp -r examples/* SUSA-CLI-macOS/examples/
+          tar -czf SUSA-CLI-macOS-1.0.0.tar.gz SUSA-CLI-macOS
+      
+      - name: Upload macOS CLI
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-cli
+          path: SUSA-CLI-macOS-1.0.0.tar.gz
+
+  build-linux-ide:
+    runs-on: ubuntu-latest
+    needs: build-linux-cli
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Build Linux CLI
+        run: |
+          cd cpp-core
+          g++ -std=c++17 -O2 main.cpp -o susa
+          chmod +x susa
+          cp susa ../susa-cpp
+          cp susa ../susa-ide/remix-of-susa-studio-ide-main/
+      
+      - name: Install IDE Dependencies
+        run: |
+          cd susa-ide/remix-of-susa-studio-ide-main
+          npm install --legacy-peer-deps
+      
+      - name: Build IDE for Linux
+        run: |
+          cd susa-ide/remix-of-susa-studio-ide-main
+          npm run dist:linux
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: List built files
+        run: |
+          ls -lh susa-ide/remix-of-susa-studio-ide-main/dist-electron/
+      
+      - name: Upload Linux IDE
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-ide
+          path: susa-ide/remix-of-susa-studio-ide-main/dist-electron/*.AppImage
+
+  build-macos-ide:
+    runs-on: macos-latest
+    needs: build-macos-cli
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Build macOS CLI
+        run: |
+          cd cpp-core
+          clang++ -std=c++17 -O2 -arch x86_64 -arch arm64 main.cpp -o susa 2>/dev/null || \
+          clang++ -std=c++17 -O2 -arch x86_64 main.cpp -o susa
+          chmod +x susa
+          cp susa ../susa-cpp
+          cp susa ../susa-ide/remix-of-susa-studio-ide-main/
+      
+      - name: Install IDE Dependencies
+        run: |
+          cd susa-ide/remix-of-susa-studio-ide-main
+          npm install --legacy-peer-deps
+      
+      - name: Build IDE for macOS
+        run: |
+          cd susa-ide/remix-of-susa-studio-ide-main
+          npm run dist:mac
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: List built files
+        run: |
+          ls -lh susa-ide/remix-of-susa-studio-ide-main/dist-electron/
+      
+      - name: Upload macOS IDE
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-ide
+          path: |
+            susa-ide/remix-of-susa-studio-ide-main/dist-electron/*.dmg
+            susa-ide/remix-of-susa-studio-ide-main/dist-electron/*.zip
