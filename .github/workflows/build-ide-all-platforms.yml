@@ -75,8 +75,9 @@ jobs:
           cd cpp-core
           g++ -std=c++17 -O2 main.cpp -o susa
           chmod +x susa
-          cp susa ../susa-cpp
-          cp susa ../susa-ide/remix-of-susa-studio-ide-main/
+          cd ..
+          cp cpp-core/susa susa-cpp
+          cp cpp-core/susa susa-ide/remix-of-susa-studio-ide-main/susa-cpp
       
       - name: Install IDE Dependencies
         run: |
@@ -117,8 +118,9 @@ jobs:
           clang++ -std=c++17 -O2 -arch x86_64 -arch arm64 main.cpp -o susa 2>/dev/null || \
           clang++ -std=c++17 -O2 -arch x86_64 main.cpp -o susa
           chmod +x susa
-          cp susa ../susa-cpp
-          cp susa ../susa-ide/remix-of-susa-studio-ide-main/
+          cd ..
+          cp cpp-core/susa susa-cpp
+          cp cpp-core/susa susa-ide/remix-of-susa-studio-ide-main/susa-cpp
       
       - name: Install IDE Dependencies
         run: |
