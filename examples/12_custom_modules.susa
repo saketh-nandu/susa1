@@ -1,0 +1,66 @@
+# SUSA Custom Modules Demo
+# Demonstrates using user-defined modules
+
+PRINT "=== SUSA Custom Modules Demo ==="
+
+# 1. Add entire module
+PRINT "\n1. Using entire module:"
+
+ADD my_utils
+PRINT my_utils.greet("Alice")
+PRINT "Area of 10x5 rectangle: " + str(my_utils.calculate_area(10, 5))
+PRINT "Module version: " + my_utils.MODULE_VERSION
+PRINT "Module author: " + my_utils.MODULE_AUTHOR
+
+# 2. Add specific functions from module
+PRINT "\n2. Using specific functions:"
+
+ADD FROM my_utils: fibonacci_sequence, is_even
+
+let fib_numbers = fibonacci_sequence(10)
+PRINT "First 10 Fibonacci numbers: " + str(fib_numbers)
+
+PRINT "\nChecking if numbers are even:"
+LOOP i = 1 FOR 10 TIMES:
+START:
+    let even_status = is_even(i)
+    PRINT str(i) + " is even: " + str(even_status)
+END:
+
+# 3. Module with alias
+PRINT "\n3. Using module with alias:"
+
+ADD my_utils AS utils
+PRINT utils.greet("Bob")
+
+let sequence = utils.fibonacci_sequence(8)
+PRINT "Fibonacci sequence (8 numbers): " + str(sequence)
+
+# 4. Error handling with modules
+PRINT "\n4. Error handling:"
+
+TRY:
+START:
+    let invalid_area = my_utils.calculate_area(-5, 10)
+    PRINT "This shouldn't print"
+END:
+CATCH:
+START:
+    PRINT "Caught error: Width and height must be positive"
+END:
+
+# 5. Combining multiple modules
+PRINT "\n5. Combining built-in and custom modules:"
+
+ADD math
+ADD FROM my_utils: calculate_area
+
+let width = 7.5
+let height = 4.2
+let area = calculate_area(width, height)
+let rounded_area = math.round(area)
+
+PRINT rt"Rectangle {width} x {height} has area {area}"
+PRINT rt"Rounded area: {rounded_area}"
+
+PRINT "\n=== Custom Modules Demo Complete! ==="

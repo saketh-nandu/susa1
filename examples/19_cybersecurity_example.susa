@@ -1,0 +1,177 @@
+# ============================================
+# Cybersecurity Module Example
+# Testing real security and encryption functions
+# ============================================
+
+PRINT "🔒 Cybersecurity Module Test"
+PRINT "=" * 60
+
+ADD cybersecurity
+
+# Test 1: AES Encryption & Decryption
+PRINT "\n1. AES Encryption..."
+let plaintext = "This is a secret message!"
+let key = "my_secret_key_2024"
+let encrypted = cybersecurity.aes_encrypt(plaintext, key)
+let encrypted_preview = encrypted[first to 50] + "..."
+PRINT "Encrypted: " + encrypted_preview
+
+PRINT "\n2. AES Decryption..."
+let decrypted = cybersecurity.aes_decrypt(encrypted, key)
+PRINT "Decrypted: " + decrypted
+
+# Test 3: Generate Encryption Key
+PRINT "\n3. Generating Encryption Key..."
+let new_key = cybersecurity.generate_key(256)
+PRINT "Generated 256-bit key: " + new_key[first to 32] + "..."
+
+# Test 4: SHA-256 Hash
+PRINT "\n4. SHA-256 Hashing..."
+let data = "Hello, SUSA!"
+let sha256 = cybersecurity.sha256_hash(data)
+PRINT "SHA-256: " + sha256
+
+# Test 5: SHA-512 Hash
+PRINT "\n5. SHA-512 Hashing..."
+let sha512 = cybersecurity.sha512_hash(data)
+PRINT "SHA-512: " + sha512[first to 64] + "..."
+
+# Test 6: Password Hashing
+PRINT "\n6. Password Hashing..."
+let password = "SecurePassword123!"
+let hashed_pwd = cybersecurity.hash_password(password)
+PRINT "Password hashed with PBKDF2"
+PRINT "Salt: " + hashed_pwd["salt"][first to 32] + "..."
+
+# Test 7: Password Verification
+PRINT "\n7. Verifying Password..."
+let is_valid = cybersecurity.verify_password(password, hashed_pwd)
+PRINT "Password valid: " + str(is_valid)
+
+let wrong_password = "WrongPassword"
+let is_invalid = cybersecurity.verify_password(wrong_password, hashed_pwd)
+PRINT "Wrong password valid: " + str(is_invalid)
+
+# Test 8: Generate Secure Password
+PRINT "\n8. Generating Secure Password..."
+let secure_pwd = cybersecurity.generate_password(16, True)
+PRINT "Generated password: " + secure_pwd
+
+# Test 9: Check Password Strength
+PRINT "\n9. Checking Password Strength..."
+let weak_pwd = "12345"
+let weak_check = cybersecurity.check_password_strength(weak_pwd)
+PRINT "Weak password strength: " + weak_check["strength"]
+
+let strong_pwd = "MyStr0ng!P@ssw0rd"
+let strong_check = cybersecurity.check_password_strength(strong_pwd)
+PRINT "Strong password strength: " + strong_check["strength"]
+PRINT "Score: " + str(strong_check["score"]) + "/" + str(strong_check["max_score"])
+
+# Test 10: Create JWT Token
+PRINT "\n10. Creating JWT Token..."
+let payload = {"user_id": 123, "username": "john_doe", "role": "admin"}
+let secret = "jwt_secret_key"
+let jwt_token = cybersecurity.create_jwt(payload, secret, 24)
+PRINT "JWT Token: " + jwt_token[first to 50] + "..."
+
+# Test 11: Verify JWT Token
+PRINT "\n11. Verifying JWT Token..."
+let jwt_result = cybersecurity.verify_jwt(jwt_token, secret)
+PRINT "Token valid: " + str(jwt_result["valid"])
+if jwt_result["valid"]: START:
+    PRINT "User ID: " + str(jwt_result["payload"]["user_id"])
+    PRINT "Username: " + jwt_result["payload"]["username"]
+END:
+
+# Test 12: SSL Certificate Info
+PRINT "\n12. Generating SSL Certificate Info..."
+let cert_info = cybersecurity.generate_ssl_cert_info("example.com", 365)
+PRINT "Domain: " + cert_info["domain"]
+PRINT "Valid for: " + str(cert_info["days_valid"]) + " days"
+
+# Test 13: Check SSL Expiry
+PRINT "\n13. Checking SSL Certificate Expiry..."
+let expiry_check = cybersecurity.check_ssl_expiry(cert_info["valid_until"])
+PRINT "Certificate status: " + expiry_check["status"]
+PRINT "Days remaining: " + str(expiry_check["days_remaining"])
+
+# Test 14: Generate API Key
+PRINT "\n14. Generating API Key..."
+let api_key = cybersecurity.generate_api_key("sk")
+PRINT "API Key: " + api_key[first to 20] + "..."
+
+# Test 15: Create OAuth URL
+PRINT "\n15. Creating OAuth Authorization URL..."
+let oauth_url = cybersecurity.create_oauth_url(
+    "client_123",
+    "https://myapp.com/callback",
+    "read write",
+    "random_state_123"
+)
+PRINT "OAuth URL: " + oauth_url[first to 60] + "..."
+
+# Test 16: Generate TOTP Secret
+PRINT "\n16. Generating TOTP Secret..."
+let totp_secret = cybersecurity.generate_totp_secret()
+PRINT "TOTP Secret: " + totp_secret
+
+# Test 17: Validate IP Address
+PRINT "\n17. Validating IP Addresses..."
+let valid_ip = cybersecurity.validate_ip("192.168.1.1")
+PRINT "192.168.1.1 valid: " + str(valid_ip["valid"])
+
+let invalid_ip = cybersecurity.validate_ip("999.999.999.999")
+PRINT "999.999.999.999 valid: " + str(invalid_ip["valid"])
+
+# Test 18: IP Range Check
+PRINT "\n18. Checking IP in Range..."
+let range_check = cybersecurity.ip_in_range("192.168.1.50", "192.168.1.0/24")
+PRINT "IP in range: " + str(range_check["in_range"])
+
+# Test 19: Create Firewall Rule
+PRINT "\n19. Creating Firewall Rule..."
+let fw_rule = cybersecurity.create_firewall_rule("allow", "tcp", 443, "0.0.0.0/0")
+PRINT "Firewall rule: " + fw_rule["string"]
+
+# Test 20: Vulnerability Scanning
+PRINT "\n20. Scanning for Vulnerabilities..."
+let safe_url = "https://example.com/page"
+let safe_scan = cybersecurity.scan_for_vulnerabilities(safe_url)
+PRINT "Safe URL vulnerabilities: " + str(safe_scan["vulnerabilities_found"])
+
+let unsafe_url = "https://example.com/page?id=1' OR '1'='1"
+let unsafe_scan = cybersecurity.scan_for_vulnerabilities(unsafe_url)
+PRINT "Unsafe URL vulnerabilities: " + str(unsafe_scan["vulnerabilities_found"])
+
+# Test 21: Sanitize Input
+PRINT "\n21. Sanitizing User Input..."
+let dangerous_input = "<script>alert('XSS')</script> DROP TABLE users"
+let sanitized = cybersecurity.sanitize_input(dangerous_input)
+PRINT "Original: " + dangerous_input
+PRINT "Sanitized: " + sanitized["sanitized"]
+PRINT "Changed: " + str(sanitized["changed"])
+
+# Test 22: Secure Random Number
+PRINT "\n22. Generating Secure Random Number..."
+let random_num = cybersecurity.secure_random_int(1, 100)
+PRINT "Secure random (1-100): " + str(random_num)
+
+# Test 23: Secure Random Bytes
+PRINT "\n23. Generating Secure Random Bytes..."
+let random_bytes = cybersecurity.secure_random_bytes(16)
+PRINT "Random bytes (hex): " + random_bytes
+
+# Test 24: Mask Sensitive Data
+PRINT "\n24. Masking Sensitive Data..."
+let email = cybersecurity.mask_sensitive_data("john.doe@example.com", "email")
+PRINT "Masked email: " + email["masked"]
+
+let phone = cybersecurity.mask_sensitive_data("1234567890", "phone")
+PRINT "Masked phone: " + phone["masked"]
+
+let credit_card = cybersecurity.mask_sensitive_data("1234567890123456", "credit_card")
+PRINT "Masked credit card: " + credit_card["masked"]
+
+PRINT "\n" + "=" * 60
+PRINT "✅ Cybersecurity Module Test Complete!"

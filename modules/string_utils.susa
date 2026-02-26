@@ -1,0 +1,385 @@
+# String Utilities Module for SUSA
+# Comprehensive string manipulation functions
+# Version: 1.0.0
+# Author: SUSA Development Team
+# License: MIT
+
+SHARE capitalize, reverse, trim, split, join, replace_all, contains, starts_with, ends_with, 
+      to_upper, to_lower, count_occurrences, substring, pad_left, pad_right, remove_spaces,
+      is_empty, is_numeric, is_alpha, is_alphanumeric, word_count, char_at, index_of,
+      last_index_of, repeat, truncate, camel_case, snake_case, kebab_case, title_case
+
+# Constants
+let MODULE_VERSION = "1.0.0"
+let MODULE_NAME = "string_utils"
+
+# Capitalize first letter of string
+FUNC capitalize(text): START:
+    IF is_empty(text): START:
+        RETURN ""
+    END:
+    RETURN text[0].upper() + text[1:].lower()
+END:
+
+# Reverse a string
+FUNC reverse(text): START:
+    IF is_empty(text): START:
+        RETURN ""
+    END:
+    let result = ""
+    LOOP i = text.length - 1 FOR text.length TIMES: START:
+        result = result + text[i]
+        i = i - 1
+    END:
+    RETURN result
+END:
+
+# Remove leading and trailing whitespace
+FUNC trim(text): START:
+    IF is_empty(text): START:
+        RETURN ""
+    END:
+    let start = 0
+    let end = text.length - 1
+    
+    # Find first non-whitespace character
+    WHILE start < text.length AND (text[start] == " " OR text[start] == "\t" OR text[start] == "\n"): START:
+        start = start + 1
+    END:
+    
+    # Find last non-whitespace character
+    WHILE end >= 0 AND (text[end] == " " OR text[end] == "\t" OR text[end] == "\n"): START:
+        end = end - 1
+    END:
+    
+    IF start > end: START:
+        RETURN ""
+    END:
+    
+    RETURN text[start:end + 1]
+END:
+
+# Split string by delimiter
+FUNC split(text, delimiter): START:
+    IF is_empty(text): START:
+        RETURN []
+    END:
+    
+    let result = []
+    let current = ""
+    let i = 0
+    
+    WHILE i < text.length: START:
+        IF text[i:i + delimiter.length] == delimiter: START:
+            append(result, current)
+            current = ""
+            i = i + delimiter.length
+        ELSE: START:
+            current = current + text[i]
+            i = i + 1
+        END:
+    END:
+    
+    append(result, current)
+    RETURN result
+END:
+
+# Join array of strings with delimiter
+FUNC join(array, delimiter): START:
+    IF array.length == 0: START:
+        RETURN ""
+    END:
+    
+    let result = array[0]
+    LOOP i = 1 FOR array.length - 1 TIMES: START:
+        result = result + delimiter + array[i]
+    END:
+    
+    RETURN result
+END:
+
+# Replace all occurrences of old_text with new_text
+FUNC replace_all(text, old_text, new_text): START:
+    IF is_empty(text) OR is_empty(old_text): START:
+        RETURN text
+    END:
+    
+    let result = ""
+    let i = 0
+    
+    WHILE i < text.length: START:
+        IF text[i:i + old_text.length] == old_text: START:
+            result = result + new_text
+            i = i + old_text.length
+        ELSE: START:
+            result = result + text[i]
+            i = i + 1
+        END:
+    END:
+    
+    RETURN result
+END:
+
+# Check if string contains substring
+FUNC contains(text, substring): START:
+    RETURN index_of(text, substring) != -1
+END:
+
+# Check if string starts with prefix
+FUNC starts_with(text, prefix): START:
+    IF text.length < prefix.length: START:
+        RETURN false
+    END:
+    RETURN text[0:prefix.length] == prefix
+END:
+
+# Check if string ends with suffix
+FUNC ends_with(text, suffix): START:
+    IF text.length < suffix.length: START:
+        RETURN false
+    END:
+    RETURN text[text.length - suffix.length:] == suffix
+END:
+
+# Convert to uppercase
+FUNC to_upper(text): START:
+    USE PYTHON: START:
+    "return text.upper()"
+    END:
+END:
+
+# Convert to lowercase
+FUNC to_lower(text): START:
+    USE PYTHON: START:
+    "return text.lower()"
+    END:
+END:
+
+# Count occurrences of substring
+FUNC count_occurrences(text, substring): START:
+    IF is_empty(text) OR is_empty(substring): START:
+        RETURN 0
+    END:
+    
+    let count = 0
+    let i = 0
+    
+    WHILE i <= text.length - substring.length: START:
+        IF text[i:i + substring.length] == substring: START:
+            count = count + 1
+            i = i + substring.length
+        ELSE: START:
+            i = i + 1
+        END:
+    END:
+    
+    RETURN count
+END:
+
+# Get substring
+FUNC substring(text, start, end): START:
+    IF start < 0: START:
+        start = 0
+    END:
+    IF end > text.length: START:
+        end = text.length
+    END:
+    IF start >= end: START:
+        RETURN ""
+    END:
+    RETURN text[start:end]
+END:
+
+# Pad string on the left
+FUNC pad_left(text, length, pad_char): START:
+    IF text.length >= length: START:
+        RETURN text
+    END:
+    
+    let padding = repeat(pad_char, length - text.length)
+    RETURN padding + text
+END:
+
+# Pad string on the right
+FUNC pad_right(text, length, pad_char): START:
+    IF text.length >= length: START:
+        RETURN text
+    END:
+    
+    let padding = repeat(pad_char, length - text.length)
+    RETURN text + padding
+END:
+
+# Remove all spaces
+FUNC remove_spaces(text): START:
+    RETURN replace_all(text, " ", "")
+END:
+
+# Check if string is empty or null
+FUNC is_empty(text): START:
+    RETURN text == "" OR text == null
+END:
+
+# Check if string is numeric
+FUNC is_numeric(text): START:
+    IF is_empty(text): START:
+        RETURN false
+    END:
+    
+    LOOP i = 0 FOR text.length TIMES: START:
+        let char = text[i]
+        IF char < "0" OR char > "9": START:
+            IF char != "." AND char != "-" AND char != "+": START:
+                RETURN false
+            END:
+        END:
+    END:
+    
+    RETURN true
+END:
+
+# Check if string contains only alphabetic characters
+FUNC is_alpha(text): START:
+    IF is_empty(text): START:
+        RETURN false
+    END:
+    
+    USE PYTHON: START:
+    "return text.isalpha()"
+    END:
+END:
+
+# Check if string is alphanumeric
+FUNC is_alphanumeric(text): START:
+    IF is_empty(text): START:
+        RETURN false
+    END:
+    
+    USE PYTHON: START:
+    "return text.isalnum()"
+    END:
+END:
+
+# Count words in string
+FUNC word_count(text): START:
+    IF is_empty(text): START:
+        RETURN 0
+    END:
+    
+    let words = split(trim(text), " ")
+    let count = 0
+    
+    LOOP i = 0 FOR words.length TIMES: START:
+        IF NOT is_empty(trim(words[i])): START:
+            count = count + 1
+        END:
+    END:
+    
+    RETURN count
+END:
+
+# Get character at index
+FUNC char_at(text, index): START:
+    IF index < 0 OR index >= text.length: START:
+        RETURN ""
+    END:
+    RETURN text[index]
+END:
+
+# Find first index of substring
+FUNC index_of(text, substring): START:
+    IF is_empty(text) OR is_empty(substring): START:
+        RETURN -1
+    END:
+    
+    LOOP i = 0 FOR text.length - substring.length + 1 TIMES: START:
+        IF text[i:i + substring.length] == substring: START:
+            RETURN i
+        END:
+    END:
+    
+    RETURN -1
+END:
+
+# Find last index of substring
+FUNC last_index_of(text, substring): START:
+    IF is_empty(text) OR is_empty(substring): START:
+        RETURN -1
+    END:
+    
+    let last_index = -1
+    LOOP i = 0 FOR text.length - substring.length + 1 TIMES: START:
+        IF text[i:i + substring.length] == substring: START:
+            last_index = i
+        END:
+    END:
+    
+    RETURN last_index
+END:
+
+# Repeat string n times
+FUNC repeat(text, count): START:
+    IF count <= 0: START:
+        RETURN ""
+    END:
+    
+    let result = ""
+    LOOP i = 0 FOR count TIMES: START:
+        result = result + text
+    END:
+    
+    RETURN result
+END:
+
+# Truncate string to max length
+FUNC truncate(text, max_length, suffix): START:
+    IF text.length <= max_length: START:
+        RETURN text
+    END:
+    
+    RETURN text[0:max_length - suffix.length] + suffix
+END:
+
+# Convert to camelCase
+FUNC camel_case(text): START:
+    let words = split(to_lower(text), " ")
+    IF words.length == 0: START:
+        RETURN ""
+    END:
+    
+    let result = words[0]
+    LOOP i = 1 FOR words.length - 1 TIMES: START:
+        result = result + capitalize(words[i])
+    END:
+    
+    RETURN result
+END:
+
+# Convert to snake_case
+FUNC snake_case(text): START:
+    let words = split(to_lower(text), " ")
+    RETURN join(words, "_")
+END:
+
+# Convert to kebab-case
+FUNC kebab_case(text): START:
+    let words = split(to_lower(text), " ")
+    RETURN join(words, "-")
+END:
+
+# Convert to Title Case
+FUNC title_case(text): START:
+    let words = split(text, " ")
+    let result = []
+    
+    LOOP i = 0 FOR words.length TIMES: START:
+        append(result, capitalize(words[i]))
+    END:
+    
+    RETURN join(result, " ")
+END:
+
+# Module initialization
+PRINT rt"String Utils Module v{MODULE_VERSION} loaded successfully!"
+
+SHARE MODULE_VERSION, MODULE_NAME

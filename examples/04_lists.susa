@@ -1,0 +1,85 @@
+# SUSA Lists - Arrays and Collections
+
+PRINT "=== SUSA Lists ==="
+
+# Creating lists
+let numbers = [1, 2, 3, 4, 5]
+let names = ["Alice", "Bob", "Charlie"]
+let mixed = [1, "hello", true, null]
+let empty = []
+
+PRINT "List creation:"
+PRINT "numbers = " + numbers
+PRINT "names = " + names
+PRINT "mixed = " + mixed
+PRINT "empty = " + empty
+
+# List indexing
+PRINT "List indexing:"
+PRINT "numbers[0] = " + numbers[0]
+PRINT "numbers[4] = " + numbers[4]
+PRINT "names[1] = " + names[1]
+
+# Built-in list functions
+PRINT "Built-in functions:"
+PRINT "len(numbers) = " + len(numbers)
+PRINT "len(names) = " + len(names)
+
+# Modifying lists
+append(numbers, 6)
+PRINT "After append(6): " + numbers
+
+append(numbers, 7)
+append(numbers, 8)
+PRINT "After more appends: " + numbers
+
+let last = pop(numbers)
+PRINT "Popped: " + last
+PRINT "After pop: " + numbers
+
+# List assignment
+numbers[2] = 99
+PRINT "After numbers[2] = 99: " + numbers
+
+# Working with list data
+FUNC sum_list(lst):
+START:
+    let total = 0
+    LOOP i = 0 FOR len(lst) TIMES:
+    START:
+        total = total + lst[i]
+    END:
+    RETURN total
+END:
+
+FUNC find_max(lst):
+START:
+    IF len(lst) == 0:
+    START:
+        RETURN null
+    END:
+    
+    let max_val = lst[0]
+    LOOP i = 1 FOR len(lst) - 1 TIMES:
+    START:
+        IF lst[i] > max_val:
+        START:
+            max_val = lst[i]
+        END:
+    END:
+    RETURN max_val
+END:
+
+let data = [10, 5, 8, 15, 3, 12]
+PRINT "Data processing:"
+PRINT "data = " + data
+PRINT "sum = " + sum_list(data)
+PRINT "max = " + find_max(data)
+
+# Building lists dynamically
+let squares = []
+LOOP i = 1 FOR 5 TIMES:
+START:
+    append(squares, i * i)
+END:
+PRINT "Squares: " + squares

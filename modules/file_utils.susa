@@ -1,0 +1,492 @@
+# File Utilities Module for SUSA
+# Comprehensive file and directory operations
+# Version: 1.0.0
+# Author: SUSA Development Team
+# License: MIT
+
+SHARE read_file, write_file, append_file, delete_file, copy_file, move_file, exists,
+      is_file, is_directory, create_directory, delete_directory, list_directory,
+      get_file_size, get_file_extension, get_file_name, get_directory_name,
+      join_path, split_path, normalize_path, absolute_path, relative_path,
+      get_current_directory, change_directory, get_home_directory, get_temp_directory,
+      read_lines, write_lines, read_json, write_json, read_csv, write_csv,
+      find_files, search_in_files, backup_file, compress_file, decompress_file
+
+let MODULE_VERSION = "1.0.0"
+let MODULE_NAME = "file_utils"
+
+# Read entire file content
+FUNC read_file(file_path): START:
+    USE PYTHON: START:
+    "
+    try:
+        with open(file_path, 'r', encoding='utf-8') as file:
+            return file.read()
+    except Exception as e:
+        raise Exception(f'Error reading file: {str(e)}')
+    "
+    END:
+END:
+
+# Write content to file
+FUNC write_file(file_path, content): START:
+    USE PYTHON: START:
+    "
+    try:
+        with open(file_path, 'w', encoding='utf-8') as file:
+            file.write(content)
+        return True
+    except Exception as e:
+        raise Exception(f'Error writing file: {str(e)}')
+    "
+    END:
+END:
+
+# Append content to file
+FUNC append_file(file_path, content): START:
+    USE PYTHON: START:
+    "
+    try:
+        with open(file_path, 'a', encoding='utf-8') as file:
+            file.write(content)
+        return True
+    except Exception as e:
+        raise Exception(f'Error appending to file: {str(e)}')
+    "
+    END:
+END:
+
+# Delete file
+FUNC delete_file(file_path): START:
+    USE PYTHON: START:
+    "
+    import os
+    try:
+        os.remove(file_path)
+        return True
+    except Exception as e:
+        raise Exception(f'Error deleting file: {str(e)}')
+    "
+    END:
+END:
+
+# Copy file
+FUNC copy_file(source_path, destination_path): START:
+    USE PYTHON: START:
+    "
+    import shutil
+    try:
+        shutil.copy2(source_path, destination_path)
+        return True
+    except Exception as e:
+        raise Exception(f'Error copying file: {str(e)}')
+    "
+    END:
+END:
+
+# Move/rename file
+FUNC move_file(source_path, destination_path): START:
+    USE PYTHON: START:
+    "
+    import shutil
+    try:
+        shutil.move(source_path, destination_path)
+        return True
+    except Exception as e:
+        raise Exception(f'Error moving file: {str(e)}')
+    "
+    END:
+END:
+
+# Check if file or directory exists
+FUNC exists(path): START:
+    USE PYTHON: START:
+    "
+    import os
+    return os.path.exists(path)
+    "
+    END:
+END:
+
+# Check if path is a file
+FUNC is_file(path): START:
+    USE PYTHON: START:
+    "
+    import os
+    return os.path.isfile(path)
+    "
+    END:
+END:
+
+# Check if path is a directory
+FUNC is_directory(path): START:
+    USE PYTHON: START:
+    "
+    import os
+    return os.path.isdir(path)
+    "
+    END:
+END:
+
+# Create directory
+FUNC create_directory(directory_path): START:
+    USE PYTHON: START:
+    "
+    import os
+    try:
+        os.makedirs(directory_path, exist_ok=True)
+        return True
+    except Exception as e:
+        raise Exception(f'Error creating directory: {str(e)}')
+    "
+    END:
+END:
+
+# Delete directory
+FUNC delete_directory(directory_path): START:
+    USE PYTHON: START:
+    "
+    import shutil
+    try:
+        shutil.rmtree(directory_path)
+        return True
+    except Exception as e:
+        raise Exception(f'Error deleting directory: {str(e)}')
+    "
+    END:
+END:
+
+# List directory contents
+FUNC list_directory(directory_path): START:
+    USE PYTHON: START:
+    "
+    import os
+    try:
+        return os.listdir(directory_path)
+    except Exception as e:
+        raise Exception(f'Error listing directory: {str(e)}')
+    "
+    END:
+END:
+
+# Get file size in bytes
+FUNC get_file_size(file_path): START:
+    USE PYTHON: START:
+    "
+    import os
+    try:
+        return os.path.getsize(file_path)
+    except Exception as e:
+        raise Exception(f'Error getting file size: {str(e)}')
+    "
+    END:
+END:
+
+# Get file extension
+FUNC get_file_extension(file_path): START:
+    USE PYTHON: START:
+    "
+    import os
+    return os.path.splitext(file_path)[1]
+    "
+    END:
+END:
+
+# Get file name without directory
+FUNC get_file_name(file_path): START:
+    USE PYTHON: START:
+    "
+    import os
+    return os.path.basename(file_path)
+    "
+    END:
+END:
+
+# Get directory name
+FUNC get_directory_name(file_path): START:
+    USE PYTHON: START:
+    "
+    import os
+    return os.path.dirname(file_path)
+    "
+    END:
+END:
+
+# Join path components
+FUNC join_path(path1, path2): START:
+    USE PYTHON: START:
+    "
+    import os
+    return os.path.join(path1, path2)
+    "
+    END:
+END:
+
+# Split path into directory and filename
+FUNC split_path(file_path): START:
+    USE PYTHON: START:
+    "
+    import os
+    return os.path.split(file_path)
+    "
+    END:
+END:
+
+# Normalize path (resolve . and ..)
+FUNC normalize_path(path): START:
+    USE PYTHON: START:
+    "
+    import os
+    return os.path.normpath(path)
+    "
+    END:
+END:
+
+# Get absolute path
+FUNC absolute_path(path): START:
+    USE PYTHON: START:
+    "
+    import os
+    return os.path.abspath(path)
+    "
+    END:
+END:
+
+# Get relative path
+FUNC relative_path(path, start): START:
+    USE PYTHON: START:
+    "
+    import os
+    return os.path.relpath(path, start)
+    "
+    END:
+END:
+
+# Get current working directory
+FUNC get_current_directory(): START:
+    USE PYTHON: START:
+    "
+    import os
+    return os.getcwd()
+    "
+    END:
+END:
+
+# Change current directory
+FUNC change_directory(directory_path): START:
+    USE PYTHON: START:
+    "
+    import os
+    try:
+        os.chdir(directory_path)
+        return True
+    except Exception as e:
+        raise Exception(f'Error changing directory: {str(e)}')
+    "
+    END:
+END:
+
+# Get home directory
+FUNC get_home_directory(): START:
+    USE PYTHON: START:
+    "
+    import os
+    return os.path.expanduser('~')
+    "
+    END:
+END:
+
+# Get temporary directory
+FUNC get_temp_directory(): START:
+    USE PYTHON: START:
+    "
+    import tempfile
+    return tempfile.gettempdir()
+    "
+    END:
+END:
+
+# Read file as lines
+FUNC read_lines(file_path): START:
+    USE PYTHON: START:
+    "
+    try:
+        with open(file_path, 'r', encoding='utf-8') as file:
+            return file.readlines()
+    except Exception as e:
+        raise Exception(f'Error reading file lines: {str(e)}')
+    "
+    END:
+END:
+
+# Write lines to file
+FUNC write_lines(file_path, lines): START:
+    USE PYTHON: START:
+    "
+    try:
+        with open(file_path, 'w', encoding='utf-8') as file:
+            file.writelines(lines)
+        return True
+    except Exception as e:
+        raise Exception(f'Error writing file lines: {str(e)}')
+    "
+    END:
+END:
+
+# Read JSON file
+FUNC read_json(file_path): START:
+    USE PYTHON: START:
+    "
+    import json
+    try:
+        with open(file_path, 'r', encoding='utf-8') as file:
+            return json.load(file)
+    except Exception as e:
+        raise Exception(f'Error reading JSON file: {str(e)}')
+    "
+    END:
+END:
+
+# Write JSON file
+FUNC write_json(file_path, data): START:
+    USE PYTHON: START:
+    "
+    import json
+    try:
+        with open(file_path, 'w', encoding='utf-8') as file:
+            json.dump(data, file, indent=2, ensure_ascii=False)
+        return True
+    except Exception as e:
+        raise Exception(f'Error writing JSON file: {str(e)}')
+    "
+    END:
+END:
+
+# Read CSV file
+FUNC read_csv(file_path): START:
+    USE PYTHON: START:
+    "
+    import csv
+    try:
+        with open(file_path, 'r', encoding='utf-8') as file:
+            reader = csv.reader(file)
+            return list(reader)
+    except Exception as e:
+        raise Exception(f'Error reading CSV file: {str(e)}')
+    "
+    END:
+END:
+
+# Write CSV file
+FUNC write_csv(file_path, data): START:
+    USE PYTHON: START:
+    "
+    import csv
+    try:
+        with open(file_path, 'w', newline='', encoding='utf-8') as file:
+            writer = csv.writer(file)
+            writer.writerows(data)
+        return True
+    except Exception as e:
+        raise Exception(f'Error writing CSV file: {str(e)}')
+    "
+    END:
+END:
+
+# Find files matching pattern
+FUNC find_files(directory, pattern): START:
+    USE PYTHON: START:
+    "
+    import glob
+    import os
+    search_pattern = os.path.join(directory, pattern)
+    return glob.glob(search_pattern, recursive=True)
+    "
+    END:
+END:
+
+# Search for text in files
+FUNC search_in_files(directory, search_text, file_pattern): START:
+    USE PYTHON: START:
+    "
+    import glob
+    import os
+    results = []
+    
+    search_pattern = os.path.join(directory, file_pattern)
+    files = glob.glob(search_pattern, recursive=True)
+    
+    for file_path in files:
+        try:
+            with open(file_path, 'r', encoding='utf-8') as file:
+                lines = file.readlines()
+                for line_num, line in enumerate(lines, 1):
+                    if search_text in line:
+                        results.append({
+                            'file': file_path,
+                            'line': line_num,
+                            'content': line.strip()
+                        })
+        except:
+            continue
+    
+    return results
+    "
+    END:
+END:
+
+# Create backup of file
+FUNC backup_file(file_path): START:
+    USE PYTHON: START:
+    "
+    import shutil
+    from datetime import datetime
+    
+    try:
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        backup_path = f'{file_path}.backup_{timestamp}'
+        shutil.copy2(file_path, backup_path)
+        return backup_path
+    except Exception as e:
+        raise Exception(f'Error creating backup: {str(e)}')
+    "
+    END:
+END:
+
+# Compress file (ZIP)
+FUNC compress_file(file_path, archive_path): START:
+    USE PYTHON: START:
+    "
+    import zipfile
+    import os
+    
+    try:
+        with zipfile.ZipFile(archive_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
+            zipf.write(file_path, os.path.basename(file_path))
+        return True
+    except Exception as e:
+        raise Exception(f'Error compressing file: {str(e)}')
+    "
+    END:
+END:
+
+# Decompress file (ZIP)
+FUNC decompress_file(archive_path, extract_path): START:
+    USE PYTHON: START:
+    "
+    import zipfile
+    
+    try:
+        with zipfile.ZipFile(archive_path, 'r') as zipf:
+            zipf.extractall(extract_path)
+        return True
+    except Exception as e:
+        raise Exception(f'Error decompressing file: {str(e)}')
+    "
+    END:
+END:
+
+# Module initialization
+PRINT rt"File Utils Module v{MODULE_VERSION} loaded successfully!"
+
+SHARE MODULE_VERSION, MODULE_NAME

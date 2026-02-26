@@ -1,0 +1,154 @@
+# SUSA Algorithms - Sorting and Searching
+
+PRINT "=== SUSA Algorithms ==="
+
+# Bubble Sort
+FUNC bubble_sort(arr):
+START:
+    let n = len(arr)
+    LOOP i = 0 FOR n - 1 TIMES:
+    START:
+        LOOP j = 0 FOR n - i - 1 TIMES:
+        START:
+            IF arr[j] > arr[j + 1]:
+            START:
+                # Swap elements
+                let temp = arr[j]
+                arr[j] = arr[j + 1]
+                arr[j + 1] = temp
+            END:
+        END:
+    END:
+    RETURN arr
+END:
+
+# Linear Search
+FUNC linear_search(arr, target):
+START:
+    LOOP i = 0 FOR len(arr) TIMES:
+    START:
+        IF arr[i] == target:
+        START:
+            RETURN i
+        END:
+    END:
+    RETURN -1
+END:
+
+# Find Maximum
+FUNC find_max(arr):
+START:
+    IF len(arr) == 0:
+    START:
+        RETURN null
+    END:
+    
+    let max_val = arr[0]
+    LOOP i = 1 FOR len(arr) - 1 TIMES:
+    START:
+        IF arr[i] > max_val:
+        START:
+            max_val = arr[i]
+        END:
+    END:
+    RETURN max_val
+END:
+
+# Calculate Sum
+FUNC array_sum(arr):
+START:
+    let total = 0
+    LOOP i = 0 FOR len(arr) TIMES:
+    START:
+        total = total + arr[i]
+    END:
+    RETURN total
+END:
+
+# Reverse Array
+FUNC reverse_array(arr):
+START:
+    let reversed = []
+    let len_arr = len(arr)
+    LOOP i = 0 FOR len_arr TIMES:
+    START:
+        append(reversed, arr[len_arr - 1 - i])
+    END:
+    RETURN reversed
+END:
+
+# Check if Prime
+FUNC is_prime(n):
+START:
+    IF n <= 1:
+    START:
+        RETURN false
+    END:
+    IF n <= 3:
+    START:
+        RETURN true
+    END:
+    IF n % 2 == 0 OR n % 3 == 0:
+    START:
+        RETURN false
+    END:
+    
+    let i = 5
+    LOOP WHILE i * i <= n:
+    START:
+        IF n % i == 0 OR n % (i + 2) == 0:
+        START:
+            RETURN false
+        END:
+        i = i + 6
+    END:
+    RETURN true
+END:
+
+# Fibonacci
+FUNC fibonacci(n):
+START:
+    IF n <= 1:
+    START:
+        RETURN n
+    END:
+    ELSE:
+    START:
+        RETURN fibonacci(n - 1) + fibonacci(n - 2)
+    END:
+END:
+
+# Testing algorithms
+PRINT "1. Sorting Algorithm:"
+let unsorted = [64, 34, 25, 12, 22, 11, 90]
+PRINT "Original: " + unsorted
+let sorted_array = bubble_sort([64, 34, 25, 12, 22, 11, 90])
+PRINT "Sorted: " + sorted_array
+
+PRINT "2. Searching Algorithm:"
+let search_data = [1, 3, 5, 7, 9, 11, 13, 15]
+PRINT "Search in: " + search_data
+PRINT "Find 7: index " + linear_search(search_data, 7)
+PRINT "Find 4: index " + linear_search(search_data, 4)
+
+PRINT "3. Array Operations:"
+let numbers = [45, 23, 67, 12, 89, 34]
+PRINT "Numbers: " + numbers
+PRINT "Maximum: " + find_max(numbers)
+PRINT "Sum: " + array_sum(numbers)
+PRINT "Reversed: " + reverse_array(numbers)
+
+PRINT "4. Prime Numbers:"
+LOOP i = 2 FOR 10 TIMES:
+START:
+    IF is_prime(i):
+    START:
+        PRINT str(i) + " is prime"
+    END:
+END:
+
+PRINT "5. Fibonacci Sequence:"
+LOOP i = 0 FOR 8 TIMES:
+START:
+    PRINT "fib(" + str(i) + ") = " + str(fibonacci(i))
+END:

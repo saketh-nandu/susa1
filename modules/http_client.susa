@@ -1,0 +1,493 @@
+# HTTP Client Module for SUSA
+# Comprehensive HTTP request and response handling
+# Version: 1.0.0
+# Author: SUSA Development Team
+# License: MIT
+
+SHARE get, post, put, delete, patch, head, options, request, download_file, upload_file,
+      set_default_headers, set_timeout, set_user_agent, create_session, close_session,
+      add_auth, add_bearer_token, add_basic_auth, url_encode, url_decode, parse_url,
+      build_query_string, parse_cookies, set_cookies, follow_redirects, retry_request
+
+let MODULE_VERSION = "1.0.0"
+let MODULE_NAME = "http_client"
+
+# Default configuration
+let DEFAULT_TIMEOUT = 30
+let DEFAULT_USER_AGENT = rt"SUSA-HTTP-Client/{MODULE_VERSION}"
+let DEFAULT_HEADERS = {
+    "User-Agent": DEFAULT_USER_AGENT,
+    "Accept": "application/json, text/plain, */*",
+    "Content-Type": "application/json"
+}
+
+# HTTP GET request
+FUNC get(url, headers, params, timeout): START:
+    RETURN request("GET", url, null, headers, params, timeout)
+END:
+
+# HTTP POST request
+FUNC post(url, data, headers, timeout): START:
+    RETURN request("POST", url, data, headers, null, timeout)
+END:
+
+# HTTP PUT request
+FUNC put(url, data, headers, timeout): START:
+    RETURN request("PUT", url, data, headers, null, timeout)
+END:
+
+# HTTP DELETE request
+FUNC delete(url, headers, timeout): START:
+    RETURN request("DELETE", url, null, headers, null, timeout)
+END:
+
+# HTTP PATCH request
+FUNC patch(url, data, headers, timeout): START:
+    RETURN request("PATCH", url, data, headers, null, timeout)
+END:
+
+# HTTP HEAD request
+FUNC head(url, headers, timeout): START:
+    RETURN request("HEAD", url, null, headers, null, timeout)
+END:
+
+# HTTP OPTIONS request
+FUNC options(url, headers, timeout): START:
+    RETURN request("OPTIONS", url, null, headers, null, timeout)
+END:
+
+# Generic HTTP request
+FUNC request(method, url, data, headers, params, timeout): START:
+    USE PYTHON: START:
+    "
+    import requests
+    import json
+    
+    # Set default values
+    if timeout is None:
+        timeout = DEFAULT_TIMEOUT
+    
+    if headers is None:
+        headers = DEFAULT_HEADERS.copy()
+    else:
+        # Merge with default headers
+        merged_headers = DEFAULT_HEADERS.copy()
+        merged_headers.update(headers)
+        headers = merged_headers
+    
+    try:
+        # Prepare request arguments
+        request_args = {
+            'method': method,
+            'url': url,
+            'headers': headers,
+            'timeout': timeout
+        }
+        
+        # Add query parameters
+        if params:
+            request_args['params'] = params
+        
+        # Add request body
+        if data is not None:
+            if isinstance(data, dict):
+                if headers.get('Content-Type', '').startswith('application/json'):
+                    request_args['json'] = data
+                else:
+                    request_args['data'] = data
+            else:
+                request_args['data'] = data
+        
+        # Make the request
+        response = requests.request(**request_args)
+        
+        # Parse response
+        result = {
+            'status_code': response.status_code,
+            'headers': dict(response.headers),
+            'url': response.url,
+            'ok': response.ok,
+            'reason': response.reason,
+            'elapsed': response.elapsed.total_seconds(),
+            'encoding': response.encoding
+        }
+        
+        # Try to parse JSON, fallback to text
+        try:
+            result['data'] = response.json()
+            result['content_type'] = 'json'
+        except:
+            result['data'] = response.text
+            result['content_type'] = 'text'
+        
+        return result
+        
+    except requests.exceptions.Timeout:
+        return {
+            'error': 'Request timeout',
+            'status_code': 0,
+            'ok': False
+        }
+    except requests.exceptions.ConnectionError:
+        return {
+            'error': 'Connection error',
+            'status_code': 0,
+            'ok': False
+        }
+    except Exception as e:
+        return {
+            'error': str(e),
+            'status_code': 0,
+            'ok': False
+        }
+    "
+    END:
+END:
+
+# Download file from URL
+FUNC download_file(url, file_path, headers, chunk_size): START:
+    USE PYTHON: START:
+    "
+    import requests
+    
+    if chunk_size is None:
+        chunk_size = 8192
+    
+    if headers is None:
+        headers = DEFAULT_HEADERS.copy()
+    
+    try:
+        response = requests.get(url, headers=headers, stream=True)
+        response.raise_for_status()
+        
+        with open(file_path, 'wb') as file:
+            for chunk in response.iter_content(chunk_size=chunk_size):
+                if chunk:
+                    file.write(chunk)
+        
+        return {
+            'success': True,
+            'file_path': file_path,
+            'size': response.headers.get('content-length'),
+            'content_type': response.headers.get('content-type')
+        }
+        
+    except Exception as e:
+        return {
+            'success': False,
+            'error': str(e)
+        }
+    "
+    END:
+END:
+
+# Upload file to URL
+FUNC upload_file(url, file_path, field_name, headers, additional_data): START:
+    USE PYTHON: START:
+    "
+    import requests
+    import os
+    
+    if headers is None:
+        headers = {}
+    
+    if field_name is None:
+        field_name = 'file'
+    
+    try:
+        with open(file_path, 'rb') as file:
+            files = {field_name: (os.path.basename(file_path), file)}
+            
+            data = additional_data if additional_data else {}
+            
+            response = requests.post(url, files=files, data=data, headers=headers)
+            
+            result = {
+                'status_code': response.status_code,
+                'headers': dict(response.headers),
+                'ok': response.ok,
+                'reason': response.reason
+            }
+            
+            try:
+                result['data'] = response.json()
+            except:
+                result['data'] = response.text
+            
+            return result
+            
+    except Exception as e:
+        return {
+            'success': False,
+            'error': str(e)
+        }
+    "
+    END:
+END:
+
+# Set default headers for all requests
+FUNC set_default_headers(headers): START:
+    USE PYTHON: START:
+    "
+    global DEFAULT_HEADERS
+    DEFAULT_HEADERS.update(headers)
+    return DEFAULT_HEADERS
+    "
+    END:
+END:
+
+# Set default timeout
+FUNC set_timeout(timeout): START:
+    USE PYTHON: START:
+    "
+    global DEFAULT_TIMEOUT
+    DEFAULT_TIMEOUT = timeout
+    return DEFAULT_TIMEOUT
+    "
+    END:
+END:
+
+# Set user agent
+FUNC set_user_agent(user_agent): START:
+    USE PYTHON: START:
+    "
+    global DEFAULT_HEADERS
+    DEFAULT_HEADERS['User-Agent'] = user_agent
+    return user_agent
+    "
+    END:
+END:
+
+# Create HTTP session
+FUNC create_session(): START:
+    USE PYTHON: START:
+    "
+    import requests
+    session = requests.Session()
+    session.headers.update(DEFAULT_HEADERS)
+    return session
+    "
+    END:
+END:
+
+# Close HTTP session
+FUNC close_session(session): START:
+    USE PYTHON: START:
+    "
+    if session:
+        session.close()
+    return True
+    "
+    END:
+END:
+
+# Add authentication to headers
+FUNC add_auth(headers, auth_type, credentials): START:
+    USE PYTHON: START:
+    "
+    if headers is None:
+        headers = {}
+    
+    if auth_type == 'bearer':
+        headers['Authorization'] = f'Bearer {credentials}'
+    elif auth_type == 'basic':
+        import base64
+        encoded = base64.b64encode(f'{credentials[\"username\"]}:{credentials[\"password\"]}'.encode()).decode()
+        headers['Authorization'] = f'Basic {encoded}'
+    elif auth_type == 'api_key':
+        headers[credentials['header']] = credentials['key']
+    
+    return headers
+    "
+    END:
+END:
+
+# Add Bearer token authentication
+FUNC add_bearer_token(headers, token): START:
+    RETURN add_auth(headers, "bearer", token)
+END:
+
+# Add Basic authentication
+FUNC add_basic_auth(headers, username, password): START:
+    let credentials = {"username": username, "password": password}
+    RETURN add_auth(headers, "basic", credentials)
+END:
+
+# URL encode string
+FUNC url_encode(text): START:
+    USE PYTHON: START:
+    "
+    from urllib.parse import quote
+    return quote(text)
+    "
+    END:
+END:
+
+# URL decode string
+FUNC url_decode(text): START:
+    USE PYTHON: START:
+    "
+    from urllib.parse import unquote
+    return unquote(text)
+    "
+    END:
+END:
+
+# Parse URL into components
+FUNC parse_url(url): START:
+    USE PYTHON: START:
+    "
+    from urllib.parse import urlparse
+    parsed = urlparse(url)
+    return {
+        'scheme': parsed.scheme,
+        'netloc': parsed.netloc,
+        'hostname': parsed.hostname,
+        'port': parsed.port,
+        'path': parsed.path,
+        'params': parsed.params,
+        'query': parsed.query,
+        'fragment': parsed.fragment,
+        'username': parsed.username,
+        'password': parsed.password
+    }
+    "
+    END:
+END:
+
+# Build query string from parameters
+FUNC build_query_string(params): START:
+    USE PYTHON: START:
+    "
+    from urllib.parse import urlencode
+    return urlencode(params)
+    "
+    END:
+END:
+
+# Parse cookies from response
+FUNC parse_cookies(response): START:
+    USE PYTHON: START:
+    "
+    if 'headers' in response and 'Set-Cookie' in response['headers']:
+        cookies = {}
+        cookie_header = response['headers']['Set-Cookie']
+        
+        # Simple cookie parsing (basic implementation)
+        for cookie in cookie_header.split(';'):
+            if '=' in cookie:
+                key, value = cookie.strip().split('=', 1)
+                cookies[key] = value
+        
+        return cookies
+    return {}
+    "
+    END:
+END:
+
+# Set cookies for request
+FUNC set_cookies(headers, cookies): START:
+    USE PYTHON: START:
+    "
+    if headers is None:
+        headers = {}
+    
+    cookie_string = '; '.join([f'{key}={value}' for key, value in cookies.items()])
+    headers['Cookie'] = cookie_string
+    
+    return headers
+    "
+    END:
+END:
+
+# Follow redirects manually
+FUNC follow_redirects(url, max_redirects, headers): START:
+    USE PYTHON: START:
+    "
+    import requests
+    
+    if max_redirects is None:
+        max_redirects = 5
+    
+    current_url = url
+    redirect_count = 0
+    
+    while redirect_count < max_redirects:
+        response = requests.get(current_url, headers=headers, allow_redirects=False)
+        
+        if response.status_code in [301, 302, 303, 307, 308]:
+            location = response.headers.get('Location')
+            if location:
+                current_url = location
+                redirect_count += 1
+            else:
+                break
+        else:
+            return {
+                'final_url': current_url,
+                'redirect_count': redirect_count,
+                'response': {
+                    'status_code': response.status_code,
+                    'headers': dict(response.headers),
+                    'data': response.text
+                }
+            }
+    
+    return {
+        'error': 'Too many redirects',
+        'redirect_count': redirect_count
+    }
+    "
+    END:
+END:
+
+# Retry request with exponential backoff
+FUNC retry_request(method, url, data, headers, max_retries, backoff_factor): START:
+    USE PYTHON: START:
+    "
+    import time
+    import random
+    
+    if max_retries is None:
+        max_retries = 3
+    
+    if backoff_factor is None:
+        backoff_factor = 1
+    
+    last_error = None
+    
+    for attempt in range(max_retries + 1):
+        try:
+            response = request(method, url, data, headers, None, None)
+            
+            # If request was successful, return it
+            if response.get('ok', False):
+                return response
+            
+            # If it's a server error (5xx), retry
+            if response.get('status_code', 0) >= 500:
+                last_error = response
+                if attempt < max_retries:
+                    # Exponential backoff with jitter
+                    delay = backoff_factor * (2 ** attempt) + random.uniform(0, 1)
+                    time.sleep(delay)
+                    continue
+            
+            # For client errors (4xx), don't retry
+            return response
+            
+        except Exception as e:
+            last_error = {'error': str(e), 'ok': False}
+            if attempt < max_retries:
+                delay = backoff_factor * (2 ** attempt) + random.uniform(0, 1)
+                time.sleep(delay)
+    
+    return last_error
+    "
+    END:
+END:
+
+# Module initialization
+PRINT rt"HTTP Client Module v{MODULE_VERSION} loaded successfully!"
+
+SHARE MODULE_VERSION, MODULE_NAME, DEFAULT_HEADERS, DEFAULT_TIMEOUT, DEFAULT_USER_AGENT

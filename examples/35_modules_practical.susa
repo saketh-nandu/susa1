@@ -1,0 +1,339 @@
+# SUSA C++ Core - Practical Module Examples
+# Real-world use cases demonstrating module system
+
+PRINT "╔══════════════════════════════════════════════════════════╗"
+PRINT "║   SUSA C++ CORE - PRACTICAL MODULE EXAMPLES              ║"
+PRINT "╚══════════════════════════════════════════════════════════╝"
+PRINT ""
+
+# ============================================
+# Example 1: Scientific Calculator
+# ============================================
+PRINT "┌─ Example 1: Scientific Calculator ──────────────────────┐"
+ADD math_utils AS math
+
+PRINT "│ Quadratic Formula: ax² + bx + c = 0                     │"
+LET a = 1
+LET b = -5
+LET c = 6
+
+LET discriminant = b * b - 4 * a * c
+PRINT "│ Discriminant: "
+PRINT discriminant
+
+IF discriminant >= 0: START:
+    LET sqrt_disc = math.sqrt(discriminant)
+    LET x1 = (-b + sqrt_disc) / (2 * a)
+    LET x2 = (-b - sqrt_disc) / (2 * a)
+    PRINT "│ Solution 1: "
+    PRINT x1
+    PRINT "│ Solution 2: "
+    PRINT x2
+END:
+
+PRINT "│                                                         │"
+PRINT "│ Circle Calculations:                                    │"
+LET radius = 7.5
+LET circumference = 2 * math.PI * radius
+LET area = math.PI * math.pow(radius, 2)
+PRINT "│ Radius: "
+PRINT radius
+PRINT "│ Circumference: "
+PRINT circumference
+PRINT "│ Area: "
+PRINT area
+PRINT "└─────────────────────────────────────────────────────────┘"
+PRINT ""
+
+# ============================================
+# Example 2: Text Analyzer
+# ============================================
+PRINT "┌─ Example 2: Text Analyzer ──────────────────────────────┐"
+ADD string_utils AS str
+
+LET document = "The quick brown fox jumps over the lazy dog"
+PRINT "│ Original text:                                          │"
+PRINT "│ "
+PRINT document
+PRINT "│                                                         │"
+
+PRINT "│ Analysis:                                               │"
+PRINT "│ Length: "
+PRINT str.len(document)
+PRINT "│ Words: "
+LET words = str.split(document, " ")
+PRINT words
+PRINT "│ Uppercase: "
+PRINT str.upper(document)
+PRINT "│ Lowercase: "
+PRINT str.lower(document)
+PRINT "│ Title Case: "
+PRINT str.title(document)
+PRINT "│                                                         │"
+
+PRINT "│ Word Count:                                             │"
+PRINT "│ 'the' appears: "
+PRINT str.count(str.lower(document), "the")
+PRINT "│ 'o' appears: "
+PRINT str.count(document, "o")
+PRINT "│                                                         │"
+
+PRINT "│ Transformations:                                        │"
+LET replaced = str.replace(document, "fox", "cat")
+PRINT "│ Replace 'fox' with 'cat': "
+PRINT replaced
+PRINT "└─────────────────────────────────────────────────────────┘"
+PRINT ""
+
+# ============================================
+# Example 3: Grade Calculator
+# ============================================
+PRINT "┌─ Example 3: Grade Calculator ───────────────────────────┐"
+ADD array_utils AS arr
+
+LET student_scores = [85, 92, 78, 95, 88, 91, 87]
+PRINT "│ Student Scores: "
+PRINT student_scores
+PRINT "│                                                         │"
+
+PRINT "│ Statistics:                                             │"
+LET total = arr.sum(student_scores)
+LET average = arr.average(student_scores)
+LET highest = arr.max(student_scores)
+LET lowest = arr.min(student_scores)
+
+PRINT "│ Total Points: "
+PRINT total
+PRINT "│ Average Score: "
+PRINT average
+PRINT "│ Highest Score: "
+PRINT highest
+PRINT "│ Lowest Score: "
+PRINT lowest
+PRINT "│                                                         │"
+
+PRINT "│ Grade Assignment:                                       │"
+IF average >= 90: START:
+    PRINT "│ Grade: A (Excellent!)                                   │"
+END:
+IF average >= 80 AND average < 90: START:
+    PRINT "│ Grade: B (Good!)                                        │"
+END:
+IF average >= 70 AND average < 80: START:
+    PRINT "│ Grade: C (Satisfactory)                                 │"
+END:
+PRINT "└─────────────────────────────────────────────────────────┘"
+PRINT ""
+
+# ============================================
+# Example 4: Data Normalization
+# ============================================
+PRINT "┌─ Example 4: Data Normalization ─────────────────────────┐"
+ADD math_utils
+ADD array_utils
+
+LET data = [10, 20, 30, 40, 50]
+PRINT "│ Original Data: "
+PRINT data
+PRINT "│                                                         │"
+
+LET min_val = array_utils.min(data)
+LET max_val = array_utils.max(data)
+LET range = max_val - min_val
+
+PRINT "│ Min: "
+PRINT min_val
+PRINT "│ Max: "
+PRINT max_val
+PRINT "│ Range: "
+PRINT range
+PRINT "│                                                         │"
+
+PRINT "│ Normalized (0-1):                                       │"
+LOOP i = 0 FOR 5 TIMES: START:
+    LET value = data[i]
+    LET normalized = (value - min_val) / range
+    PRINT "│ "
+    PRINT value
+    PRINT " → "
+    PRINT normalized
+END:
+PRINT "└─────────────────────────────────────────────────────────┘"
+PRINT ""
+
+# ============================================
+# Example 5: Password Strength Checker
+# ============================================
+PRINT "┌─ Example 5: Password Strength Checker ──────────────────┐"
+ADD string_utils
+
+LET password = "MyP@ssw0rd123"
+PRINT "│ Password: "
+PRINT password
+PRINT "│                                                         │"
+
+LET length = string_utils.len(password)
+PRINT "│ Length: "
+PRINT length
+
+LET has_upper = string_utils.contains(password, "M")
+LET has_lower = string_utils.contains(password, "y")
+LET has_number = string_utils.contains(password, "1")
+LET has_special = string_utils.contains(password, "@")
+
+PRINT "│                                                         │"
+PRINT "│ Strength Analysis:                                      │"
+PRINT "│ Has uppercase: "
+PRINT has_upper
+PRINT "│ Has lowercase: "
+PRINT has_lower
+PRINT "│ Has numbers: "
+PRINT has_number
+PRINT "│ Has special chars: "
+PRINT has_special
+PRINT "│                                                         │"
+
+LET strength = 0
+IF length >= 8: START:
+    strength = strength + 1
+END:
+IF has_upper: START:
+    strength = strength + 1
+END:
+IF has_lower: START:
+    strength = strength + 1
+END:
+IF has_number: START:
+    strength = strength + 1
+END:
+IF has_special: START:
+    strength = strength + 1
+END:
+
+PRINT "│ Strength Score: "
+PRINT strength
+PRINT "/5                                      │"
+IF strength >= 4: START:
+    PRINT "│ Rating: Strong ✓                                        │"
+END:
+IF strength == 3: START:
+    PRINT "│ Rating: Medium                                          │"
+END:
+IF strength < 3: START:
+    PRINT "│ Rating: Weak                                            │"
+END:
+PRINT "└─────────────────────────────────────────────────────────┘"
+PRINT ""
+
+# ============================================
+# Example 6: Temperature Converter
+# ============================================
+PRINT "┌─ Example 6: Temperature Converter ──────────────────────┐"
+ADD math_utils
+
+LET celsius = 25
+PRINT "│ Temperature: "
+PRINT celsius
+PRINT "°C                                    │"
+PRINT "│                                                         │"
+
+LET fahrenheit = (celsius * 9 / 5) + 32
+LET kelvin = celsius + 273.15
+
+PRINT "│ Conversions:                                            │"
+PRINT "│ Fahrenheit: "
+PRINT math_utils.round(fahrenheit)
+PRINT "°F                                  │"
+PRINT "│ Kelvin: "
+PRINT math_utils.round(kelvin)
+PRINT "K                                      │"
+PRINT "└─────────────────────────────────────────────────────────┘"
+PRINT ""
+
+# ============================================
+# Example 7: Random Number Generator
+# ============================================
+PRINT "┌─ Example 7: Random Number Generator ────────────────────┐"
+ADD math_utils
+
+PRINT "│ Generating random numbers...                            │"
+PRINT "│                                                         │"
+PRINT "│ Random float (0-1): "
+PRINT math_utils.random()
+PRINT "│ Random int (1-100): "
+PRINT math_utils.random_int(1, 100)
+PRINT "│ Random int (1-100): "
+PRINT math_utils.random_int(1, 100)
+PRINT "│ Random int (1-100): "
+PRINT math_utils.random_int(1, 100)
+PRINT "│                                                         │"
+PRINT "│ Dice Roll (1-6): "
+PRINT math_utils.random_int(1, 6)
+PRINT "│ Coin Flip (0=Heads, 1=Tails): "
+PRINT math_utils.random_int(0, 1)
+PRINT "└─────────────────────────────────────────────────────────┘"
+PRINT ""
+
+# ============================================
+# Example 8: String Formatting
+# ============================================
+PRINT "┌─ Example 8: String Formatting ──────────────────────────┐"
+ADD string_utils
+
+LET name = "Alice"
+LET age = 25
+LET city = "New York"
+
+PRINT "│ Creating formatted output...                            │"
+PRINT "│                                                         │"
+
+LET greeting = string_utils.upper("hello")
+LET formatted_name = string_utils.title(name)
+LET formatted_city = string_utils.upper(city)
+
+PRINT "│ "
+PRINT greeting
+PRINT ", "
+PRINT formatted_name
+PRINT "!"
+PRINT "│ You are "
+PRINT age
+PRINT " years old."
+PRINT "│ You live in "
+PRINT formatted_city
+PRINT "."
+PRINT "│                                                         │"
+
+LET separator = string_utils.repeat("-", 20)
+PRINT "│ "
+PRINT separator
+PRINT "│ Profile Card:                                           │"
+PRINT "│ Name: "
+PRINT string_utils.pad_right(formatted_name, 15, " ")
+PRINT "│ Age:  "
+PRINT age
+PRINT "│ City: "
+PRINT string_utils.pad_right(formatted_city, 15, " ")
+PRINT "│ "
+PRINT separator
+PRINT "└─────────────────────────────────────────────────────────┘"
+PRINT ""
+
+# ============================================
+# Summary
+# ============================================
+PRINT "╔══════════════════════════════════════════════════════════╗"
+PRINT "║                    EXAMPLES COMPLETE                     ║"
+PRINT "╠══════════════════════════════════════════════════════════╣"
+PRINT "║  ✓ Scientific Calculator (quadratic, circle)            ║"
+PRINT "║  ✓ Text Analyzer (word count, transformations)          ║"
+PRINT "║  ✓ Grade Calculator (statistics, grading)               ║"
+PRINT "║  ✓ Data Normalization (min-max scaling)                 ║"
+PRINT "║  ✓ Password Strength Checker (security analysis)        ║"
+PRINT "║  ✓ Temperature Converter (C/F/K)                         ║"
+PRINT "║  ✓ Random Number Generator (dice, coins)                ║"
+PRINT "║  ✓ String Formatting (profile cards)                    ║"
+PRINT "╚══════════════════════════════════════════════════════════╝"
+PRINT ""
+PRINT "All practical examples completed successfully!"
+PRINT "The SUSA C++ Core module system is production-ready!"

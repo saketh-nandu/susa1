@@ -1,0 +1,90 @@
+# ============================================
+# AI & Machine Learning Module Example
+# Testing real AI/ML functions
+# ============================================
+
+PRINT "🤖 AI & Machine Learning Module Test"
+PRINT "=" * 60
+
+ADD ai_ml
+
+# Test 1: Neural Network
+PRINT "\n1. Creating Neural Network..."
+let layers = [784, 128, 64, 10]
+let network = ai_ml.create_neural_network(layers)
+PRINT "Network created with layers: " + str(layers)
+
+# Test 2: Activation Functions
+PRINT "\n2. Testing Activation Functions..."
+let test_data = [0.5, -0.3, 0.8, -0.1]
+let sigmoid_result = ai_ml.sigmoid(test_data)
+PRINT "Sigmoid activation: " + str(sigmoid_result)
+
+let relu_result = ai_ml.relu(test_data)
+PRINT "ReLU activation: " + str(relu_result)
+
+# Test 3: Linear Regression
+PRINT "\n3. Linear Regression..."
+let X = [[1], [2], [3], [4], [5]]
+let y = [2, 4, 6, 8, 10]
+let coefficients = ai_ml.linear_regression(X, y)
+PRINT "Regression coefficients: " + str(coefficients)
+
+# Test 4: Predictions
+PRINT "\n4. Making Predictions..."
+let X_test = [[6], [7], [8]]
+let predictions = ai_ml.predict_linear(coefficients, X_test)
+PRINT "Predictions: " + str(predictions)
+
+# Test 5: K-Means Clustering
+PRINT "\n5. K-Means Clustering..."
+let data = [[1, 2], [1.5, 1.8], [5, 8], [8, 8], [1, 0.6], [9, 11]]
+let clusters = ai_ml.kmeans_clustering(data, 2, 10)
+PRINT "Clustering complete: " + str(clusters["iterations"]) + " iterations"
+
+# Test 6: NLP - Tokenization
+PRINT "\n6. Text Tokenization..."
+let text = "SUSA is an amazing programming language for AI and ML"
+let tokens = ai_ml.tokenize_text(text)
+PRINT "Tokens: " + str(tokens)
+
+# Test 7: Sentiment Analysis
+PRINT "\n7. Sentiment Analysis..."
+let positive_text = "This is amazing and wonderful!"
+let sentiment1 = ai_ml.sentiment_analysis(positive_text)
+PRINT "Positive text sentiment: " + str(sentiment1)
+
+let negative_text = "This is terrible and awful"
+let sentiment2 = ai_ml.sentiment_analysis(negative_text)
+PRINT "Negative text sentiment: " + str(sentiment2)
+
+# Test 8: TF-IDF
+PRINT "\n8. TF-IDF Calculation..."
+let documents = ["the cat sat on the mat", "the dog sat on the log", "cats and dogs"]
+let tfidf = ai_ml.calculate_tfidf(documents)
+PRINT "TF-IDF calculated for " + str(len(documents)) + " documents"
+
+# Test 9: Model Evaluation
+PRINT "\n9. Model Evaluation..."
+let y_true = [1, 0, 1, 1, 0, 1]
+let y_pred = [1, 0, 1, 0, 0, 1]
+let accuracy = ai_ml.calculate_accuracy(y_true, y_pred)
+PRINT "Model accuracy: " + str(accuracy)
+
+let metrics = ai_ml.calculate_metrics(y_true, y_pred)
+PRINT "Precision: " + str(metrics["precision"])
+PRINT "Recall: " + str(metrics["recall"])
+PRINT "F1-Score: " + str(metrics["f1_score"])
+
+# Test 10: Mean Squared Error
+PRINT "\n10. Regression Metrics..."
+let y_true_reg = [3.0, -0.5, 2.0, 7.0]
+let y_pred_reg = [2.5, 0.0, 2.0, 8.0]
+let mse = ai_ml.mean_squared_error(y_true_reg, y_pred_reg)
+PRINT "Mean Squared Error: " + str(mse)
+
+let r2 = ai_ml.r2_score(y_true_reg, y_pred_reg)
+PRINT "R² Score: " + str(r2)
+
+PRINT "\n" + "=" * 60
+PRINT "✅ AI & ML Module Test Complete!"

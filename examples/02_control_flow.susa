@@ -1,0 +1,73 @@
+# SUSA Control Flow - Conditionals and Loops
+
+PRINT "=== SUSA Control Flow ==="
+
+# IF statements
+let score = 85
+PRINT "Score: " + score
+
+IF score >= 90:
+START:
+    PRINT "Grade: A"
+END:
+ELSE IF score >= 80:
+START:
+    PRINT "Grade: B"
+END:
+ELSE IF score >= 70:
+START:
+    PRINT "Grade: C"
+END:
+ELSE:
+START:
+    PRINT "Grade: F"
+END:
+
+# FOR loops
+PRINT "FOR Loop - Count 1 to 5:"
+LOOP i = 1 FOR 5 TIMES:
+START:
+    PRINT "Count: " + i
+END:
+
+# WHILE loops
+PRINT "WHILE Loop - Countdown:"
+let counter = 5
+LOOP WHILE counter > 0:
+START:
+    PRINT "Countdown: " + counter
+    counter = counter - 1
+END:
+
+# BREAK and CONTINUE
+PRINT "BREAK and CONTINUE example:"
+LOOP i = 1 FOR 10 TIMES:
+START:
+    IF i == 5:
+    START:
+        PRINT "Skipping " + i
+        CONTINUE:
+    END:
+    IF i == 8:
+    START:
+        PRINT "Breaking at " + i
+        BREAK:
+    END:
+    PRINT "Processing " + i
+END:
+
+# Nested conditions
+let x = 15
+let y = 10
+PRINT "Nested conditions:"
+IF x > 10:
+START:
+    IF y > 5:
+    START:
+        PRINT "Both x > 10 and y > 5"
+    END:
+    ELSE:
+    START:
+        PRINT "x > 10 but y <= 5"
+    END:
+END:

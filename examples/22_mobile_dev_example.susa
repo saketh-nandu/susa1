@@ -1,0 +1,163 @@
+# ============================================
+# Mobile Development Module Example
+# Testing real mobile app functions
+# ============================================
+
+PRINT "📱 Mobile Development Module Test"
+PRINT "=" * 60
+
+ADD mobile_dev
+
+# Test 1: Create Mobile App
+PRINT "\n1. Creating Mobile App..."
+let app = mobile_dev.create_mobile_app("MyApp", "cross-platform")
+PRINT "App: " + app["name"]
+PRINT "Platform: " + app["platform"]
+PRINT "Version: " + app["version"]
+
+# Test 2: Create Button
+PRINT "\n2. Creating Button..."
+let login_btn = mobile_dev.create_button("Login", "primary", "handle_login")
+PRINT "Button: " + login_btn["text"]
+PRINT "Style: " + login_btn["style"]
+
+# Test 3: Create Text Input
+PRINT "\n3. Creating Text Inputs..."
+let email_input = mobile_dev.create_text_input("Enter email", "email")
+PRINT "Email input: " + email_input["placeholder"]
+
+let password_input = mobile_dev.create_text_input("Enter password", "password")
+PRINT "Password input: " + password_input["placeholder"]
+
+# Test 4: Create List View
+PRINT "\n4. Creating List View..."
+let items = ["Item 1", "Item 2", "Item 3", "Item 4", "Item 5"]
+let list_view = mobile_dev.create_list_view(items)
+PRINT "List view: " + str(len(list_view["items"])) + " items"
+
+# Test 5: Create Screens
+PRINT "\n5. Creating Screens..."
+let home_screen = mobile_dev.create_screen("home", [login_btn, email_input])
+PRINT "Home screen: " + home_screen["name"]
+
+let profile_screen = mobile_dev.create_screen("profile", [list_view])
+PRINT "Profile screen: " + profile_screen["name"]
+
+# Add screens to app
+app["screens"] = [home_screen, profile_screen]
+
+# Test 6: Navigate to Screen
+PRINT "\n6. Navigating Between Screens..."
+app = mobile_dev.navigate_to_screen(app, "home")
+PRINT "Navigated to: home"
+
+# Test 7: Get Device Info
+PRINT "\n7. Getting Device Information..."
+let device_info = mobile_dev.get_device_info()
+PRINT "Platform: " + device_info["platform"]
+PRINT "Architecture: " + device_info["architecture"]
+
+# Test 8: Request Camera Permission
+PRINT "\n8. Requesting Camera Permission..."
+let camera_perm = mobile_dev.request_camera_permission()
+PRINT "Camera permission: " + str(camera_perm["granted"])
+
+# Test 9: Request Location Permission
+PRINT "\n9. Requesting Location Permission..."
+let location_perm = mobile_dev.request_location_permission()
+PRINT "Location permission: " + str(location_perm["granted"])
+
+# Test 10: Save to Local Storage
+PRINT "\n10. Saving to Local Storage..."
+let user_data = {"username": "john_doe", "theme": "dark", "notifications": True}
+let saved = mobile_dev.save_to_local_storage("user_preferences", user_data)
+PRINT "Saved: " + saved["key"]
+
+# Test 11: Load from Local Storage
+PRINT "\n11. Loading from Local Storage..."
+let loaded = mobile_dev.load_from_local_storage("user_preferences")
+PRINT "Loaded key: " + loaded["key"]
+PRINT "Found: " + str(loaded["found"])
+
+# Test 12: Create Push Notification
+PRINT "\n12. Creating Push Notification..."
+let push_notif = mobile_dev.create_push_notification(
+    "New Message",
+    "You have 3 new messages",
+    {"type": "message", "count": 3}
+)
+PRINT "Notification: " + push_notif["title"]
+
+# Test 13: Schedule Local Notification
+PRINT "\n13. Scheduling Local Notification..."
+let scheduled_notif = mobile_dev.schedule_local_notification(
+    "Reminder",
+    "Don't forget your meeting!",
+    3600
+)
+PRINT "Scheduled in: " + str(scheduled_notif["delay_seconds"]) + " seconds"
+
+# Test 14: Detect Swipe Gesture
+PRINT "\n14. Detecting Swipe Gestures..."
+let swipe_right = mobile_dev.detect_swipe(100, 200, 300, 210)
+PRINT "Swipe direction: " + swipe_right["direction"]
+PRINT "Distance: " + str(swipe_right["distance"])
+
+let swipe_up = mobile_dev.detect_swipe(200, 400, 210, 200)
+PRINT "Swipe direction: " + swipe_up["direction"]
+
+# Test 15: Detect Pinch Gesture
+PRINT "\n15. Detecting Pinch Gesture..."
+let zoom_in = mobile_dev.detect_pinch(100, 150)
+PRINT "Gesture: " + zoom_in["gesture"]
+PRINT "Scale: " + str(zoom_in["scale"])
+
+let zoom_out = mobile_dev.detect_pinch(150, 100)
+PRINT "Gesture: " + zoom_out["gesture"]
+
+# Test 16: Read Accelerometer
+PRINT "\n16. Reading Accelerometer..."
+let accel_data = mobile_dev.read_accelerometer()
+PRINT "Accelerometer X: " + str(accel_data["x"])
+PRINT "Accelerometer Y: " + str(accel_data["y"])
+PRINT "Accelerometer Z: " + str(accel_data["z"])
+
+# Test 17: Read Gyroscope
+PRINT "\n17. Reading Gyroscope..."
+let gyro_data = mobile_dev.read_gyroscope()
+PRINT "Gyroscope Alpha: " + str(gyro_data["alpha"])
+PRINT "Gyroscope Beta: " + str(gyro_data["beta"])
+PRINT "Gyroscope Gamma: " + str(gyro_data["gamma"])
+
+# Test 18: Make API Call
+PRINT "\n18. Making API Call..."
+let api_request = mobile_dev.make_api_call(
+    "https://api.example.com/users",
+    "GET",
+    {}
+)
+PRINT "API call: " + api_request["method"] + " " + api_request["url"]
+PRINT "Status: " + api_request["status"]
+
+# Test 19: Download File
+PRINT "\n19. Downloading File..."
+let download = mobile_dev.download_file_mobile(
+    "https://example.com/file.pdf",
+    "/downloads/file.pdf"
+)
+PRINT "Download: " + download["url"]
+PRINT "Destination: " + download["destination"]
+
+# Test 20: App Lifecycle Events
+PRINT "\n20. Testing App Lifecycle..."
+let start_event = mobile_dev.on_app_start()
+PRINT "Event: " + start_event["event"]
+
+let pause_event = mobile_dev.on_app_pause()
+PRINT "Event: " + pause_event["event"]
+
+let resume_event = mobile_dev.on_app_resume()
+PRINT "Event: " + resume_event["event"]
+
+PRINT "\n" + "=" * 60
+PRINT "✅ Mobile Development Module Test Complete!"

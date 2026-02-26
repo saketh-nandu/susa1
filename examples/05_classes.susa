@@ -1,0 +1,149 @@
+# SUSA Classes - Object-Oriented Programming
+
+PRINT "=== SUSA Classes ==="
+
+# Basic class
+CLASS Person:
+START:
+    FUNC set_info(name, age):
+    START:
+        self.name = name
+        self.age = age
+    END:
+    
+    FUNC greet():
+    START:
+        PRINT "Hello, I am " + self.name
+    END:
+    
+    FUNC get_info():
+    START:
+        PRINT self.name + " is " + self.age + " years old"
+    END:
+END:
+
+# Class with calculations
+CLASS Rectangle:
+START:
+    FUNC init(width, height):
+    START:
+        self.width = width
+        self.height = height
+    END:
+    
+    FUNC area():
+    START:
+        RETURN self.width * self.height
+    END:
+    
+    FUNC perimeter():
+    START:
+        RETURN 2 * (self.width + self.height)
+    END:
+    
+    FUNC describe():
+    START:
+        PRINT "Rectangle " + self.width + "x" + self.height
+        PRINT "Area: " + self.area()
+        PRINT "Perimeter: " + self.perimeter()
+    END:
+END:
+
+# Inheritance
+CLASS Animal:
+START:
+    FUNC set_name(name):
+    START:
+        self.name = name
+    END:
+    
+    FUNC speak():
+    START:
+        PRINT self.name + " makes a sound"
+    END:
+END:
+
+CLASS Dog EXTENDS Animal:
+START:
+    FUNC speak():
+    START:
+        PRINT self.name + " barks: Woof!"
+    END:
+    
+    FUNC fetch():
+    START:
+        PRINT self.name + " fetches the ball"
+    END:
+END:
+
+# Using classes
+PRINT "Basic class usage:"
+let person = Person()
+person.set_info("Alice", 25)
+person.greet()
+person.get_info()
+
+PRINT "Rectangle class:"
+let rect = Rectangle(5, 3)
+rect.describe()
+
+PRINT "Inheritance example:"
+let dog = Dog()
+dog.set_name("Buddy")
+dog.speak()
+dog.fetch()
+
+# Multiple objects
+PRINT "Multiple objects:"
+let person1 = Person()
+let person2 = Person()
+
+person1.set_info("Bob", 30)
+person2.set_info("Carol", 28)
+
+person1.greet()
+person2.greet()
+
+# Class with list data
+CLASS StudentGrades:
+START:
+    FUNC init(name):
+    START:
+        self.name = name
+        self.grades = []
+    END:
+    
+    FUNC add_grade(grade):
+    START:
+        append(self.grades, grade)
+    END:
+    
+    FUNC average():
+    START:
+        IF len(self.grades) == 0:
+        START:
+            RETURN 0
+        END:
+        
+        let total = 0
+        LOOP i = 0 FOR len(self.grades) TIMES:
+        START:
+            total = total + self.grades[i]
+        END:
+        RETURN total / len(self.grades)
+    END:
+    
+    FUNC report():
+    START:
+        PRINT "Student: " + self.name
+        PRINT "Grades: " + self.grades
+        PRINT "Average: " + self.average()
+    END:
+END:
+
+PRINT "Student grades example:"
+let student = StudentGrades("Emma")
+student.add_grade(85)
+student.add_grade(92)
+student.add_grade(78)
+student.report()

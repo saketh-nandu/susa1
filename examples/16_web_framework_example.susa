@@ -1,0 +1,121 @@
+# ============================================
+# Web Framework Module Example
+# Testing real web development functions
+# ============================================
+
+PRINT "🌐 Web Framework Module Test"
+PRINT "=" * 60
+
+ADD web_framework
+
+# Test 1: Create Web Application
+PRINT "\n1. Creating Web Application..."
+let app = web_framework.create_app()
+PRINT "Web app created successfully"
+
+# Test 2: Add Routes
+PRINT "\n2. Adding Routes..."
+app = web_framework.add_route(app, "/", "GET", "home_handler")
+app = web_framework.add_route(app, "/api/users", "GET", "get_users")
+app = web_framework.add_route(app, "/api/users", "POST", "create_user")
+PRINT "Routes added: /, /api/users (GET, POST)"
+
+# Test 3: JSON Response
+PRINT "\n3. Creating JSON Response..."
+let data = {"message": "Success", "users": ["Alice", "Bob", "Charlie"]}
+let response = web_framework.json_response(data, 200)
+PRINT "JSON response created with status 200"
+
+# Test 4: Parse Query Parameters
+PRINT "\n4. Parsing Query Parameters..."
+let url = "https://api.example.com/search?q=susa&limit=10&sort=desc"
+let params = web_framework.parse_query_params(url)
+PRINT "Parsed parameters: " + str(params)
+
+# Test 5: CORS Middleware
+PRINT "\n5. Creating CORS Middleware..."
+let cors = web_framework.cors_middleware("*")
+PRINT "CORS middleware created for all origins"
+
+# Test 6: Logging Middleware
+PRINT "\n6. Creating Logging Middleware..."
+let logger = web_framework.logging_middleware()
+PRINT "Logging middleware created"
+
+# Test 7: Router
+PRINT "\n7. Creating Router..."
+let router = web_framework.create_router("/api/v1")
+router = web_framework.router_add_route(router, "/products", "GET", "get_products")
+PRINT "Router created with prefix: /api/v1"
+
+# Test 8: REST Resource
+PRINT "\n8. Creating REST Resource..."
+let resource = web_framework.create_rest_resource("users", "User")
+PRINT "REST resource created: users"
+
+# Test 9: CRUD Routes
+PRINT "\n9. Generating CRUD Routes..."
+let crud_routes = web_framework.generate_crud_routes("products")
+PRINT "CRUD routes generated for products"
+
+# Test 10: WebSocket Server
+PRINT "\n10. Creating WebSocket Server..."
+let ws_server = web_framework.create_websocket_server(8080)
+PRINT "WebSocket server created on port 8080"
+
+# Test 11: Session Management
+PRINT "\n11. Creating Session..."
+let session = web_framework.create_session("user123", {"name": "John", "role": "admin"})
+PRINT "Session created: " + session["id"]
+
+let is_valid = web_framework.validate_session(session)
+PRINT "Session valid: " + str(is_valid)
+
+# Test 12: JWT Token
+PRINT "\n12. Generating JWT Token..."
+let payload = {"user_id": 123, "username": "john_doe", "role": "admin"}
+let token = web_framework.generate_jwt(payload, "my_secret_key")
+PRINT "JWT token generated: " + token[first to 50] + "..."
+
+# Test 13: Verify JWT
+PRINT "\n13. Verifying JWT Token..."
+let verification = web_framework.verify_jwt(token, "my_secret_key")
+PRINT "Token valid: " + str(verification["valid"])
+
+# Test 14: Password Hashing
+PRINT "\n14. Hashing Password..."
+let password = "SecurePassword123!"
+let hashed = web_framework.hash_password(password)
+PRINT "Password hashed successfully"
+
+# Test 15: Verify Password
+PRINT "\n15. Verifying Password..."
+let is_correct = web_framework.verify_password(password, hashed)
+PRINT "Password verification: " + str(is_correct)
+
+# Test 16: Template Rendering
+PRINT "\n16. Rendering Template..."
+let template = "Hello {{name}}, you have {{count}} messages"
+let context = {"name": "Alice", "count": 5}
+let rendered = web_framework.render_template(template, context)
+PRINT "Rendered: " + rendered
+
+# Test 17: File Upload
+PRINT "\n17. Handling File Upload..."
+let file_data = {"filename": "document.pdf", "content": "binary_data"}
+let upload_result = web_framework.handle_file_upload(file_data, "uploads")
+PRINT "File uploaded: " + upload_result["filename"]
+
+# Test 18: Rate Limiter
+PRINT "\n18. Creating Rate Limiter..."
+let limiter = web_framework.create_rate_limiter(100, 60)
+PRINT "Rate limiter: 100 requests per 60 seconds"
+
+# Test 19: Check Rate Limit
+PRINT "\n19. Checking Rate Limit..."
+let limit_check = web_framework.check_rate_limit(limiter, "client_123")
+PRINT "Rate limit allowed: " + str(limit_check["allowed"])
+PRINT "Remaining requests: " + str(limit_check["remaining"])
+
+PRINT "\n" + "=" * 60
+PRINT "✅ Web Framework Module Test Complete!"

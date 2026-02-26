@@ -1,0 +1,105 @@
+# ============================================
+# SUSA Basics - Variables, Types, and Operations
+# ============================================
+# This example teaches you the fundamentals of SUSA programming:
+# - How to declare and use variables
+# - Different data types (numbers, strings, booleans, null)
+# - Arithmetic operations (+, -, *, /, %)
+# - Comparison operations (>, <, ==, !=, etc.)
+# - Boolean logic (AND, OR, NOT)
+# - Type checking
+
+PRINT "=== SUSA Basics ==="
+PRINT ""
+
+# ============================================
+# VARIABLES
+# ============================================
+# Variables store data that you can use later in your program
+# Use 'let' keyword to declare a variable
+# Variable names should be descriptive and meaningful
+
+let x = 10              # Integer number
+let y = 5               # Another integer
+let name = "SUSA"       # String (text) - use quotes
+let active = true       # Boolean (true/false)
+let nothing = null      # Null (represents no value)
+
+PRINT "Variables:"
+PRINT "x = " + str(x)           # Convert number to string for display
+PRINT "y = " + str(y)
+PRINT "name = " + name
+PRINT "active = " + str(active)
+PRINT "nothing = " + str(nothing)
+PRINT ""
+
+# ============================================
+# ARITHMETIC OPERATIONS
+# ============================================
+# SUSA supports all standard math operations
+# + (addition), - (subtraction), * (multiplication)
+# / (division), % (modulo - remainder after division)
+
+PRINT "Arithmetic Operations:"
+PRINT "10 + 5 = " + str(10 + 5)    # Addition: 15
+PRINT "10 - 5 = " + str(10 - 5)    # Subtraction: 5
+PRINT "10 * 5 = " + str(10 * 5)    # Multiplication: 50
+PRINT "10 / 5 = " + str(10 / 5)    # Division: 2
+PRINT "10 % 3 = " + str(10 % 3)    # Modulo (remainder): 1
+PRINT ""
+
+# ============================================
+# COMPARISON OPERATIONS
+# ============================================
+# Compare values and get true/false results
+# Useful for making decisions in your programs
+
+PRINT "Comparison Operations:"
+PRINT "5 > 3 = " + str(5 > 3)      # Greater than: true
+PRINT "5 < 3 = " + str(5 < 3)      # Less than: false
+PRINT "5 >= 5 = " + str(5 >= 5)    # Greater or equal: true
+PRINT "5 <= 4 = " + str(5 <= 4)    # Less or equal: false
+PRINT "5 == 5 = " + str(5 == 5)    # Equal to: true
+PRINT "5 != 3 = " + str(5 != 3)    # Not equal to: true
+PRINT ""
+
+# ============================================
+# BOOLEAN LOGIC
+# ============================================
+# Combine true/false values using logical operators
+# AND: both must be true
+# OR: at least one must be true
+# NOT: reverses true/false
+
+PRINT "Boolean Logic:"
+PRINT "true AND false = " + str(true AND false)  # Both true? No: false
+PRINT "true OR false = " + str(true OR false)    # At least one true? Yes: true
+PRINT "NOT true = " + str(NOT true)              # Reverse true: false
+PRINT ""
+
+# ============================================
+# TYPE SYSTEM
+# ============================================
+# SUSA is dynamically typed - variables can hold any type
+# Use type() function to check what type a value is
+
+PRINT "Type System:"
+PRINT "type(42) = " + type(42)           # number
+PRINT "type('hello') = " + type("hello") # string
+PRINT "type(true) = " + type(true)       # boolean
+PRINT "type(null) = " + type(null)       # null
+PRINT ""
+
+# ============================================
+# PRACTICAL EXAMPLE
+# ============================================
+# Let's use what we learned to solve a real problem
+
+PRINT "Practical Example - Calculate Age:"
+let birth_year = 2000
+let current_year = 2024
+let age = current_year - birth_year
+PRINT "If you were born in " + str(birth_year) + ", you are " + str(age) + " years old"
+PRINT ""
+
+PRINT "=== Basics Complete! ==="

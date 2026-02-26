@@ -1,0 +1,152 @@
+# ============================================
+# String Utils Module Example
+# Testing string manipulation functions
+# ============================================
+
+PRINT "📝 String Utils Module Test"
+PRINT "=" * 60
+
+ADD string_utils
+
+# Test 1: Capitalize
+PRINT "\n1. Testing Capitalize..."
+let text1 = "hello world"
+let capitalized = string_utils.capitalize(text1)
+PRINT "Original: " + text1
+PRINT "Capitalized: " + capitalized
+
+# Test 2: Reverse
+PRINT "\n2. Testing Reverse..."
+let text2 = "SUSA Language"
+let reversed = string_utils.reverse(text2)
+PRINT "Original: " + text2
+PRINT "Reversed: " + reversed
+
+# Test 3: Trim
+PRINT "\n3. Testing Trim..."
+let text3 = "   Hello World   "
+let trimmed = string_utils.trim(text3)
+PRINT "Original: '" + text3 + "'"
+PRINT "Trimmed: '" + trimmed + "'"
+
+# Test 4: Split and Join
+PRINT "\n4. Testing Split and Join..."
+let text4 = "apple,banana,cherry,date"
+let parts = string_utils.split(text4, ",")
+PRINT "Split by ',': " + str(parts)
+let joined = string_utils.join(parts, " | ")
+PRINT "Joined with ' | ': " + joined
+
+# Test 5: Replace All
+PRINT "\n5. Testing Replace All..."
+let text5 = "Hello World, Hello Universe"
+let replaced = string_utils.replace_all(text5, "Hello", "Hi")
+PRINT "Original: " + text5
+PRINT "Replaced: " + replaced
+
+# Test 6: Contains, Starts With, Ends With
+PRINT "\n6. Testing Contains, Starts With, Ends With..."
+let text6 = "SUSA Programming Language"
+let has_prog = string_utils.contains(text6, "Programming")
+PRINT "Contains 'Programming': " + str(has_prog)
+let starts = string_utils.starts_with(text6, "SUSA")
+PRINT "Starts with 'SUSA': " + str(starts)
+let ends = string_utils.ends_with(text6, "Language")
+PRINT "Ends with 'Language': " + str(ends)
+
+# Test 7: To Upper and To Lower
+PRINT "\n7. Testing To Upper and To Lower..."
+let text7 = "Hello World"
+let upper = string_utils.to_upper(text7)
+let lower = string_utils.to_lower(text7)
+PRINT "Original: " + text7
+PRINT "Upper: " + upper
+PRINT "Lower: " + lower
+
+# Test 8: Count Occurrences
+PRINT "\n8. Testing Count Occurrences..."
+let text8 = "banana"
+let count = string_utils.count_occurrences(text8, "a")
+PRINT "Text: " + text8
+PRINT "Count of 'a': " + str(count)
+
+# Test 9: Substring
+PRINT "\n9. Testing Substring..."
+let text9 = "Hello, SUSA!"
+let sub = string_utils.substring(text9, 7, 11)
+PRINT "Original: " + text9
+PRINT "Substring [7:11]: " + sub
+
+# Test 10: Pad Left and Pad Right
+PRINT "\n10. Testing Pad Left and Pad Right..."
+let text10 = "42"
+let padded_left = string_utils.pad_left(text10, 5, "0")
+let padded_right = string_utils.pad_right(text10, 5, "0")
+PRINT "Original: " + text10
+PRINT "Pad left (5, '0'): " + padded_left
+PRINT "Pad right (5, '0'): " + padded_right
+
+# Test 11: Remove Spaces
+PRINT "\n11. Testing Remove Spaces..."
+let text11 = "H e l l o   W o r l d"
+let no_spaces = string_utils.remove_spaces(text11)
+PRINT "Original: " + text11
+PRINT "No spaces: " + no_spaces
+
+# Test 12: Is Empty, Is Numeric, Is Alpha
+PRINT "\n12. Testing String Checks..."
+let empty_str = ""
+let num_str = "12345"
+let alpha_str = "Hello"
+let alphanum_str = "Hello123"
+
+PRINT "Is empty '': " + str(string_utils.is_empty(empty_str))
+PRINT "Is numeric '12345': " + str(string_utils.is_numeric(num_str))
+PRINT "Is alpha 'Hello': " + str(string_utils.is_alpha(alpha_str))
+PRINT "Is alphanumeric 'Hello123': " + str(string_utils.is_alphanumeric(alphanum_str))
+
+# Test 13: Word Count
+PRINT "\n13. Testing Word Count..."
+let text13 = "The quick brown fox jumps over the lazy dog"
+let words = string_utils.word_count(text13)
+PRINT "Text: " + text13
+PRINT "Word count: " + str(words)
+
+# Test 14: Char At, Index Of, Last Index Of
+PRINT "\n14. Testing Char At, Index Of, Last Index Of..."
+let text14 = "Hello World"
+let char = string_utils.char_at(text14, 6)
+PRINT "Char at index 6: " + char
+let first_o = string_utils.index_of(text14, "o")
+PRINT "First 'o' at: " + str(first_o)
+let last_o = string_utils.last_index_of(text14, "o")
+PRINT "Last 'o' at: " + str(last_o)
+
+# Test 15: Repeat
+PRINT "\n15. Testing Repeat..."
+let text15 = "Ha"
+let repeated = string_utils.repeat(text15, 5)
+PRINT "Repeat 'Ha' 5 times: " + repeated
+
+# Test 16: Truncate
+PRINT "\n16. Testing Truncate..."
+let text16 = "This is a very long string that needs to be truncated"
+let truncated = string_utils.truncate(text16, 20)
+PRINT "Original: " + text16
+PRINT "Truncated (20): " + truncated
+
+# Test 17: Case Conversions
+PRINT "\n17. Testing Case Conversions..."
+let text17 = "hello world example"
+let camel = string_utils.camel_case(text17)
+let snake = string_utils.snake_case(text17)
+let kebab = string_utils.kebab_case(text17)
+let title = string_utils.title_case(text17)
+PRINT "Original: " + text17
+PRINT "Camel case: " + camel
+PRINT "Snake case: " + snake
+PRINT "Kebab case: " + kebab
+PRINT "Title case: " + title
+
+PRINT "\n" + "=" * 60
+PRINT "✅ String Utils Module Test Complete!"

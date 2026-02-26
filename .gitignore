@@ -1,0 +1,61 @@
+# Compiled binaries
+*.exe
+*.dll
+*.so
+*.dylib
+*.o
+*.obj
+
+# Build outputs
+Output/
+dist/
+dist-electron/
+build/
+*.zip
+
+# IDE folders (too large for GitHub)
+susa-ide/remix-of-susa-studio-ide-main/dist-electron/
+susa-ide/remix-of-susa-studio-ide-main/node_modules/
+susa-setup/
+
+# Temporary files
+temp-*/
+*.tmp
+*.log
+
+# Package folders
+SUSA-CLI-Package/
+susa-linux-package/
+susa-macos-package/
+susa-deb/
+susa-dmg-temp/
+
+# Node modules
+node_modules/
+package-lock.json
+bun.lockb
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE settings
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Large installers (will be built by GitHub Actions)
+*.dmg
+*.pkg
+*.deb
+*.rpm
+*.msi
+*.app
+
+# Keep source code only
+!cpp-core/*.cpp
+!cpp-core/*.hpp
+!cpp-core/*.h

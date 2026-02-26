@@ -1,0 +1,116 @@
+# SUSA Language Demo - Core Features Working
+
+PRINT "=== SUSA Language Demo ==="
+
+# 1. Variables and basic operations
+let x = 15
+let y = 3
+let name = "SUSA"
+let active = true
+
+PRINT "1. Variables and Operations:"
+PRINT "x = " + x + ", y = " + y
+PRINT "x + y = " + (x + y)
+PRINT "x * y = " + (x * y)
+PRINT "x > y = " + (x > y)
+PRINT "name = " + name
+PRINT "active = " + active
+
+# 2. Lists
+let numbers = [10, 20, 30, 40, 50]
+PRINT "2. Lists:"
+PRINT "numbers = " + numbers
+PRINT "length = " + len(numbers)
+PRINT "first = " + numbers[0]
+PRINT "last = " + numbers[len(numbers) - 1]
+
+append(numbers, 60)
+PRINT "after append = " + numbers
+
+# 3. Control flow
+PRINT "3. Control Flow:"
+IF x > 10:
+START:
+    PRINT "x is greater than 10"
+END:
+ELSE:
+START:
+    PRINT "x is 10 or less"
+END:
+
+PRINT "FOR loop:"
+LOOP i = 1 FOR 5 TIMES:
+START:
+    PRINT "  count " + i
+END:
+
+PRINT "WHILE loop:"
+let counter = 3
+LOOP WHILE counter > 0:
+START:
+    PRINT "  countdown " + counter
+    counter = counter - 1
+END:
+
+# 4. Functions
+FUNC square(n):
+START:
+    RETURN n * n
+END:
+
+FUNC greet(person):
+START:
+    PRINT "Hello, " + person + "!"
+END:
+
+PRINT "4. Functions:"
+greet("Alice")
+PRINT "square(7) = " + square(7)
+
+# 5. Multi-language integration
+PRINT "5. Multi-Language:"
+
+# Python
+USE python:
+START:
+"print('Python says: Hello!')"
+"print('Processing numbers:', numbers)"
+"print('Sum:', sum(numbers))"
+END:
+
+# JavaScript
+USE javascript:
+START:
+"console.log('JavaScript says: Hello!');"
+"console.log('Numbers:', numbers);"
+"console.log('Math.PI:', Math.PI);"
+END:
+
+# 6. Shared mode
+let shared_var = 100
+PRINT "6. Shared Mode:"
+PRINT "Before: " + shared_var
+
+USE python SHARED:
+START:
+"print('Python sees:', shared_var)"
+"shared_var = shared_var * 2"
+"print('Python changed to:', shared_var)"
+END:
+
+PRINT "After: " + shared_var
+
+# 7. Type system
+PRINT "7. Type System:"
+PRINT "type(42) = " + type(42)
+PRINT "type('hello') = " + type("hello")
+PRINT "type(true) = " + type(true)
+PRINT "type([1,2,3]) = " + type([1, 2, 3])
+
+# 8. Boolean logic
+PRINT "8. Boolean Logic:"
+PRINT "true AND false = " + (true AND false)
+PRINT "true OR false = " + (true OR false)
+PRINT "NOT true = " + (NOT true)
+
+PRINT "=== SUSA Demo Complete ==="

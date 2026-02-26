@@ -1,0 +1,678 @@
+# Array/List Utilities Module for SUSA
+# Comprehensive array manipulation and utility functions
+# Version: 1.0.0
+# Author: SUSA Development Team
+# License: MIT
+
+SHARE push, pop, shift, unshift, slice, splice, concat, reverse_array, sort_array,
+      filter_array, map_array, reduce_array, find, find_index, includes, index_of_array,
+      last_index_of_array, every, some, flatten, unique, chunk, zip, unzip, rotate,
+      shuffle, sample, partition, group_by, count_by, max_by, min_by, sum_by, sort_by,
+      remove_at, remove_value, insert_at, replace_at, fill, range, repeat_array,
+      intersection, union, difference, symmetric_difference, is_subset, is_superset
+
+let MODULE_VERSION = "1.0.0"
+let MODULE_NAME = "array_utils"
+
+# Add element to end of array
+FUNC push(array, element): START:
+    append(array, element)
+    RETURN array
+END:
+
+# Remove and return last element
+FUNC pop(array): START:
+    IF length(array) == 0: START:
+        RETURN null
+    END:
+    let last_element = array[length(array) - 1]
+    array = slice(array, 0, length(array) - 1)
+    RETURN last_element
+END:
+
+# Remove and return first element
+FUNC shift(array): START:
+    IF length(array) == 0: START:
+        RETURN null
+    END:
+    let first_element = array[0]
+    array = slice(array, 1, length(array))
+    RETURN first_element
+END:
+
+# Add element to beginning of array
+FUNC unshift(array, element): START:
+    let new_array = [element]
+    LOOP i = 0 FOR length(array) TIMES: START:
+        append(new_array, array[i])
+    END:
+    RETURN new_array
+END:
+
+# Extract section of array
+FUNC slice(array, start, end): START:
+    let result = []
+    let actual_start = start
+    let actual_end = end
+    
+    IF actual_start < 0: START:
+        actual_start = length(array) + actual_start
+    END:
+    
+    IF actual_end < 0: START:
+        actual_end = length(array) + actual_end
+    END:
+    
+    IF actual_end > length(array): START:
+        actual_end = length(array)
+    END:
+    
+    LOOP i = actual_start FOR actual_end - actual_start TIMES: START:
+        append(result, array[i])
+    END:
+    
+    RETURN result
+END:
+
+# Remove/insert elements at specific position
+FUNC splice(array, start, delete_count, ...items): START:
+    let removed = []
+    let result = []
+    
+    # Add elements before start
+    LOOP i = 0 FOR start TIMES: START:
+        append(result, array[i])
+    END:
+    
+    # Store removed elements
+    LOOP i = start FOR delete_count TIMES: START:
+        IF i < length(array): START:
+            append(removed, array[i])
+        END:
+    END:
+    
+    # Add new items
+    LOOP i = 0 FOR length(items) TIMES: START:
+        append(result, items[i])
+    END:
+    
+    # Add remaining elements
+    LOOP i = start + delete_count FOR length(array) - (start + delete_count) TIMES: START:
+        append(result, array[i])
+    END:
+    
+    RETURN removed
+END:
+
+# Concatenate arrays
+FUNC concat(array1, array2): START:
+    let result = []
+    
+    LOOP i = 0 FOR length(array1) TIMES: START:
+        append(result, array1[i])
+    END:
+    
+    LOOP i = 0 FOR length(array2) TIMES: START:
+        append(result, array2[i])
+    END:
+    
+    RETURN result
+END:
+
+# Reverse array
+FUNC reverse_array(array): START:
+    let result = []
+    LOOP i = length(array) - 1 FOR length(array) TIMES: START:
+        append(result, array[i])
+        i = i - 1
+    END:
+    RETURN result
+END:
+
+# Sort array (basic implementation)
+FUNC sort_array(array): START:
+    let result = array
+    let n = length(result)
+    
+    # Bubble sort implementation
+    LOOP i = 0 FOR n - 1 TIMES: START:
+        LOOP j = 0 FOR n - i - 1 TIMES: START:
+            IF result[j] > result[j + 1]: START:
+                let temp = result[j]
+                result[j] = result[j + 1]
+                result[j + 1] = temp
+            END:
+        END:
+    END:
+    
+    RETURN result
+END:
+
+# Filter array based on condition
+FUNC filter_array(array, condition_func): START:
+    let result = []
+    LOOP i = 0 FOR length(array) TIMES: START:
+        IF condition_func(array[i]): START:
+            append(result, array[i])
+        END:
+    END:
+    RETURN result
+END:
+
+# Map array elements
+FUNC map_array(array, transform_func): START:
+    let result = []
+    LOOP i = 0 FOR length(array) TIMES: START:
+        append(result, transform_func(array[i]))
+    END:
+    RETURN result
+END:
+
+# Reduce array to single value
+FUNC reduce_array(array, reducer_func, initial_value): START:
+    let accumulator = initial_value
+    LOOP i = 0 FOR length(array) TIMES: START:
+        accumulator = reducer_func(accumulator, array[i], i)
+    END:
+    RETURN accumulator
+END:
+
+# Find first element matching condition
+FUNC find(array, condition_func): START:
+    LOOP i = 0 FOR length(array) TIMES: START:
+        IF condition_func(array[i]): START:
+            RETURN array[i]
+        END:
+    END:
+    RETURN null
+END:
+
+# Find index of first element matching condition
+FUNC find_index(array, condition_func): START:
+    LOOP i = 0 FOR length(array) TIMES: START:
+        IF condition_func(array[i]): START:
+            RETURN i
+        END:
+    END:
+    RETURN -1
+END:
+
+# Check if array includes element
+FUNC includes(array, element): START:
+    LOOP i = 0 FOR length(array) TIMES: START:
+        IF array[i] == element: START:
+            RETURN true
+        END:
+    END:
+    RETURN false
+END:
+
+# Find index of element
+FUNC index_of_array(array, element): START:
+    LOOP i = 0 FOR length(array) TIMES: START:
+        IF array[i] == element: START:
+            RETURN i
+        END:
+    END:
+    RETURN -1
+END:
+
+# Find last index of element
+FUNC last_index_of_array(array, element): START:
+    let last_index = -1
+    LOOP i = 0 FOR length(array) TIMES: START:
+        IF array[i] == element: START:
+            last_index = i
+        END:
+    END:
+    RETURN last_index
+END:
+
+# Check if all elements match condition
+FUNC every(array, condition_func): START:
+    LOOP i = 0 FOR length(array) TIMES: START:
+        IF NOT condition_func(array[i]): START:
+            RETURN false
+        END:
+    END:
+    RETURN true
+END:
+
+# Check if some elements match condition
+FUNC some(array, condition_func): START:
+    LOOP i = 0 FOR length(array) TIMES: START:
+        IF condition_func(array[i]): START:
+            RETURN true
+        END:
+    END:
+    RETURN false
+END:
+
+# Flatten nested arrays
+FUNC flatten(array): START:
+    let result = []
+    LOOP i = 0 FOR length(array) TIMES: START:
+        IF is_array(array[i]): START:
+            let flattened = flatten(array[i])
+            LOOP j = 0 FOR length(flattened) TIMES: START:
+                append(result, flattened[j])
+            END:
+        ELSE: START:
+            append(result, array[i])
+        END:
+    END:
+    RETURN result
+END:
+
+# Get unique elements
+FUNC unique(array): START:
+    let result = []
+    LOOP i = 0 FOR length(array) TIMES: START:
+        IF NOT includes(result, array[i]): START:
+            append(result, array[i])
+        END:
+    END:
+    RETURN result
+END:
+
+# Split array into chunks
+FUNC chunk(array, size): START:
+    let result = []
+    let current_chunk = []
+    
+    LOOP i = 0 FOR length(array) TIMES: START:
+        append(current_chunk, array[i])
+        
+        IF length(current_chunk) == size: START:
+            append(result, current_chunk)
+            current_chunk = []
+        END:
+    END:
+    
+    IF length(current_chunk) > 0: START:
+        append(result, current_chunk)
+    END:
+    
+    RETURN result
+END:
+
+# Zip arrays together
+FUNC zip(array1, array2): START:
+    let result = []
+    let min_length = length(array1)
+    
+    IF length(array2) < min_length: START:
+        min_length = length(array2)
+    END:
+    
+    LOOP i = 0 FOR min_length TIMES: START:
+        append(result, [array1[i], array2[i]])
+    END:
+    
+    RETURN result
+END:
+
+# Unzip array of pairs
+FUNC unzip(array): START:
+    let first = []
+    let second = []
+    
+    LOOP i = 0 FOR length(array) TIMES: START:
+        append(first, array[i][0])
+        append(second, array[i][1])
+    END:
+    
+    RETURN [first, second]
+END:
+
+# Rotate array elements
+FUNC rotate(array, positions): START:
+    let n = length(array)
+    IF n == 0: START:
+        RETURN array
+    END:
+    
+    let actual_positions = positions % n
+    IF actual_positions < 0: START:
+        actual_positions = actual_positions + n
+    END:
+    
+    let result = []
+    
+    LOOP i = actual_positions FOR n - actual_positions TIMES: START:
+        append(result, array[i])
+    END:
+    
+    LOOP i = 0 FOR actual_positions TIMES: START:
+        append(result, array[i])
+    END:
+    
+    RETURN result
+END:
+
+# Shuffle array randomly
+FUNC shuffle(array): START:
+    let result = array
+    let n = length(result)
+    
+    LOOP i = n - 1 FOR n - 1 TIMES: START:
+        let j = random_int(0, i + 1)
+        let temp = result[i]
+        result[i] = result[j]
+        result[j] = temp
+        i = i - 1
+    END:
+    
+    RETURN result
+END:
+
+# Get random sample from array
+FUNC sample(array, count): START:
+    let shuffled = shuffle(array)
+    RETURN slice(shuffled, 0, count)
+END:
+
+# Partition array based on condition
+FUNC partition(array, condition_func): START:
+    let true_array = []
+    let false_array = []
+    
+    LOOP i = 0 FOR length(array) TIMES: START:
+        IF condition_func(array[i]): START:
+            append(true_array, array[i])
+        ELSE: START:
+            append(false_array, array[i])
+        END:
+    END:
+    
+    RETURN [true_array, false_array]
+END:
+
+# Group elements by key function
+FUNC group_by(array, key_func): START:
+    let groups = {}
+    
+    LOOP i = 0 FOR length(array) TIMES: START:
+        let key = key_func(array[i])
+        IF NOT has_key(groups, key): START:
+            groups[key] = []
+        END:
+        append(groups[key], array[i])
+    END:
+    
+    RETURN groups
+END:
+
+# Count elements by key function
+FUNC count_by(array, key_func): START:
+    let counts = {}
+    
+    LOOP i = 0 FOR length(array) TIMES: START:
+        let key = key_func(array[i])
+        IF has_key(counts, key): START:
+            counts[key] = counts[key] + 1
+        ELSE: START:
+            counts[key] = 1
+        END:
+    END:
+    
+    RETURN counts
+END:
+
+# Find element with maximum value by key function
+FUNC max_by(array, key_func): START:
+    IF length(array) == 0: START:
+        RETURN null
+    END:
+    
+    let max_element = array[0]
+    let max_value = key_func(array[0])
+    
+    LOOP i = 1 FOR length(array) - 1 TIMES: START:
+        let current_value = key_func(array[i])
+        IF current_value > max_value: START:
+            max_value = current_value
+            max_element = array[i]
+        END:
+    END:
+    
+    RETURN max_element
+END:
+
+# Find element with minimum value by key function
+FUNC min_by(array, key_func): START:
+    IF length(array) == 0: START:
+        RETURN null
+    END:
+    
+    let min_element = array[0]
+    let min_value = key_func(array[0])
+    
+    LOOP i = 1 FOR length(array) - 1 TIMES: START:
+        let current_value = key_func(array[i])
+        IF current_value < min_value: START:
+            min_value = current_value
+            min_element = array[i]
+        END:
+    END:
+    
+    RETURN min_element
+END:
+
+# Sum elements by key function
+FUNC sum_by(array, key_func): START:
+    let total = 0
+    
+    LOOP i = 0 FOR length(array) TIMES: START:
+        total = total + key_func(array[i])
+    END:
+    
+    RETURN total
+END:
+
+# Sort array by key function
+FUNC sort_by(array, key_func): START:
+    let result = array
+    let n = length(result)
+    
+    # Bubble sort with key function
+    LOOP i = 0 FOR n - 1 TIMES: START:
+        LOOP j = 0 FOR n - i - 1 TIMES: START:
+            IF key_func(result[j]) > key_func(result[j + 1]): START:
+                let temp = result[j]
+                result[j] = result[j + 1]
+                result[j + 1] = temp
+            END:
+        END:
+    END:
+    
+    RETURN result
+END:
+
+# Remove element at specific index
+FUNC remove_at(array, index): START:
+    let result = []
+    
+    LOOP i = 0 FOR length(array) TIMES: START:
+        IF i != index: START:
+            append(result, array[i])
+        END:
+    END:
+    
+    RETURN result
+END:
+
+# Remove all occurrences of value
+FUNC remove_value(array, value): START:
+    let result = []
+    
+    LOOP i = 0 FOR length(array) TIMES: START:
+        IF array[i] != value: START:
+            append(result, array[i])
+        END:
+    END:
+    
+    RETURN result
+END:
+
+# Insert element at specific index
+FUNC insert_at(array, index, element): START:
+    let result = []
+    
+    LOOP i = 0 FOR index TIMES: START:
+        append(result, array[i])
+    END:
+    
+    append(result, element)
+    
+    LOOP i = index FOR length(array) - index TIMES: START:
+        append(result, array[i])
+    END:
+    
+    RETURN result
+END:
+
+# Replace element at specific index
+FUNC replace_at(array, index, element): START:
+    let result = array
+    IF index >= 0 AND index < length(result): START:
+        result[index] = element
+    END:
+    RETURN result
+END:
+
+# Fill array with value
+FUNC fill(array, value, start, end): START:
+    let result = array
+    let actual_start = start
+    let actual_end = end
+    
+    IF actual_start < 0: START:
+        actual_start = 0
+    END:
+    
+    IF actual_end > length(result): START:
+        actual_end = length(result)
+    END:
+    
+    LOOP i = actual_start FOR actual_end - actual_start TIMES: START:
+        result[i] = value
+    END:
+    
+    RETURN result
+END:
+
+# Create range of numbers
+FUNC range(start, end, step): START:
+    let result = []
+    let current = start
+    
+    IF step > 0: START:
+        WHILE current < end: START:
+            append(result, current)
+            current = current + step
+        END:
+    ELSE: START:
+        WHILE current > end: START:
+            append(result, current)
+            current = current + step
+        END:
+    END:
+    
+    RETURN result
+END:
+
+# Repeat array elements
+FUNC repeat_array(array, count): START:
+    let result = []
+    
+    LOOP i = 0 FOR count TIMES: START:
+        LOOP j = 0 FOR length(array) TIMES: START:
+            append(result, array[j])
+        END:
+    END:
+    
+    RETURN result
+END:
+
+# Array intersection
+FUNC intersection(array1, array2): START:
+    let result = []
+    
+    LOOP i = 0 FOR length(array1) TIMES: START:
+        IF includes(array2, array1[i]) AND NOT includes(result, array1[i]): START:
+            append(result, array1[i])
+        END:
+    END:
+    
+    RETURN result
+END:
+
+# Array union
+FUNC union(array1, array2): START:
+    let result = unique(concat(array1, array2))
+    RETURN result
+END:
+
+# Array difference
+FUNC difference(array1, array2): START:
+    let result = []
+    
+    LOOP i = 0 FOR length(array1) TIMES: START:
+        IF NOT includes(array2, array1[i]): START:
+            append(result, array1[i])
+        END:
+    END:
+    
+    RETURN result
+END:
+
+# Symmetric difference
+FUNC symmetric_difference(array1, array2): START:
+    let diff1 = difference(array1, array2)
+    let diff2 = difference(array2, array1)
+    RETURN concat(diff1, diff2)
+END:
+
+# Check if array1 is subset of array2
+FUNC is_subset(array1, array2): START:
+    LOOP i = 0 FOR length(array1) TIMES: START:
+        IF NOT includes(array2, array1[i]): START:
+            RETURN false
+        END:
+    END:
+    RETURN true
+END:
+
+# Check if array1 is superset of array2
+FUNC is_superset(array1, array2): START:
+    RETURN is_subset(array2, array1)
+END:
+
+# Helper function to check if value is array
+FUNC is_array(value): START:
+    USE PYTHON: START:
+    "
+    return isinstance(value, list)
+    "
+    END:
+END:
+
+# Helper function to generate random integer
+FUNC random_int(min_val, max_val): START:
+    USE PYTHON: START:
+    "
+    import random
+    return random.randint(min_val, max_val - 1)
+    "
+    END:
+END:
+
+# Helper function to check if object has key
+FUNC has_key(obj, key): START:
+    USE PYTHON: START:
+    "
+    return key in obj
+    "
+    END:
+END:

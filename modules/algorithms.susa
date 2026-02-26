@@ -1,0 +1,784 @@
+# Algorithms Module for SUSA
+# Implementation of common algorithms
+# Version: 1.0.0
+# Author: SUSA Development Team
+# License: MIT
+
+SHARE bubble_sort, quick_sort, merge_sort, insertion_sort, selection_sort, heap_sort,
+      binary_search, linear_search, bfs, dfs, dijkstra, a_star, kruskal, prim,
+      knapsack, fibonacci_dp, longest_common_subsequence, edit_distance, kadane,
+      two_sum, three_sum, palindrome_check, anagram_check, prime_sieve, gcd_extended,
+      matrix_multiply, transpose_matrix, determinant, factorial_iterative
+
+let MODULE_VERSION = "1.0.0"
+let MODULE_NAME = "algorithms"
+
+# SORTING ALGORITHMS
+
+# Bubble Sort
+FUNC bubble_sort(arr): START:
+    let n = length(arr)
+    let result = arr  # Copy array
+    
+    LOOP i = 0 FOR n - 1 TIMES: START:
+        let swapped = false
+        
+        LOOP j = 0 FOR n - i - 1 TIMES: START:
+            IF result[j] > result[j + 1]: START:
+                # Swap elements
+                let temp = result[j]
+                result[j] = result[j + 1]
+                result[j + 1] = temp
+                swapped = true
+            END:
+        END:
+        
+        # If no swapping occurred, array is sorted
+        IF NOT swapped: START:
+            BREAK
+        END:
+    END:
+    
+    RETURN result
+END:
+
+# Quick Sort
+FUNC quick_sort(arr): START:
+    IF length(arr) <= 1: START:
+        RETURN arr
+    END:
+    
+    let pivot = arr[length(arr) / 2]
+    let left = []
+    let middle = []
+    let right = []
+    
+    LOOP i = 0 FOR length(arr) TIMES: START:
+        IF arr[i] < pivot: START:
+            append(left, arr[i])
+        ELIF arr[i] == pivot: START:
+            append(middle, arr[i])
+        ELSE: START:
+            append(right, arr[i])
+        END:
+    END:
+    
+    let sorted_left = quick_sort(left)
+    let sorted_right = quick_sort(right)
+    
+    let result = []
+    LOOP i = 0 FOR length(sorted_left) TIMES: START:
+        append(result, sorted_left[i])
+    END:
+    LOOP i = 0 FOR length(middle) TIMES: START:
+        append(result, middle[i])
+    END:
+    LOOP i = 0 FOR length(sorted_right) TIMES: START:
+        append(result, sorted_right[i])
+    END:
+    
+    RETURN result
+END:
+
+# Merge Sort
+FUNC merge_sort(arr): START:
+    IF length(arr) <= 1: START:
+        RETURN arr
+    END:
+    
+    let mid = length(arr) / 2
+    let left = []
+    let right = []
+    
+    LOOP i = 0 FOR mid TIMES: START:
+        append(left, arr[i])
+    END:
+    
+    LOOP i = mid FOR length(arr) - mid TIMES: START:
+        append(right, arr[i])
+    END:
+    
+    let sorted_left = merge_sort(left)
+    let sorted_right = merge_sort(right)
+    
+    RETURN merge_arrays(sorted_left, sorted_right)
+END:
+
+# Helper function for merge sort
+FUNC merge_arrays(left, right): START:
+    let result = []
+    let i = 0
+    let j = 0
+    
+    WHILE i < length(left) AND j < length(right): START:
+        IF left[i] <= right[j]: START:
+            append(result, left[i])
+            i = i + 1
+        ELSE: START:
+            append(result, right[j])
+            j = j + 1
+        END:
+    END:
+    
+    # Add remaining elements
+    WHILE i < length(left): START:
+        append(result, left[i])
+        i = i + 1
+    END:
+    
+    WHILE j < length(right): START:
+        append(result, right[j])
+        j = j + 1
+    END:
+    
+    RETURN result
+END:
+
+# Insertion Sort
+FUNC insertion_sort(arr): START:
+    let result = arr  # Copy array
+    
+    LOOP i = 1 FOR length(result) - 1 TIMES: START:
+        let key = result[i]
+        let j = i - 1
+        
+        WHILE j >= 0 AND result[j] > key: START:
+            result[j + 1] = result[j]
+            j = j - 1
+        END:
+        
+        result[j + 1] = key
+    END:
+    
+    RETURN result
+END:
+
+# Selection Sort
+FUNC selection_sort(arr): START:
+    let result = arr  # Copy array
+    let n = length(result)
+    
+    LOOP i = 0 FOR n - 1 TIMES: START:
+        let min_idx = i
+        
+        LOOP j = i + 1 FOR n - i - 1 TIMES: START:
+            IF result[j] < result[min_idx]: START:
+                min_idx = j
+            END:
+        END:
+        
+        # Swap elements
+        let temp = result[i]
+        result[i] = result[min_idx]
+        result[min_idx] = temp
+    END:
+    
+    RETURN result
+END:
+
+# Heap Sort
+FUNC heap_sort(arr): START:
+    let result = arr  # Copy array
+    let n = length(result)
+    
+    # Build max heap
+    LOOP i = n / 2 - 1 FOR n / 2 TIMES: START:
+        heapify(result, n, i)
+        i = i - 1
+    END:
+    
+    # Extract elements from heap
+    LOOP i = n - 1 FOR n - 1 TIMES: START:
+        # Move current root to end
+        let temp = result[0]
+        result[0] = result[i]
+        result[i] = temp
+        
+        # Call heapify on reduced heap
+        heapify(result, i, 0)
+        i = i - 1
+    END:
+    
+    RETURN result
+END:
+
+# Helper function for heap sort
+FUNC heapify(arr, n, i): START:
+    let largest = i
+    let left = 2 * i + 1
+    let right = 2 * i + 2
+    
+    IF left < n AND arr[left] > arr[largest]: START:
+        largest = left
+    END:
+    
+    IF right < n AND arr[right] > arr[largest]: START:
+        largest = right
+    END:
+    
+    IF largest != i: START:
+        let temp = arr[i]
+        arr[i] = arr[largest]
+        arr[largest] = temp
+        
+        heapify(arr, n, largest)
+    END:
+END:
+
+# SEARCHING ALGORITHMS
+
+# Binary Search
+FUNC binary_search(arr, target): START:
+    let left = 0
+    let right = length(arr) - 1
+    
+    WHILE left <= right: START:
+        let mid = (left + right) / 2
+        
+        IF arr[mid] == target: START:
+            RETURN mid
+        ELIF arr[mid] < target: START:
+            left = mid + 1
+        ELSE: START:
+            right = mid - 1
+        END:
+    END:
+    
+    RETURN -1
+END:
+
+# Linear Search
+FUNC linear_search(arr, target): START:
+    LOOP i = 0 FOR length(arr) TIMES: START:
+        IF arr[i] == target: START:
+            RETURN i
+        END:
+    END:
+    RETURN -1
+END:
+
+# GRAPH ALGORITHMS
+
+# Breadth-First Search
+FUNC bfs(graph, start): START:
+    let visited = {}
+    let queue = [start]
+    let result = []
+    
+    visited[start] = true
+    
+    WHILE length(queue) > 0: START:
+        let vertex = queue[0]
+        # Remove first element (dequeue)
+        let new_queue = []
+        LOOP i = 1 FOR length(queue) - 1 TIMES: START:
+            append(new_queue, queue[i])
+        END:
+        queue = new_queue
+        
+        append(result, vertex)
+        
+        let neighbors = graph[vertex]
+        LOOP i = 0 FOR length(neighbors) TIMES: START:
+            let neighbor = neighbors[i]
+            IF NOT visited[neighbor]: START:
+                visited[neighbor] = true
+                append(queue, neighbor)
+            END:
+        END:
+    END:
+    
+    RETURN result
+END:
+
+# Depth-First Search
+FUNC dfs(graph, start): START:
+    let visited = {}
+    let result = []
+    
+    dfs_recursive(graph, start, visited, result)
+    RETURN result
+END:
+
+# Helper function for DFS
+FUNC dfs_recursive(graph, vertex, visited, result): START:
+    visited[vertex] = true
+    append(result, vertex)
+    
+    let neighbors = graph[vertex]
+    LOOP i = 0 FOR length(neighbors) TIMES: START:
+        let neighbor = neighbors[i]
+        IF NOT visited[neighbor]: START:
+            dfs_recursive(graph, neighbor, visited, result)
+        END:
+    END:
+END:
+
+# Dijkstra's Algorithm
+FUNC dijkstra(graph, start): START:
+    let distances = {}
+    let visited = {}
+    let previous = {}
+    
+    # Initialize distances
+    let vertices = get_vertices(graph)
+    LOOP i = 0 FOR length(vertices) TIMES: START:
+        let vertex = vertices[i]
+        distances[vertex] = 999999  # Infinity
+        visited[vertex] = false
+        previous[vertex] = null
+    END:
+    
+    distances[start] = 0
+    
+    LOOP i = 0 FOR length(vertices) TIMES: START:
+        let current = get_min_distance_vertex(distances, visited)
+        visited[current] = true
+        
+        let neighbors = graph[current]
+        LOOP j = 0 FOR length(neighbors) TIMES: START:
+            let neighbor = neighbors[j][0]
+            let weight = neighbors[j][1]
+            
+            IF NOT visited[neighbor]: START:
+                let new_distance = distances[current] + weight
+                IF new_distance < distances[neighbor]: START:
+                    distances[neighbor] = new_distance
+                    previous[neighbor] = current
+                END:
+            END:
+        END:
+    END:
+    
+    RETURN {"distances": distances, "previous": previous}
+END:
+
+# Helper function for Dijkstra
+FUNC get_min_distance_vertex(distances, visited): START:
+    let min_distance = 999999
+    let min_vertex = null
+    
+    USE PYTHON: START:
+    "
+    for vertex, distance in distances.items():
+        if not visited[vertex] and distance < min_distance:
+            min_distance = distance
+            min_vertex = vertex
+    return min_vertex
+    "
+    END:
+END:
+
+# Helper function to get graph vertices
+FUNC get_vertices(graph): START:
+    USE PYTHON: START:
+    "return list(graph.keys())"
+    END:
+END:
+
+# DYNAMIC PROGRAMMING ALGORITHMS
+
+# 0/1 Knapsack Problem
+FUNC knapsack(weights, values, capacity): START:
+    let n = length(weights)
+    let dp = []
+    
+    # Initialize DP table
+    LOOP i = 0 FOR n + 1 TIMES: START:
+        let row = []
+        LOOP j = 0 FOR capacity + 1 TIMES: START:
+            append(row, 0)
+        END:
+        append(dp, row)
+    END:
+    
+    # Fill DP table
+    LOOP i = 1 FOR n TIMES: START:
+        LOOP w = 1 FOR capacity TIMES: START:
+            IF weights[i - 1] <= w: START:
+                let include = values[i - 1] + dp[i - 1][w - weights[i - 1]]
+                let exclude = dp[i - 1][w]
+                
+                IF include > exclude: START:
+                    dp[i][w] = include
+                ELSE: START:
+                    dp[i][w] = exclude
+                END:
+            ELSE: START:
+                dp[i][w] = dp[i - 1][w]
+            END:
+        END:
+    END:
+    
+    RETURN dp[n][capacity]
+END:
+
+# Fibonacci with Dynamic Programming
+FUNC fibonacci_dp(n): START:
+    IF n <= 1: START:
+        RETURN n
+    END:
+    
+    let dp = [0, 1]
+    
+    LOOP i = 2 FOR n - 1 TIMES: START:
+        append(dp, dp[i - 1] + dp[i - 2])
+    END:
+    
+    RETURN dp[n]
+END:
+
+# Longest Common Subsequence
+FUNC longest_common_subsequence(text1, text2): START:
+    let m = length(text1)
+    let n = length(text2)
+    let dp = []
+    
+    # Initialize DP table
+    LOOP i = 0 FOR m + 1 TIMES: START:
+        let row = []
+        LOOP j = 0 FOR n + 1 TIMES: START:
+            append(row, 0)
+        END:
+        append(dp, row)
+    END:
+    
+    # Fill DP table
+    LOOP i = 1 FOR m TIMES: START:
+        LOOP j = 1 FOR n TIMES: START:
+            IF text1[i - 1] == text2[j - 1]: START:
+                dp[i][j] = dp[i - 1][j - 1] + 1
+            ELSE: START:
+                IF dp[i - 1][j] > dp[i][j - 1]: START:
+                    dp[i][j] = dp[i - 1][j]
+                ELSE: START:
+                    dp[i][j] = dp[i][j - 1]
+                END:
+            END:
+        END:
+    END:
+    
+    RETURN dp[m][n]
+END:
+
+# Edit Distance (Levenshtein Distance)
+FUNC edit_distance(str1, str2): START:
+    let m = length(str1)
+    let n = length(str2)
+    let dp = []
+    
+    # Initialize DP table
+    LOOP i = 0 FOR m + 1 TIMES: START:
+        let row = []
+        LOOP j = 0 FOR n + 1 TIMES: START:
+            append(row, 0)
+        END:
+        append(dp, row)
+    END:
+    
+    # Initialize base cases
+    LOOP i = 0 FOR m + 1 TIMES: START:
+        dp[i][0] = i
+    END:
+    
+    LOOP j = 0 FOR n + 1 TIMES: START:
+        dp[0][j] = j
+    END:
+    
+    # Fill DP table
+    LOOP i = 1 FOR m TIMES: START:
+        LOOP j = 1 FOR n TIMES: START:
+            IF str1[i - 1] == str2[j - 1]: START:
+                dp[i][j] = dp[i - 1][j - 1]
+            ELSE: START:
+                let insert_cost = dp[i][j - 1] + 1
+                let delete_cost = dp[i - 1][j] + 1
+                let replace_cost = dp[i - 1][j - 1] + 1
+                
+                let min_cost = insert_cost
+                IF delete_cost < min_cost: START:
+                    min_cost = delete_cost
+                END:
+                IF replace_cost < min_cost: START:
+                    min_cost = replace_cost
+                END:
+                
+                dp[i][j] = min_cost
+            END:
+        END:
+    END:
+    
+    RETURN dp[m][n]
+END:
+
+# ARRAY ALGORITHMS
+
+# Kadane's Algorithm (Maximum Subarray Sum)
+FUNC kadane(arr): START:
+    let max_ending_here = 0
+    let max_so_far = arr[0]
+    
+    LOOP i = 0 FOR length(arr) TIMES: START:
+        max_ending_here = max_ending_here + arr[i]
+        
+        IF max_so_far < max_ending_here: START:
+            max_so_far = max_ending_here
+        END:
+        
+        IF max_ending_here < 0: START:
+            max_ending_here = 0
+        END:
+    END:
+    
+    RETURN max_so_far
+END:
+
+# Two Sum Problem
+FUNC two_sum(arr, target): START:
+    let seen = {}
+    
+    LOOP i = 0 FOR length(arr) TIMES: START:
+        let complement = target - arr[i]
+        
+        IF complement IN seen: START:
+            RETURN [seen[complement], i]
+        END:
+        
+        seen[arr[i]] = i
+    END:
+    
+    RETURN []
+END:
+
+# Three Sum Problem
+FUNC three_sum(arr): START:
+    let result = []
+    let sorted_arr = quick_sort(arr)
+    let n = length(sorted_arr)
+    
+    LOOP i = 0 FOR n - 2 TIMES: START:
+        # Skip duplicates
+        IF i > 0 AND sorted_arr[i] == sorted_arr[i - 1]: START:
+            CONTINUE
+        END:
+        
+        let left = i + 1
+        let right = n - 1
+        
+        WHILE left < right: START:
+            let sum = sorted_arr[i] + sorted_arr[left] + sorted_arr[right]
+            
+            IF sum == 0: START:
+                append(result, [sorted_arr[i], sorted_arr[left], sorted_arr[right]])
+                
+                # Skip duplicates
+                WHILE left < right AND sorted_arr[left] == sorted_arr[left + 1]: START:
+                    left = left + 1
+                END:
+                WHILE left < right AND sorted_arr[right] == sorted_arr[right - 1]: START:
+                    right = right - 1
+                END:
+                
+                left = left + 1
+                right = right - 1
+            ELIF sum < 0: START:
+                left = left + 1
+            ELSE: START:
+                right = right - 1
+            END:
+        END:
+    END:
+    
+    RETURN result
+END:
+
+# STRING ALGORITHMS
+
+# Palindrome Check
+FUNC palindrome_check(text): START:
+    let left = 0
+    let right = length(text) - 1
+    
+    WHILE left < right: START:
+        IF text[left] != text[right]: START:
+            RETURN false
+        END:
+        left = left + 1
+        right = right - 1
+    END:
+    
+    RETURN true
+END:
+
+# Anagram Check
+FUNC anagram_check(str1, str2): START:
+    IF length(str1) != length(str2): START:
+        RETURN false
+    END:
+    
+    let char_count = {}
+    
+    # Count characters in first string
+    LOOP i = 0 FOR length(str1) TIMES: START:
+        let char = str1[i]
+        IF char IN char_count: START:
+            char_count[char] = char_count[char] + 1
+        ELSE: START:
+            char_count[char] = 1
+        END:
+    END:
+    
+    # Subtract characters from second string
+    LOOP i = 0 FOR length(str2) TIMES: START:
+        let char = str2[i]
+        IF char IN char_count: START:
+            char_count[char] = char_count[char] - 1
+            IF char_count[char] == 0: START:
+                DELETE char_count[char]
+            END:
+        ELSE: START:
+            RETURN false
+        END:
+    END:
+    
+    USE PYTHON: START:
+    "return len(char_count) == 0"
+    END:
+END:
+
+# NUMBER THEORY ALGORITHMS
+
+# Sieve of Eratosthenes
+FUNC prime_sieve(n): START:
+    let is_prime = []
+    
+    # Initialize all numbers as prime
+    LOOP i = 0 FOR n + 1 TIMES: START:
+        append(is_prime, true)
+    END:
+    
+    is_prime[0] = false
+    is_prime[1] = false
+    
+    LOOP p = 2 FOR n - 1 TIMES: START:
+        IF is_prime[p]: START:
+            # Mark all multiples of p as not prime
+            LOOP i = p * p FOR n - p * p + 1 TIMES: START:
+                IF i % p == 0: START:
+                    is_prime[i] = false
+                END:
+                i = i + p
+            END:
+        END:
+    END:
+    
+    let primes = []
+    LOOP i = 2 FOR n - 1 TIMES: START:
+        IF is_prime[i]: START:
+            append(primes, i)
+        END:
+    END:
+    
+    RETURN primes
+END:
+
+# Extended Euclidean Algorithm
+FUNC gcd_extended(a, b): START:
+    IF a == 0: START:
+        RETURN {"gcd": b, "x": 0, "y": 1}
+    END:
+    
+    let result = gcd_extended(b % a, a)
+    let gcd = result["gcd"]
+    let x1 = result["x"]
+    let y1 = result["y"]
+    
+    let x = y1 - (b / a) * x1
+    let y = x1
+    
+    RETURN {"gcd": gcd, "x": x, "y": y}
+END:
+
+# MATRIX ALGORITHMS
+
+# Matrix Multiplication
+FUNC matrix_multiply(matrix1, matrix2): START:
+    let rows1 = length(matrix1)
+    let cols1 = length(matrix1[0])
+    let rows2 = length(matrix2)
+    let cols2 = length(matrix2[0])
+    
+    IF cols1 != rows2: START:
+        THROW "Matrix dimensions don't match for multiplication"
+    END:
+    
+    let result = []
+    
+    LOOP i = 0 FOR rows1 TIMES: START:
+        let row = []
+        LOOP j = 0 FOR cols2 TIMES: START:
+            let sum = 0
+            LOOP k = 0 FOR cols1 TIMES: START:
+                sum = sum + matrix1[i][k] * matrix2[k][j]
+            END:
+            append(row, sum)
+        END:
+        append(result, row)
+    END:
+    
+    RETURN result
+END:
+
+# Matrix Transpose
+FUNC transpose_matrix(matrix): START:
+    let rows = length(matrix)
+    let cols = length(matrix[0])
+    let result = []
+    
+    LOOP j = 0 FOR cols TIMES: START:
+        let row = []
+        LOOP i = 0 FOR rows TIMES: START:
+            append(row, matrix[i][j])
+        END:
+        append(result, row)
+    END:
+    
+    RETURN result
+END:
+
+# Matrix Determinant (2x2 and 3x3)
+FUNC determinant(matrix): START:
+    let n = length(matrix)
+    
+    IF n == 2: START:
+        RETURN matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]
+    ELIF n == 3: START:
+        let det = matrix[0][0] * (matrix[1][1] * matrix[2][2] - matrix[1][2] * matrix[2][1])
+        det = det - matrix[0][1] * (matrix[1][0] * matrix[2][2] - matrix[1][2] * matrix[2][0])
+        det = det + matrix[0][2] * (matrix[1][0] * matrix[2][1] - matrix[1][1] * matrix[2][0])
+        RETURN det
+    ELSE: START:
+        THROW "Determinant calculation only supported for 2x2 and 3x3 matrices"
+    END:
+END:
+
+# MISCELLANEOUS ALGORITHMS
+
+# Iterative Factorial
+FUNC factorial_iterative(n): START:
+    IF n < 0: START:
+        THROW "Factorial is not defined for negative numbers"
+    END:
+    
+    let result = 1
+    LOOP i = 1 FOR n TIMES: START:
+        result = result * i
+    END:
+    
+    RETURN result
+END:
+
+# Module initialization
+PRINT rt"Algorithms Module v{MODULE_VERSION} loaded successfully!"
+
+SHARE MODULE_VERSION, MODULE_NAME

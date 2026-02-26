@@ -1,0 +1,419 @@
+# Math Utilities Module for SUSA
+# Comprehensive mathematical functions and constants
+# Version: 1.0.0
+# Author: SUSA Development Team
+# License: MIT
+
+SHARE abs, max, min, pow, sqrt, factorial, fibonacci, gcd, lcm, is_prime, prime_factors,
+      sin, cos, tan, asin, acos, atan, log, ln, exp, ceil, floor, round_to, clamp,
+      degrees_to_radians, radians_to_degrees, distance_2d, distance_3d, lerp, map_range,
+      random_int, random_float, random_choice, sum_array, average, median, mode,
+      standard_deviation, variance, combinations, permutations, PI, E, GOLDEN_RATIO
+
+# Mathematical constants
+let PI = 3.14159265358979323846
+let E = 2.71828182845904523536
+let GOLDEN_RATIO = 1.61803398874989484820
+let MODULE_VERSION = "1.0.0"
+let MODULE_NAME = "math_utils"
+
+# Absolute value
+FUNC abs(x): START:
+    IF x < 0: START:
+        RETURN -x
+    END:
+    RETURN x
+END:
+
+# Maximum of two numbers
+FUNC max(a, b): START:
+    IF a > b: START:
+        RETURN a
+    END:
+    RETURN b
+END:
+
+# Minimum of two numbers
+FUNC min(a, b): START:
+    IF a < b: START:
+        RETURN a
+    END:
+    RETURN b
+END:
+
+# Power function (x^y)
+FUNC pow(base, exponent): START:
+    USE PYTHON: START:
+    "return base ** exponent"
+    END:
+END:
+
+# Square root
+FUNC sqrt(x): START:
+    IF x < 0: START:
+        THROW "Cannot calculate square root of negative number"
+    END:
+    USE PYTHON: START:
+    "import math; return math.sqrt(x)"
+    END:
+END:
+
+# Factorial
+FUNC factorial(n): START:
+    IF n < 0: START:
+        THROW "Factorial is not defined for negative numbers"
+    END:
+    IF n <= 1: START:
+        RETURN 1
+    END:
+    RETURN n * factorial(n - 1)
+END:
+
+# Fibonacci number at position n
+FUNC fibonacci(n): START:
+    IF n < 0: START:
+        THROW "Fibonacci is not defined for negative numbers"
+    END:
+    IF n <= 1: START:
+        RETURN n
+    END:
+    
+    let a = 0
+    let b = 1
+    LOOP i = 2 FOR n - 1 TIMES: START:
+        let temp = a + b
+        a = b
+        b = temp
+    END:
+    
+    RETURN b
+END:
+
+# Greatest Common Divisor
+FUNC gcd(a, b): START:
+    a = abs(a)
+    b = abs(b)
+    
+    WHILE b != 0: START:
+        let temp = b
+        b = a % b
+        a = temp
+    END:
+    
+    RETURN a
+END:
+
+# Least Common Multiple
+FUNC lcm(a, b): START:
+    RETURN abs(a * b) / gcd(a, b)
+END:
+
+# Check if number is prime
+FUNC is_prime(n): START:
+    IF n <= 1: START:
+        RETURN false
+    END:
+    IF n <= 3: START:
+        RETURN true
+    END:
+    IF n % 2 == 0 OR n % 3 == 0: START:
+        RETURN false
+    END:
+    
+    let i = 5
+    WHILE i * i <= n: START:
+        IF n % i == 0 OR n % (i + 2) == 0: START:
+            RETURN false
+        END:
+        i = i + 6
+    END:
+    
+    RETURN true
+END:
+
+# Get prime factors of a number
+FUNC prime_factors(n): START:
+    let factors = []
+    let d = 2
+    
+    WHILE d * d <= n: START:
+        WHILE n % d == 0: START:
+            append(factors, d)
+            n = n / d
+        END:
+        d = d + 1
+    END:
+    
+    IF n > 1: START:
+        append(factors, n)
+    END:
+    
+    RETURN factors
+END:
+
+# Trigonometric functions
+FUNC sin(x): START:
+    USE PYTHON: START:
+    "import math; return math.sin(x)"
+    END:
+END:
+
+FUNC cos(x): START:
+    USE PYTHON: START:
+    "import math; return math.cos(x)"
+    END:
+END:
+
+FUNC tan(x): START:
+    USE PYTHON: START:
+    "import math; return math.tan(x)"
+    END:
+END:
+
+FUNC asin(x): START:
+    USE PYTHON: START:
+    "import math; return math.asin(x)"
+    END:
+END:
+
+FUNC acos(x): START:
+    USE PYTHON: START:
+    "import math; return math.acos(x)"
+    END:
+END:
+
+FUNC atan(x): START:
+    USE PYTHON: START:
+    "import math; return math.atan(x)"
+    END:
+END:
+
+# Logarithmic functions
+FUNC log(x, base): START:
+    USE PYTHON: START:
+    "import math; return math.log(x, base)"
+    END:
+END:
+
+FUNC ln(x): START:
+    USE PYTHON: START:
+    "import math; return math.log(x)"
+    END:
+END:
+
+FUNC exp(x): START:
+    USE PYTHON: START:
+    "import math; return math.exp(x)"
+    END:
+END:
+
+# Rounding functions
+FUNC ceil(x): START:
+    USE PYTHON: START:
+    "import math; return math.ceil(x)"
+    END:
+END:
+
+FUNC floor(x): START:
+    USE PYTHON: START:
+    "import math; return math.floor(x)"
+    END:
+END:
+
+FUNC round_to(x, decimals): START:
+    USE PYTHON: START:
+    "return round(x, decimals)"
+    END:
+END:
+
+# Clamp value between min and max
+FUNC clamp(value, min_val, max_val): START:
+    IF value < min_val: START:
+        RETURN min_val
+    END:
+    IF value > max_val: START:
+        RETURN max_val
+    END:
+    RETURN value
+END:
+
+# Convert degrees to radians
+FUNC degrees_to_radians(degrees): START:
+    RETURN degrees * PI / 180
+END:
+
+# Convert radians to degrees
+FUNC radians_to_degrees(radians): START:
+    RETURN radians * 180 / PI
+END:
+
+# Calculate 2D distance between two points
+FUNC distance_2d(x1, y1, x2, y2): START:
+    let dx = x2 - x1
+    let dy = y2 - y1
+    RETURN sqrt(dx * dx + dy * dy)
+END:
+
+# Calculate 3D distance between two points
+FUNC distance_3d(x1, y1, z1, x2, y2, z2): START:
+    let dx = x2 - x1
+    let dy = y2 - y1
+    let dz = z2 - z1
+    RETURN sqrt(dx * dx + dy * dy + dz * dz)
+END:
+
+# Linear interpolation
+FUNC lerp(start, end, t): START:
+    RETURN start + (end - start) * t
+END:
+
+# Map value from one range to another
+FUNC map_range(value, from_min, from_max, to_min, to_max): START:
+    RETURN (value - from_min) * (to_max - to_min) / (from_max - from_min) + to_min
+END:
+
+# Random integer between min and max (inclusive)
+FUNC random_int(min_val, max_val): START:
+    USE PYTHON: START:
+    "import random; return random.randint(min_val, max_val)"
+    END:
+END:
+
+# Random float between min and max
+FUNC random_float(min_val, max_val): START:
+    USE PYTHON: START:
+    "import random; return random.uniform(min_val, max_val)"
+    END:
+END:
+
+# Random choice from array
+FUNC random_choice(array): START:
+    IF array.length == 0: START:
+        THROW "Cannot choose from empty array"
+    END:
+    let index = random_int(0, array.length - 1)
+    RETURN array[index]
+END:
+
+# Sum of array elements
+FUNC sum_array(array): START:
+    let total = 0
+    LOOP i = 0 FOR array.length TIMES: START:
+        total = total + array[i]
+    END:
+    RETURN total
+END:
+
+# Average of array elements
+FUNC average(array): START:
+    IF array.length == 0: START:
+        THROW "Cannot calculate average of empty array"
+    END:
+    RETURN sum_array(array) / array.length
+END:
+
+# Median of array elements
+FUNC median(array): START:
+    IF array.length == 0: START:
+        THROW "Cannot calculate median of empty array"
+    END:
+    
+    # Sort array (simple bubble sort for now)
+    let sorted_array = []
+    LOOP i = 0 FOR array.length TIMES: START:
+        append(sorted_array, array[i])
+    END:
+    
+    LOOP i = 0 FOR sorted_array.length - 1 TIMES: START:
+        LOOP j = 0 FOR sorted_array.length - i - 1 TIMES: START:
+            IF sorted_array[j] > sorted_array[j + 1]: START:
+                let temp = sorted_array[j]
+                sorted_array[j] = sorted_array[j + 1]
+                sorted_array[j + 1] = temp
+            END:
+        END:
+    END:
+    
+    let mid = sorted_array.length / 2
+    IF sorted_array.length % 2 == 0: START:
+        RETURN (sorted_array[mid - 1] + sorted_array[mid]) / 2
+    ELSE: START:
+        RETURN sorted_array[floor(mid)]
+    END:
+END:
+
+# Mode of array elements (most frequent)
+FUNC mode(array): START:
+    IF array.length == 0: START:
+        THROW "Cannot calculate mode of empty array"
+    END:
+    
+    let frequency = {}
+    let max_count = 0
+    let mode_value = array[0]
+    
+    LOOP i = 0 FOR array.length TIMES: START:
+        let value = array[i]
+        IF value IN frequency: START:
+            frequency[value] = frequency[value] + 1
+        ELSE: START:
+            frequency[value] = 1
+        END:
+        
+        IF frequency[value] > max_count: START:
+            max_count = frequency[value]
+            mode_value = value
+        END:
+    END:
+    
+    RETURN mode_value
+END:
+
+# Standard deviation
+FUNC standard_deviation(array): START:
+    IF array.length == 0: START:
+        THROW "Cannot calculate standard deviation of empty array"
+    END:
+    
+    let mean = average(array)
+    let sum_squared_diff = 0
+    
+    LOOP i = 0 FOR array.length TIMES: START:
+        let diff = array[i] - mean
+        sum_squared_diff = sum_squared_diff + (diff * diff)
+    END:
+    
+    RETURN sqrt(sum_squared_diff / array.length)
+END:
+
+# Variance
+FUNC variance(array): START:
+    let std_dev = standard_deviation(array)
+    RETURN std_dev * std_dev
+END:
+
+# Combinations (n choose r)
+FUNC combinations(n, r): START:
+    IF r > n OR r < 0: START:
+        RETURN 0
+    END:
+    IF r == 0 OR r == n: START:
+        RETURN 1
+    END:
+    
+    RETURN factorial(n) / (factorial(r) * factorial(n - r))
+END:
+
+# Permutations (n permute r)
+FUNC permutations(n, r): START:
+    IF r > n OR r < 0: START:
+        RETURN 0
+    END:
+    
+    RETURN factorial(n) / factorial(n - r)
+END:
+
+# Module initialization
+PRINT rt"Math Utils Module v{MODULE_VERSION} loaded successfully!"
+
+SHARE MODULE_VERSION, MODULE_NAME

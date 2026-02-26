@@ -1,0 +1,125 @@
+# ============================================
+# JSON Utils Module Example
+# Testing JSON manipulation functions
+# ============================================
+
+PRINT "📋 JSON Utils Module Test"
+PRINT "=" * 60
+
+ADD json_utils
+
+# Test 1: Parse JSON String
+PRINT "\n1. Testing Parse JSON..."
+let json_str = "{"name": "John", "age": 30, "city": "New York"}"
+let parsed = json_utils.parse(json_str)
+PRINT "Parsed JSON: " + str(parsed)
+
+# Test 2: Stringify Object
+PRINT "\n2. Testing Stringify..."
+let obj = {"name": "Alice", "age": 25, "active": True}
+let stringified = json_utils.stringify(obj)
+PRINT "Stringified: " + stringified
+
+# Test 3: Pretty Print
+PRINT "\n3. Testing Pretty Print..."
+let complex_obj = {
+    "users": [
+        {"id": 1, "name": "John"},
+        {"id": 2, "name": "Jane"}
+    ],
+    "total": 2
+}
+let pretty = json_utils.pretty_print(complex_obj, 2)
+PRINT "Pretty printed:"
+PRINT pretty
+
+# Test 4: Get Value by Path
+PRINT "\n4. Testing Get Value by Path..."
+let nested = {
+    "user": {
+        "profile": {
+            "name": "John Doe",
+            "email": "john@example.com"
+        }
+    }
+}
+let name = json_utils.get_value(nested, "user.profile.name")
+PRINT "Name from path: " + name
+
+# Test 5: Set Value by Path
+PRINT "\n5. Testing Set Value by Path..."
+nested = json_utils.set_value(nested, "user.profile.age", 30)
+PRINT "After setting age: " + str(nested)
+
+# Test 6: Has Key
+PRINT "\n6. Testing Has Key..."
+let has_name = json_utils.has_key(nested, "user")
+PRINT "Has "user" key: " + str(has_name)
+
+let has_missing = json_utils.has_key(nested, "missing")
+PRINT "Has "missing" key: " + str(has_missing)
+
+# Test 7: Get Keys
+PRINT "\n7. Testing Get Keys..."
+let keys = json_utils.get_keys(obj)
+PRINT "Keys: " + str(keys)
+
+# Test 8: Get Values
+PRINT "\n8. Testing Get Values..."
+let values = json_utils.get_values(obj)
+PRINT "Values: " + str(values)
+
+# Test 9: Merge Objects
+PRINT "\n9. Testing Merge Objects..."
+let obj1 = {"a": 1, "b": 2}
+let obj2 = {"b": 3, "c": 4}
+let merged = json_utils.merge(obj1, obj2)
+PRINT "Merged: " + str(merged)
+
+# Test 10: Deep Clone
+PRINT "\n10. Testing Deep Clone..."
+let original = {"data": [1, 2, 3], "nested": {"value": 42}}
+let cloned = json_utils.deep_clone(original)
+PRINT "Cloned: " + str(cloned)
+
+# Test 11: Validate JSON
+PRINT "\n11. Testing Validate JSON..."
+let valid_json = "{"valid": true}"
+let invalid_json = "{invalid json}"
+PRINT "Valid JSON: " + str(json_utils.validate(valid_json))
+PRINT "Invalid JSON: " + str(json_utils.validate(invalid_json))
+
+# Test 12: Filter Object
+PRINT "\n12. Testing Filter Object..."
+let data = {"name": "John", "age": 30, "city": "NYC", "country": "USA"}
+let filtered = json_utils.filter_keys(data, ["name", "age"])
+PRINT "Filtered: " + str(filtered)
+
+# Test 13: Transform Values
+PRINT "\n13. Testing Transform Values..."
+let numbers = {"a": 1, "b": 2, "c": 3}
+PRINT "Original numbers: " + str(numbers)
+PRINT "Transform example: double all values"
+
+# Test 14: Flatten Object
+PRINT "\n14. Testing Flatten Object..."
+let nested_obj = {
+    "user": {
+        "name": "John",
+        "address": {
+            "city": "NYC",
+            "zip": "10001"
+        }
+    }
+}
+let flattened = json_utils.flatten(nested_obj)
+PRINT "Flattened: " + str(flattened)
+
+# Test 15: Unflatten Object
+PRINT "\n15. Testing Unflatten Object..."
+let flat = {"user.name": "John", "user.address.city": "NYC"}
+let unflattened = json_utils.unflatten(flat)
+PRINT "Unflattened: " + str(unflattened)
+
+PRINT "\n" + "=" * 60
+PRINT "✅ JSON Utils Module Test Complete!"

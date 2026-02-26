@@ -1,0 +1,115 @@
+# SUSA Modules and Packages Demo
+# Demonstrates the ADD/REMOVE module system
+
+PRINT "=== SUSA Modules and Packages Demo ==="
+
+# 1. Adding built-in modules
+PRINT "\n1. Built-in Modules:"
+
+ADD math
+PRINT "PI = " + str(math.PI)
+PRINT "E = " + str(math.E)
+PRINT "sqrt(16) = " + str(math.sqrt(16))
+PRINT "abs(-5) = " + str(math.abs(-5))
+
+# 2. Adding modules with alias
+PRINT "\n2. Module with Alias:"
+
+ADD string AS str_utils
+let text = "  Hello World  "
+PRINT "Original: '" + text + "'"
+PRINT "Upper: '" + str_utils.upper(text) + "'"
+PRINT "Lower: '" + str_utils.lower(text) + "'"
+PRINT "Stripped: '" + str_utils.strip(text) + "'"
+
+# 3. Adding specific items from modules
+PRINT "\n3. Adding Specific Items:"
+
+ADD FROM list: sort, reverse, unique
+let numbers = [3, 1, 4, 1, 5, 9, 2, 6, 5]
+PRINT "Original: " + str(numbers)
+PRINT "Sorted: " + str(sort(numbers))
+PRINT "Reversed: " + str(reverse(numbers))
+PRINT "Unique: " + str(unique(numbers))
+
+# 4. System module
+PRINT "\n4. System Information:"
+
+ADD system
+PRINT "Platform: " + system.platform
+PRINT "SUSA Version: " + system.version
+
+# 5. File operations
+PRINT "\n5. File Operations:"
+
+ADD file
+file.write("test.txt", "Hello from SUSA!")
+let content = file.read("test.txt")
+PRINT "File content: " + content
+PRINT "File exists: " + str(file.exists("test.txt"))
+
+# Clean up
+file.delete("test.txt")
+
+# 6. Standard library modules (basic demonstration)
+PRINT "\n6. Standard Library Modules:"
+
+# Note: JSON and DateTime modules use Python integration
+# For this demo, we'll show the concept without full implementation
+PRINT "Standard library includes:"
+PRINT "- json: JSON parsing and serialization"
+PRINT "- datetime: Date and time operations"
+PRINT "- http: HTTP client functionality"
+PRINT ""
+PRINT "Example usage would be:"
+PRINT "ADD json"
+PRINT "let data = json.parse('{\"name\": \"SUSA\"}')"
+PRINT "let json_str = json.stringify(data)"
+
+# 7. Creating a custom module
+PRINT "\n7. Custom Module Example:"
+
+# This would be in a separate file: my_utils.sup
+# For demo purposes, we'll show what it would contain:
+PRINT "# my_utils.sup would contain:"
+PRINT "SHARE greet, calculate_area"
+PRINT ""
+PRINT "FUNC greet(name):"
+PRINT "START:"
+PRINT "    RETURN rt\"Hello, {name}! Welcome to SUSA!\""
+PRINT "END:"
+PRINT ""
+PRINT "FUNC calculate_area(width, height):"
+PRINT "START:"
+PRINT "    RETURN width * height"
+PRINT "END:"
+
+# If my_utils.sup existed, we could use it like this:
+# ADD my_utils
+# PRINT my_utils.greet("Alice")
+# PRINT "Area: " + str(my_utils.calculate_area(10, 5))
+
+# Or import specific functions:
+# ADD FROM my_utils: greet, calculate_area
+# PRINT greet("Bob")
+# PRINT "Area: " + str(calculate_area(8, 6))
+
+PRINT "\n=== Module System Features ==="
+PRINT "✅ Built-in modules (math, string, list, system, file)"
+PRINT "✅ Standard library modules (json, datetime, http)"
+PRINT "✅ Module aliases (ADD module AS alias)"
+PRINT "✅ Selective imports (ADD FROM module: item1, item2)"
+PRINT "✅ Custom user modules"
+PRINT "✅ Package management (REMOVE package)"
+PRINT "✅ Module search paths"
+PRINT "✅ Share system for module authors"
+
+PRINT "\n=== Package Management Commands ==="
+PRINT "• susa-pkg install package_name    - Install a package"
+PRINT "• susa-pkg uninstall package_name  - Remove a package"
+PRINT "• susa-pkg list                    - List installed packages"
+PRINT "• susa-pkg search query            - Search for packages"
+PRINT "• susa-pkg info package_name       - Show package info"
+PRINT "• susa-pkg init                    - Initialize new package"
+
+PRINT "\n=== Modules Demo Complete! ==="

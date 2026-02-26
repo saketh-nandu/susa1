@@ -1,0 +1,156 @@
+# ============================================
+# Algorithms Module Example
+# Testing algorithm implementations
+# ============================================
+
+PRINT "🧮 Algorithms Module Test"
+PRINT "=" * 60
+
+ADD algorithms
+
+# Test 1: Sorting Algorithms
+PRINT "\n1. Testing Sorting Algorithms..."
+let unsorted = [64, 34, 25, 12, 22, 11, 90]
+PRINT "Original array: " + str(unsorted)
+
+let bubble_sorted = algorithms.bubble_sort(unsorted)
+PRINT "Bubble sort: " + str(bubble_sorted)
+
+let quick_sorted = algorithms.quick_sort(unsorted)
+PRINT "Quick sort: " + str(quick_sorted)
+
+let merge_sorted = algorithms.merge_sort(unsorted)
+PRINT "Merge sort: " + str(merge_sorted)
+
+# Test 2: Searching Algorithms
+PRINT "\n2. Testing Searching Algorithms..."
+let sorted_array = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19]
+PRINT "Sorted array: " + str(sorted_array)
+
+let linear_result = algorithms.linear_search(sorted_array, 11)
+PRINT "Linear search for 11: index " + str(linear_result)
+
+let binary_result = algorithms.binary_search(sorted_array, 11)
+PRINT "Binary search for 11: index " + str(binary_result)
+
+# Test 3: Graph Algorithms - BFS
+PRINT "\n3. Testing Breadth-First Search..."
+let graph = {
+    "A": ["B", "C"],
+    "B": ["A", "D", "E"],
+    "C": ["A", "F"],
+    "D": ["B"],
+    "E": ["B", "F"],
+    "F": ["C", "E"]
+}
+let bfs_result = algorithms.bfs(graph, "A")
+PRINT "BFS from A: " + str(bfs_result)
+
+# Test 4: Graph Algorithms - DFS
+PRINT "\n4. Testing Depth-First Search..."
+let dfs_result = algorithms.dfs(graph, "A")
+PRINT "DFS from A: " + str(dfs_result)
+
+# Test 5: Dijkstra's Algorithm
+PRINT "\n5. Testing Dijkstra's Shortest Path..."
+let weighted_graph = {
+    "A": {"B": 4, "C": 2},
+    "B": {"A": 4, "C": 1, "D": 5},
+    "C": {"A": 2, "B": 1, "D": 8},
+    "D": {"B": 5, "C": 8}
+}
+let shortest_path = algorithms.dijkstra(weighted_graph, "A", "D")
+PRINT "Shortest path A to D: " + str(shortest_path)
+
+# Test 6: Dynamic Programming - Fibonacci
+PRINT "\n6. Testing Fibonacci (Dynamic Programming)..."
+let fib_10 = algorithms.fibonacci_dp(10)
+PRINT "Fibonacci(10): " + str(fib_10)
+
+# Test 7: Dynamic Programming - Longest Common Subsequence
+PRINT "\n7. Testing Longest Common Subsequence..."
+let str1 = "ABCDGH"
+let str2 = "AEDFHR"
+let lcs = algorithms.lcs(str1, str2)
+PRINT "LCS of '" + str1 + "' and '" + str2 + "': " + lcs
+
+# Test 8: Knapsack Problem
+PRINT "\n8. Testing Knapsack Problem..."
+let weights = [2, 3, 4, 5]
+let values = [3, 4, 5, 6]
+let capacity = 8
+let max_value = algorithms.knapsack(weights, values, capacity)
+PRINT "Max value for capacity " + str(capacity) + ": " + str(max_value)
+
+# Test 9: String Matching - KMP Algorithm
+PRINT "\n9. Testing KMP String Matching..."
+let text = "ABABDABACDABABCABAB"
+let pattern = "ABABCABAB"
+let kmp_result = algorithms.kmp_search(text, pattern)
+PRINT "Pattern found at index: " + str(kmp_result)
+
+# Test 10: Greedy Algorithm - Activity Selection
+PRINT "\n10. Testing Activity Selection..."
+let start_times = [1, 3, 0, 5, 8, 5]
+let end_times = [2, 4, 6, 7, 9, 9]
+let activities = algorithms.activity_selection(start_times, end_times)
+PRINT "Selected activities: " + str(activities)
+
+# Test 11: Backtracking - N-Queens
+PRINT "\n11. Testing N-Queens Problem..."
+let n_queens = algorithms.n_queens(4)
+PRINT "4-Queens solutions: " + str(len(n_queens)) + " solutions found"
+
+# Test 12: Divide and Conquer - Maximum Subarray
+PRINT "\n12. Testing Maximum Subarray Sum..."
+let array = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
+let max_sum = algorithms.max_subarray_sum(array)
+PRINT "Maximum subarray sum: " + str(max_sum)
+
+# Test 13: Two Pointer Technique
+PRINT "\n13. Testing Two Pointer - Two Sum..."
+let numbers = [2, 7, 11, 15]
+let target = 9
+let two_sum = algorithms.two_sum(numbers, target)
+PRINT "Two sum indices for target " + str(target) + ": " + str(two_sum)
+
+# Test 14: Sliding Window - Maximum in Window
+PRINT "\n14. Testing Sliding Window Maximum..."
+let window_array = [1, 3, -1, -3, 5, 3, 6, 7]
+let window_size = 3
+let max_in_windows = algorithms.sliding_window_max(window_array, window_size)
+PRINT "Maximum in each window: " + str(max_in_windows)
+
+# Test 15: Topological Sort
+PRINT "\n15. Testing Topological Sort..."
+let dag = {
+    "A": ["C"],
+    "B": ["C", "D"],
+    "C": ["E"],
+    "D": ["F"],
+    "E": ["F"],
+    "F": []
+}
+let topo_sort = algorithms.topological_sort(dag)
+PRINT "Topological order: " + str(topo_sort)
+
+# Test 16: Prime Number Sieve
+PRINT "\n16. Testing Sieve of Eratosthenes..."
+let primes = algorithms.sieve_of_eratosthenes(30)
+PRINT "Primes up to 30: " + str(primes)
+
+# Test 17: GCD and LCM
+PRINT "\n17. Testing GCD and LCM..."
+let gcd = algorithms.gcd(48, 18)
+PRINT "GCD(48, 18): " + str(gcd)
+let lcm = algorithms.lcm(12, 18)
+PRINT "LCM(12, 18): " + str(lcm)
+
+# Test 18: Permutations and Combinations
+PRINT "\n18. Testing Permutations..."
+let items = [1, 2, 3]
+let perms = algorithms.permutations(items)
+PRINT "Permutations of [1,2,3]: " + str(len(perms)) + " permutations"
+
+PRINT "\n" + "=" * 60
+PRINT "✅ Algorithms Module Test Complete!"

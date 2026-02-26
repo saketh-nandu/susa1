@@ -1,0 +1,132 @@
+# ============================================
+# Data Science Module Example
+# Testing real data analysis functions
+# ============================================
+
+PRINT "📊 Data Science Module Test"
+PRINT "=" * 60
+
+ADD data_science
+
+# Test 1: Statistical Analysis
+PRINT "\n1. Statistical Analysis..."
+let numbers = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+let mean = data_science.calculate_mean(numbers)
+PRINT "Mean: " + str(mean)
+
+let median = data_science.calculate_median(numbers)
+PRINT "Median: " + str(median)
+
+let std = data_science.calculate_std(numbers)
+PRINT "Standard Deviation: " + str(std)
+
+# Test 2: Correlation
+PRINT "\n2. Calculating Correlation..."
+let x = [1, 2, 3, 4, 5]
+let y = [2, 4, 6, 8, 10]
+let correlation = data_science.calculate_correlation(x, y)
+PRINT "Correlation: " + str(correlation)
+
+# Test 3: Data Normalization
+PRINT "\n3. Normalizing Data..."
+let data = [10, 20, 30, 40, 50]
+let normalized = data_science.normalize_data(data)
+PRINT "Normalized: " + str(normalized)
+
+# Test 4: Data Standardization
+PRINT "\n4. Standardizing Data..."
+let standardized = data_science.standardize_data(data)
+PRINT "Standardized: " + str(standardized)
+
+# Test 5: Histogram Data
+PRINT "\n5. Generating Histogram Data..."
+let values = [1, 2, 2, 3, 3, 3, 4, 4, 5]
+let hist = data_science.histogram_data(values, 5)
+PRINT "Histogram bins: " + str(len(hist["bins"]))
+
+# Test 6: Scatter Plot Data
+PRINT "\n6. Generating Scatter Plot Data..."
+let scatter = data_science.scatter_plot_data(x, y)
+PRINT "Scatter plot points: " + str(len(scatter["x"]))
+PRINT "Correlation: " + str(scatter["correlation"])
+
+# Test 7: Box Plot Data
+PRINT "\n7. Generating Box Plot Data..."
+let box_data = data_science.box_plot_data(numbers)
+PRINT "Min: " + str(box_data["min"])
+PRINT "Q1: " + str(box_data["q1"])
+PRINT "Median: " + str(box_data["median"])
+PRINT "Q3: " + str(box_data["q3"])
+PRINT "Max: " + str(box_data["max"])
+
+# Test 8: Moving Average
+PRINT "\n8. Calculating Moving Average..."
+let time_series = [10, 12, 15, 14, 16, 18, 20, 19, 21, 23]
+let ma = data_science.moving_average(time_series, 3)
+PRINT "Moving average (window=3): " + str(ma)
+
+# Test 9: Trend Calculation
+PRINT "\n9. Calculating Trend..."
+let trend_result = data_science.calculate_trend(time_series)
+PRINT "Trend slope: " + str(trend_result["slope"])
+PRINT "Intercept: " + str(trend_result["intercept"])
+
+# Test 10: Outlier Detection
+PRINT "\n10. Detecting Outliers..."
+let data_with_outliers = [10, 12, 11, 13, 12, 100, 11, 14, 13]
+let outliers = data_science.detect_outliers(data_with_outliers)
+PRINT "Outliers found: " + str(outliers["count"])
+PRINT "Outlier values: " + str(outliers["outliers"])
+
+# Test 11: Create Bins
+PRINT "\n11. Creating Bins..."
+let continuous_data = [1.2, 3.4, 5.6, 7.8, 9.0, 2.3, 4.5, 6.7, 8.9]
+let binned = data_science.create_bins(continuous_data, 3)
+PRINT "Data binned into " + str(binned["num_bins"]) + " bins"
+
+# Test 12: One-Hot Encoding
+PRINT "\n12. One-Hot Encoding..."
+let categories = ["red", "blue", "green", "red", "blue"]
+let encoded = data_science.one_hot_encode(categories)
+PRINT "Encoded categories: " + str(len(encoded)) + " unique values"
+
+# Test 13: Random Sample
+PRINT "\n13. Random Sampling..."
+let dataset = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+let sample = data_science.random_sample(dataset, 5)
+PRINT "Random sample of 5: " + str(sample)
+
+# Test 14: Train-Test Split
+PRINT "\n14. Train-Test Split..."
+let full_data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+let split = data_science.train_test_split(full_data, 0.3)
+PRINT "Train size: " + str(split["train_size"])
+PRINT "Test size: " + str(split["test_size"])
+
+# Test 15: Data Cleaning - Remove Missing
+PRINT "\n15. Removing Missing Values..."
+let data_with_missing = [
+    {"name": "Alice", "age": 25},
+    {"name": "", "age": 30},
+    {"name": "Bob", "age": 35}
+]
+let cleaned = data_science.remove_missing(data_with_missing)
+PRINT "Cleaned data rows: " + str(len(cleaned))
+
+# Test 16: Fill Missing Values
+PRINT "\n16. Filling Missing Values..."
+let filled = data_science.fill_missing(data_with_missing, "Unknown")
+PRINT "Filled data rows: " + str(len(filled))
+
+# Test 17: Remove Duplicates
+PRINT "\n17. Removing Duplicates..."
+let data_with_dupes = [
+    {"id": 1, "name": "Alice"},
+    {"id": 2, "name": "Bob"},
+    {"id": 1, "name": "Alice"}
+]
+let unique = data_science.remove_duplicates(data_with_dupes)
+PRINT "Unique rows: " + str(len(unique))
+
+PRINT "\n" + "=" * 60
+PRINT "✅ Data Science Module Test Complete!"

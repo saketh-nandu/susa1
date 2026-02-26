@@ -1,0 +1,142 @@
+# ============================================
+# Array Utils Module Example
+# Testing array manipulation functions
+# ============================================
+
+PRINT "📋 Array Utils Module Test"
+PRINT "=" * 60
+
+ADD array_utils
+
+# Test 1: Push and Pop
+PRINT "\n1. Testing Push and Pop..."
+let arr = [1, 2, 3]
+arr = array_utils.push(arr, 4)
+PRINT "After push(4): " + str(arr)
+let popped = array_utils.pop(arr)
+PRINT "Popped element: " + str(popped)
+
+# Test 2: Shift and Unshift
+PRINT "\n2. Testing Shift and Unshift..."
+let arr2 = [10, 20, 30]
+let shifted = array_utils.shift(arr2)
+PRINT "Shifted element: " + str(shifted)
+arr2 = array_utils.unshift(arr2, 5)
+PRINT "After unshift(5): " + str(arr2)
+
+# Test 3: Slice
+PRINT "\n3. Testing Slice..."
+let arr3 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+let sliced = array_utils.slice(arr3, 2, 7)
+PRINT "Slice [2:7]: " + str(sliced)
+
+# Test 4: Concat
+PRINT "\n4. Testing Concat..."
+let arr4 = [1, 2, 3]
+let arr5 = [4, 5, 6]
+let concatenated = array_utils.concat(arr4, arr5)
+PRINT "Concatenated: " + str(concatenated)
+
+# Test 5: Reverse
+PRINT "\n5. Testing Reverse..."
+let arr6 = [1, 2, 3, 4, 5]
+let reversed = array_utils.reverse_array(arr6)
+PRINT "Reversed: " + str(reversed)
+
+# Test 6: Sort
+PRINT "\n6. Testing Sort..."
+let arr7 = [5, 2, 8, 1, 9, 3]
+let sorted = array_utils.sort_array(arr7)
+PRINT "Sorted: " + str(sorted)
+
+# Test 7: Filter
+PRINT "\n7. Testing Filter..."
+let arr8 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+PRINT "Original: " + str(arr8)
+PRINT "Filter example: even numbers"
+
+# Test 8: Map
+PRINT "\n8. Testing Map..."
+let arr9 = [1, 2, 3, 4, 5]
+PRINT "Original: " + str(arr9)
+PRINT "Map example: double each number"
+
+# Test 9: Find and Find Index
+PRINT "\n9. Testing Find and Find Index..."
+let arr10 = [10, 20, 30, 40, 50]
+let found = array_utils.find(arr10, 30)
+PRINT "Found element: " + str(found)
+let index = array_utils.find_index(arr10, 30)
+PRINT "Found at index: " + str(index)
+
+# Test 10: Includes and Index Of
+PRINT "\n10. Testing Includes and Index Of..."
+let arr11 = ["apple", "banana", "cherry", "date"]
+let has_banana = array_utils.includes(arr11, "banana")
+PRINT "Includes 'banana': " + str(has_banana)
+let banana_index = array_utils.index_of_array(arr11, "banana")
+PRINT "Index of 'banana': " + str(banana_index)
+
+# Test 11: Flatten
+PRINT "\n11. Testing Flatten..."
+let nested = [[1, 2], [3, 4], [5, 6]]
+let flattened = array_utils.flatten(nested)
+PRINT "Flattened: " + str(flattened)
+
+# Test 12: Unique
+PRINT "\n12. Testing Unique..."
+let arr12 = [1, 2, 2, 3, 3, 3, 4, 4, 4, 4]
+let unique = array_utils.unique(arr12)
+PRINT "Unique elements: " + str(unique)
+
+# Test 13: Chunk
+PRINT "\n13. Testing Chunk..."
+let arr13 = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+let chunked = array_utils.chunk(arr13, 3)
+PRINT "Chunked (size 3): " + str(chunked)
+
+# Test 14: Shuffle
+PRINT "\n14. Testing Shuffle..."
+let arr14 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+let shuffled = array_utils.shuffle(arr14)
+PRINT "Shuffled: " + str(shuffled)
+
+# Test 15: Range
+PRINT "\n15. Testing Range..."
+let range1 = array_utils.range(1, 10)
+PRINT "Range 1-10: " + str(range1)
+let range2 = array_utils.range(0, 20, 2)
+PRINT "Range 0-20 (step 2): " + str(range2)
+
+# Test 16: Intersection
+PRINT "\n16. Testing Intersection..."
+let set1 = [1, 2, 3, 4, 5]
+let set2 = [3, 4, 5, 6, 7]
+let intersect = array_utils.intersection(set1, set2)
+PRINT "Intersection: " + str(intersect)
+
+# Test 17: Union
+PRINT "\n17. Testing Union..."
+let union = array_utils.union(set1, set2)
+PRINT "Union: " + str(union)
+
+# Test 18: Difference
+PRINT "\n18. Testing Difference..."
+let diff = array_utils.difference(set1, set2)
+PRINT "Difference (set1 - set2): " + str(diff)
+
+# Test 19: Remove and Insert
+PRINT "\n19. Testing Remove and Insert..."
+let arr15 = [1, 2, 3, 4, 5]
+arr15 = array_utils.remove_at(arr15, 2)
+PRINT "After remove_at(2): " + str(arr15)
+arr15 = array_utils.insert_at(arr15, 2, 99)
+PRINT "After insert_at(2, 99): " + str(arr15)
+
+# Test 20: Fill
+PRINT "\n20. Testing Fill..."
+let arr16 = array_utils.fill(0, 5)
+PRINT "Fill with 0 (5 times): " + str(arr16)
+
+PRINT "\n" + "=" * 60
+PRINT "✅ Array Utils Module Test Complete!"

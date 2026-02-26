@@ -1,0 +1,139 @@
+# ============================================
+# Math Utils Module Example
+# Testing mathematical functions
+# ============================================
+
+PRINT "🔢 Math Utils Module Test"
+PRINT "=" * 60
+
+ADD math_utils
+
+# Test 1: Basic Operations
+PRINT "\n1. Testing Basic Operations..."
+PRINT "abs(-42): " + str(math_utils.abs(-42))
+PRINT "max(10, 25): " + str(math_utils.max(10, 25))
+PRINT "min(10, 25): " + str(math_utils.min(10, 25))
+
+# Test 2: Power and Square Root
+PRINT "\n2. Testing Power and Square Root..."
+PRINT "pow(2, 8): " + str(math_utils.pow(2, 8))
+PRINT "sqrt(144): " + str(math_utils.sqrt(144))
+PRINT "sqrt(2): " + str(math_utils.sqrt(2))
+
+# Test 3: Factorial
+PRINT "\n3. Testing Factorial..."
+PRINT "factorial(5): " + str(math_utils.factorial(5))
+PRINT "factorial(10): " + str(math_utils.factorial(10))
+
+# Test 4: Fibonacci
+PRINT "\n4. Testing Fibonacci..."
+PRINT "First 10 Fibonacci numbers:"
+LOOP i = 0 FOR 10 TIMES: START:
+    PRINT "fib(" + str(i) + ") = " + str(math_utils.fibonacci(i))
+END:
+
+# Test 5: GCD and LCM
+PRINT "\n5. Testing GCD and LCM..."
+PRINT "gcd(48, 18): " + str(math_utils.gcd(48, 18))
+PRINT "lcm(12, 18): " + str(math_utils.lcm(12, 18))
+
+# Test 6: Prime Numbers
+PRINT "\n6. Testing Prime Numbers..."
+let numbers = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 20]
+PRINT "Prime numbers in list:"
+LOOP i = 0 FOR len(numbers) TIMES: START:
+    let num = numbers[i]
+    IF math_utils.is_prime(num): START:
+        PRINT str(num) + " is prime"
+    END:
+END:
+
+# Test 7: Prime Factors
+PRINT "\n7. Testing Prime Factors..."
+PRINT "Prime factors of 60: " + str(math_utils.prime_factors(60))
+PRINT "Prime factors of 100: " + str(math_utils.prime_factors(100))
+
+# Test 8: Trigonometric Functions
+PRINT "\n8. Testing Trigonometric Functions..."
+let angle = math_utils.PI / 4  # 45 degrees
+PRINT "sin(π/4): " + str(math_utils.sin(angle))
+PRINT "cos(π/4): " + str(math_utils.cos(angle))
+PRINT "tan(π/4): " + str(math_utils.tan(angle))
+
+# Test 9: Logarithms and Exponentials
+PRINT "\n9. Testing Logarithms and Exponentials..."
+PRINT "log(100): " + str(math_utils.log(100))
+PRINT "ln(e): " + str(math_utils.ln(math_utils.E))
+PRINT "exp(2): " + str(math_utils.exp(2))
+
+# Test 10: Rounding Functions
+PRINT "\n10. Testing Rounding Functions..."
+let value = 3.14159
+PRINT "ceil(3.14159): " + str(math_utils.ceil(value))
+PRINT "floor(3.14159): " + str(math_utils.floor(value))
+PRINT "round_to(3.14159, 2): " + str(math_utils.round_to(value, 2))
+
+# Test 11: Clamp
+PRINT "\n11. Testing Clamp..."
+PRINT "clamp(5, 0, 10): " + str(math_utils.clamp(5, 0, 10))
+PRINT "clamp(-5, 0, 10): " + str(math_utils.clamp(-5, 0, 10))
+PRINT "clamp(15, 0, 10): " + str(math_utils.clamp(15, 0, 10))
+
+# Test 12: Angle Conversions
+PRINT "\n12. Testing Angle Conversions..."
+let degrees = 180
+let radians = math_utils.degrees_to_radians(degrees)
+PRINT "180 degrees to radians: " + str(radians)
+let back_to_degrees = math_utils.radians_to_degrees(radians)
+PRINT "Back to degrees: " + str(back_to_degrees)
+
+# Test 13: Distance Calculations
+PRINT "\n13. Testing Distance Calculations..."
+let dist_2d = math_utils.distance_2d(0, 0, 3, 4)
+PRINT "Distance 2D (0,0) to (3,4): " + str(dist_2d)
+let dist_3d = math_utils.distance_3d(0, 0, 0, 1, 1, 1)
+PRINT "Distance 3D (0,0,0) to (1,1,1): " + str(dist_3d)
+
+# Test 14: Linear Interpolation
+PRINT "\n14. Testing Linear Interpolation..."
+PRINT "lerp(0, 100, 0.5): " + str(math_utils.lerp(0, 100, 0.5))
+PRINT "lerp(0, 100, 0.25): " + str(math_utils.lerp(0, 100, 0.25))
+
+# Test 15: Map Range
+PRINT "\n15. Testing Map Range..."
+let mapped = math_utils.map_range(5, 0, 10, 0, 100)
+PRINT "Map 5 from [0,10] to [0,100]: " + str(mapped)
+
+# Test 16: Random Numbers
+PRINT "\n16. Testing Random Numbers..."
+PRINT "Random int (1-100): " + str(math_utils.random_int(1, 100))
+PRINT "Random float (0-1): " + str(math_utils.random_float(0, 1))
+let choices = ["apple", "banana", "cherry"]
+PRINT "Random choice: " + math_utils.random_choice(choices)
+
+# Test 17: Statistical Functions
+PRINT "\n17. Testing Statistical Functions..."
+let data = [10, 20, 30, 40, 50]
+PRINT "Data: " + str(data)
+PRINT "Sum: " + str(math_utils.sum_array(data))
+PRINT "Average: " + str(math_utils.average(data))
+PRINT "Median: " + str(math_utils.median(data))
+
+# Test 18: Standard Deviation and Variance
+PRINT "\n18. Testing Standard Deviation and Variance..."
+PRINT "Standard deviation: " + str(math_utils.standard_deviation(data))
+PRINT "Variance: " + str(math_utils.variance(data))
+
+# Test 19: Combinations and Permutations
+PRINT "\n19. Testing Combinations and Permutations..."
+PRINT "C(5,2): " + str(math_utils.combinations(5, 2))
+PRINT "P(5,2): " + str(math_utils.permutations(5, 2))
+
+# Test 20: Mathematical Constants
+PRINT "\n20. Mathematical Constants..."
+PRINT "PI: " + str(math_utils.PI)
+PRINT "E: " + str(math_utils.E)
+PRINT "Golden Ratio: " + str(math_utils.GOLDEN_RATIO)
+
+PRINT "\n" + "=" * 60
+PRINT "✅ Math Utils Module Test Complete!"

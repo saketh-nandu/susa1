@@ -1,0 +1,196 @@
+# ============================================
+# Automation & Bots Module Example
+# Testing real automation functions
+# ============================================
+
+PRINT "🤖 Automation & Bots Module Test"
+PRINT "=" * 60
+
+ADD automation
+
+# Test 1: Fetch Webpage
+PRINT "\n1. Fetching Webpage..."
+let webpage = automation.fetch_webpage("https://example.com")
+if webpage["success"]: START:
+    PRINT "Fetched: " + str(webpage["full_length"]) + " bytes"
+    PRINT "Status: " + str(webpage["status_code"])
+END:
+
+# Test 2: Extract Links
+PRINT "\n2. Extracting Links from HTML..."
+let html = "<a href='https://example.com'>Link1</a><a href='https://test.com'>Link2</a>"
+let links = automation.extract_links(html)
+PRINT "Total links: " + str(links["total_links"])
+PRINT "HTTP links: " + str(links["http_links"])
+
+# Test 3: Parse HTML Table
+PRINT "\n3. Parsing HTML Table..."
+let table_html = "<table><tr><td>Name</td><td>Age</td></tr><tr><td>John</td><td>30</td></tr></table>"
+let table_data = automation.parse_html_table(table_html)
+PRINT "Table rows parsed: " + str(len(table_data))
+
+# Test 4: Create Browser Session
+PRINT "\n4. Creating Browser Session..."
+let session = automation.create_browser_session()
+PRINT "Session ID: " + session["id"]
+
+# Test 5: Navigate to URL
+PRINT "\n5. Navigating to URL..."
+session = automation.navigate_to(session, "https://example.com")
+session = automation.navigate_to(session, "https://test.com")
+PRINT "History: " + str(len(session["history"])) + " pages"
+
+# Test 6: Fill Form Field
+PRINT "\n6. Filling Form Fields..."
+let form_data = {}
+form_data = automation.fill_form_field(form_data, "username", "john_doe")
+form_data = automation.fill_form_field(form_data, "email", "john@example.com")
+form_data = automation.fill_form_field(form_data, "password", "SecurePass123")
+PRINT "Form fields filled: " + str(len(form_data))
+
+# Test 7: Create Scheduled Task
+PRINT "\n7. Creating Scheduled Task..."
+let task = automation.create_scheduled_task(
+    "backup_task",
+    "python backup.py",
+    "daily"
+)
+PRINT "Task: " + task["name"]
+PRINT "Schedule: " + task["schedule"]
+
+# Test 8: Create Cron Expression
+PRINT "\n8. Creating Cron Expression..."
+let cron = automation.create_cron_expression("0", "2", "*", "*", "*")
+PRINT "Cron: " + cron["expression"]
+PRINT "Description: " + cron["description"]
+
+# Test 9: Create Email
+PRINT "\n9. Creating Email Message..."
+let email = automation.create_email(
+    "recipient@example.com",
+    "Test Email",
+    "This is a test email from SUSA automation",
+    "sender@example.com"
+)
+PRINT "Email created: " + email["subject"]
+
+# Test 10: Add Email Attachment
+PRINT "\n10. Adding Email Attachment..."
+email = automation.add_email_attachment(email, "/path/to/file.pdf", "document.pdf")
+PRINT "Attachments: " + str(len(email["attachments"]))
+
+# Test 11: Parse Email Address
+PRINT "\n11. Parsing Email Address..."
+let email_str = "John Doe <john.doe@example.com>"
+let parsed = automation.parse_email_address(email_str)
+PRINT "Name: " + parsed["name"]
+PRINT "Address: " + parsed["address"]
+
+# Test 12: Create Directory Watcher
+PRINT "\n12. Creating Directory Watcher..."
+let watcher = automation.create_directory_watcher("/path/to/watch", "*.txt")
+PRINT "Watching: " + watcher["path"]
+PRINT "Pattern: " + watcher["pattern"]
+
+# Test 13: Batch Rename Files
+PRINT "\n13. Batch Renaming Files..."
+let files = ["file1.txt", "file2.txt", "file3.txt"]
+let renamed = automation.batch_rename_files(files, "file", "document")
+PRINT "Files renamed: " + str(len(renamed))
+LOOP i = 0 FOR len(renamed) TIMES: START:
+    let file = renamed[i]
+    IF file["changed"]: START:
+        PRINT file["old"] + " → " + file["new"]
+    END:
+END:
+
+# Test 14: Organize Files by Extension
+PRINT "\n14. Organizing Files by Extension..."
+let mixed_files = ["doc1.pdf", "image1.jpg", "doc2.pdf", "image2.png", "data.csv"]
+let organized = automation.organize_files_by_extension(mixed_files)
+PRINT "File types: " + str(len(organized))
+
+# Test 15: Detect File Encoding
+PRINT "\n15. Detecting File Encoding..."
+let file_bytes = "Hello World".encode()
+let encoding = automation.detect_file_encoding(file_bytes)
+PRINT "Detected encoding: " + encoding["encoding"]
+
+# Test 16: Convert File Format (JSON to CSV)
+PRINT "\n16. Converting JSON to CSV..."
+let json_data = [
+    {"name": "Alice", "age": 30, "city": "NYC"},
+    {"name": "Bob", "age": 25, "city": "LA"}
+]
+let csv_result = automation.convert_file_format(json_data, "json", "csv")
+if csv_result["success"]: START:
+    PRINT "Conversion successful"
+    PRINT csv_result["data"]
+END:
+
+# Test 17: Create API Batch
+PRINT "\n17. Creating API Request Batch..."
+let endpoints = ["/api/users/1", "/api/users/2", "/api/users/3"]
+let batch = automation.create_api_batch(endpoints, "GET", {"Authorization": "Bearer token"})
+PRINT "Batch requests: " + str(batch["total"])
+
+# Test 18: Create Rate Limiter
+PRINT "\n18. Creating Rate Limiter..."
+let limiter = automation.create_rate_limiter(10)
+PRINT "Rate limit: " + str(limiter["requests_per_second"]) + " req/s"
+PRINT "Delay: " + str(limiter["delay"]) + " seconds"
+
+# Test 19: Create Workflow
+PRINT "\n19. Creating Workflow..."
+let steps = [
+    {"name": "Fetch data", "action": "fetch"},
+    {"name": "Process data", "action": "process"},
+    {"name": "Save results", "action": "save"}
+]
+let workflow = automation.create_workflow("data_pipeline", steps)
+PRINT "Workflow: " + workflow["name"]
+PRINT "Steps: " + str(len(workflow["steps"]))
+
+# Test 20: Execute Workflow Step
+PRINT "\n20. Executing Workflow Steps..."
+let step_result = automation.execute_workflow_step(workflow, 0)
+PRINT "Completed step " + str(step_result["index"] + 1)
+PRINT "Remaining steps: " + str(step_result["remaining"])
+
+# Test 21: Create Notification
+PRINT "\n21. Creating Notification..."
+let notification = automation.create_notification(
+    "Task Complete",
+    "Your automation task has finished successfully",
+    "high"
+)
+PRINT "Notification: " + notification["title"]
+PRINT "Priority: " + notification["priority"]
+
+# Test 22: Send Webhook
+PRINT "\n22. Preparing Webhook..."
+let webhook_payload = {"event": "task_complete", "status": "success"}
+let webhook = automation.send_webhook("https://hooks.example.com/webhook", webhook_payload)
+PRINT "Webhook URL: " + webhook["url"]
+
+# Test 23: Parse Log File
+PRINT "\n23. Parsing Log File..."
+let log_content = "INFO: App started\nERROR: Connection failed\nINFO: Retrying\nERROR: Timeout"
+let log_results = automation.parse_log_file(log_content, "ERROR")
+PRINT "Total lines: " + str(log_results["total_lines"])
+PRINT "Matches: " + str(log_results["matches"])
+
+# Test 24: Aggregate Log Statistics
+PRINT "\n24. Aggregating Log Statistics..."
+let log_entries = [
+    {"level": "INFO", "source": "app"},
+    {"level": "ERROR", "source": "database"},
+    {"level": "INFO", "source": "app"},
+    {"level": "WARNING", "source": "network"}
+]
+let stats = automation.aggregate_log_stats(log_entries)
+PRINT "Total entries: " + str(stats["total_entries"])
+PRINT "By level: " + str(stats["by_level"])
+
+PRINT "\n" + "=" * 60
+PRINT "✅ Automation & Bots Module Test Complete!"

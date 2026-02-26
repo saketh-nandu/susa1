@@ -1,0 +1,170 @@
+# SUSA Modern Syntax Features Demo
+# This example showcases all the new modern syntax features
+
+PRINT "=== SUSA Modern Syntax Features ==="
+
+# 1. String Interpolation with rt"..."
+let name = "Alice"
+let age = 25
+let city = "New York"
+
+PRINT rt"Hello, {name}! You are {age} years old and live in {city}."
+PRINT rt"Next year you'll be {age + 1} years old!"
+
+# 2. Dictionary Support
+let person = {
+    "name": "Bob",
+    "age": 30,
+    "job": "Engineer",
+    "salary": 75000
+}
+
+PRINT "Person info:"
+PRINT person
+
+# Access dictionary values
+let person_name = person["name"]
+let person_age = person["age"]
+PRINT rt"Name: {person_name}, Age: {person_age}"
+
+# Update dictionary
+person["city"] = "San Francisco"
+person["age"] = 31
+let updated_name = person["name"]
+let updated_age = person["age"]
+let updated_city = person["city"]
+PRINT rt"Updated: {updated_name} is now {updated_age} and lives in {updated_city}"
+
+# 3. Switch/Match Statements
+let grade = 85
+
+PRINT rt"Grade: {grade}"
+SWITCH grade:
+START:
+CASE >= 90:
+    PRINT "Excellent! A grade"
+    BREAK:
+CASE >= 80:
+    PRINT "Good job! B grade"
+    BREAK:
+CASE >= 70:
+    PRINT "Not bad! C grade"
+    BREAK:
+CASE >= 60:
+    PRINT "You passed! D grade"
+    BREAK:
+DEFAULT:
+    PRINT "Sorry, you failed. F grade"
+END:
+
+# Switch with different values
+let fruit = "apple"
+MATCH fruit:
+START:
+CASE "apple":
+    PRINT "An apple a day keeps the doctor away!"
+    BREAK:
+CASE "banana":
+    PRINT "Bananas are rich in potassium!"
+    BREAK:
+CASE "orange":
+    PRINT "Oranges are full of vitamin C!"
+    BREAK:
+DEFAULT:
+    PRINT rt"I don't know much about {fruit}"
+END:
+
+# 4. Try/Catch Error Handling
+PRINT "\n=== Error Handling Demo ==="
+
+TRY:
+START:
+    let result = 10 / 2
+    PRINT rt"Division result: {result}"
+    
+    # This will cause an error
+    let bad_result = 10 / 0
+    PRINT rt"This won't print: {bad_result}"
+END:
+CATCH:
+START:
+    PRINT "Caught an error! Division by zero is not allowed."
+END:
+FINALLY:
+START:
+    PRINT "This always executes - cleanup code here"
+END:
+
+# Try with throw
+TRY:
+START:
+    let x = -5
+    IF x < 0:
+    START:
+        THROW "Negative numbers not allowed!"
+    END:
+    PRINT rt"x is positive: {x}"
+END:
+CATCH:
+START:
+    PRINT "Caught thrown error: Negative numbers not allowed!"
+END:
+
+# 5. Complex example combining all features
+PRINT "\n=== Complex Example ==="
+
+let students = [
+    {"name": "Alice", "grade": 95},
+    {"name": "Bob", "grade": 87},
+    {"name": "Charlie", "grade": 76},
+    {"name": "Diana", "grade": 92}
+]
+
+PRINT "Student Report:"
+LOOP i = 0 FOR len(students) TIMES:
+START:
+    let student = students[i]
+    let student_name = student["name"]
+    let student_grade = student["grade"]
+    
+    PRINT rt"Student: {student_name} (Grade: {student_grade})"
+    
+    SWITCH student_grade:
+    START:
+    CASE >= 90:
+        PRINT rt"  {student_name} gets an A - Excellent work!"
+        BREAK:
+    CASE >= 80:
+        PRINT rt"  {student_name} gets a B - Good job!"
+        BREAK:
+    CASE >= 70:
+        PRINT rt"  {student_name} gets a C - Keep trying!"
+        BREAK:
+    DEFAULT:
+        PRINT rt"  {student_name} needs improvement"
+    END:
+END:
+
+# 6. Nested dictionaries and complex interpolation
+let config = {
+    "app": {
+        "name": "SUSA App",
+        "version": "1.0"
+    },
+    "database": {
+        "host": "localhost",
+        "port": 5432
+    }
+}
+
+let app_info = config["app"]
+let app_name = app_info["name"]
+let app_version = app_info["version"]
+let db_info = config["database"]
+let db_host = db_info["host"]
+let db_port = db_info["port"]
+
+PRINT rt"App: {app_name} v{app_version}"
+PRINT rt"DB: {db_host}:{db_port}"
+
+PRINT "\n=== Modern Syntax Demo Complete! ==="

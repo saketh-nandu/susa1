@@ -1,0 +1,277 @@
+# DateTime Utilities Module for SUSA
+# Comprehensive date and time functions
+# Version: 1.0.0
+# Author: SUSA Development Team
+# License: MIT
+
+SHARE now, today, current_time, timestamp, get_year, get_month, get_day, get_hour, 
+      get_minute, get_second, get_weekday, get_yearday, get_day_name, get_month_name,
+      format_date, to_iso, from_timestamp, add_seconds, add_minutes, add_hours, add_days,
+      is_leap_year, days_in_month, diff_seconds, diff_minutes, diff_hours, diff_days,
+      sleep, sleep_ms, is_weekend, is_weekday
+
+# Module metadata
+LET MODULE_VERSION = "1.0.0"
+LET MODULE_NAME = "datetime_utils"
+
+# ============================================
+# CURRENT TIME FUNCTIONS
+# ============================================
+
+# Get current date and time
+FUNC now(): START:
+    USE PYTHON: START:
+    "from datetime import datetime; return datetime.now().strftime('%Y-%m-%d %H:%M:%S')"
+    END:
+END:
+
+# Get current date only
+FUNC today(): START:
+    USE PYTHON: START:
+    "from datetime import datetime; return datetime.now().strftime('%Y-%m-%d')"
+    END:
+END:
+
+# Get current time only
+FUNC current_time(): START:
+    USE PYTHON: START:
+    "from datetime import datetime; return datetime.now().strftime('%H:%M:%S')"
+    END:
+END:
+
+# Get Unix timestamp
+FUNC timestamp(): START:
+    USE PYTHON: START:
+    "import time; return int(time.time())"
+    END:
+END:
+
+# ============================================
+# DATE COMPONENT EXTRACTION
+# ============================================
+
+# Get current year
+FUNC get_year(): START:
+    USE PYTHON: START:
+    "from datetime import datetime; return datetime.now().year"
+    END:
+END:
+
+# Get current month (1-12)
+FUNC get_month(): START:
+    USE PYTHON: START:
+    "from datetime import datetime; return datetime.now().month"
+    END:
+END:
+
+# Get current day (1-31)
+FUNC get_day(): START:
+    USE PYTHON: START:
+    "from datetime import datetime; return datetime.now().day"
+    END:
+END:
+
+# Get current hour (0-23)
+FUNC get_hour(): START:
+    USE PYTHON: START:
+    "from datetime import datetime; return datetime.now().hour"
+    END:
+END:
+
+# Get current minute (0-59)
+FUNC get_minute(): START:
+    USE PYTHON: START:
+    "from datetime import datetime; return datetime.now().minute"
+    END:
+END:
+
+# Get current second (0-59)
+FUNC get_second(): START:
+    USE PYTHON: START:
+    "from datetime import datetime; return datetime.now().second"
+    END:
+END:
+
+# Get day of week (0=Monday, 6=Sunday)
+FUNC get_weekday(): START:
+    USE PYTHON: START:
+    "from datetime import datetime; return datetime.now().weekday()"
+    END:
+END:
+
+# Get day of year (1-366)
+FUNC get_yearday(): START:
+    USE PYTHON: START:
+    "from datetime import datetime; return datetime.now().timetuple().tm_yday"
+    END:
+END:
+
+# ============================================
+# DAY/MONTH NAMES
+# ============================================
+
+# Get day name (Monday, Tuesday, etc.)
+FUNC get_day_name(): START:
+    USE PYTHON: START:
+    "from datetime import datetime; return datetime.now().strftime('%A')"
+    END:
+END:
+
+# Get month name (January, February, etc.)
+FUNC get_month_name(): START:
+    USE PYTHON: START:
+    "from datetime import datetime; return datetime.now().strftime('%B')"
+    END:
+END:
+
+# ============================================
+# DATE FORMATTING
+# ============================================
+
+# Format date with custom format
+# Format codes: %Y=year, %m=month, %d=day, %H=hour, %M=minute, %S=second
+FUNC format_date(format): START:
+    USE PYTHON: START:
+    "from datetime import datetime; return datetime.now().strftime(format)"
+    END:
+END:
+
+# Convert to ISO 8601 format
+FUNC to_iso(): START:
+    USE PYTHON: START:
+    "from datetime import datetime; return datetime.now().isoformat()"
+    END:
+END:
+
+# Create datetime from Unix timestamp
+FUNC from_timestamp(ts): START:
+    USE PYTHON: START:
+    "from datetime import datetime; return datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')"
+    END:
+END:
+
+# ============================================
+# DATE ARITHMETIC
+# ============================================
+
+# Add seconds to current time
+FUNC add_seconds(seconds): START:
+    USE PYTHON: START:
+    "from datetime import datetime, timedelta; return (datetime.now() + timedelta(seconds=seconds)).strftime('%Y-%m-%d %H:%M:%S')"
+    END:
+END:
+
+# Add minutes to current time
+FUNC add_minutes(minutes): START:
+    USE PYTHON: START:
+    "from datetime import datetime, timedelta; return (datetime.now() + timedelta(minutes=minutes)).strftime('%Y-%m-%d %H:%M:%S')"
+    END:
+END:
+
+# Add hours to current time
+FUNC add_hours(hours): START:
+    USE PYTHON: START:
+    "from datetime import datetime, timedelta; return (datetime.now() + timedelta(hours=hours)).strftime('%Y-%m-%d %H:%M:%S')"
+    END:
+END:
+
+# Add days to current time
+FUNC add_days(days): START:
+    USE PYTHON: START:
+    "from datetime import datetime, timedelta; return (datetime.now() + timedelta(days=days)).strftime('%Y-%m-%d %H:%M:%S')"
+    END:
+END:
+
+# ============================================
+# DATE VALIDATION
+# ============================================
+
+# Check if year is leap year
+FUNC is_leap_year(year): START:
+    IF year % 400 == 0: START:
+        RETURN true
+    END:
+    IF year % 100 == 0: START:
+        RETURN false
+    END:
+    IF year % 4 == 0: START:
+        RETURN true
+    END:
+    RETURN false
+END:
+
+# Get number of days in month
+FUNC days_in_month(month, year): START:
+    LET days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    
+    IF month < 1 OR month > 12: START:
+        RETURN 0
+    END:
+    
+    LET result = days[month - 1]
+    
+    IF month == 2 AND is_leap_year(year): START:
+        result = 29
+    END:
+    
+    RETURN result
+END:
+
+# ============================================
+# TIME DIFFERENCE
+# ============================================
+
+# Difference in seconds between two timestamps
+FUNC diff_seconds(ts1, ts2): START:
+    RETURN abs(ts2 - ts1)
+END:
+
+# Difference in minutes between two timestamps
+FUNC diff_minutes(ts1, ts2): START:
+    RETURN abs(ts2 - ts1) / 60
+END:
+
+# Difference in hours between two timestamps
+FUNC diff_hours(ts1, ts2): START:
+    RETURN abs(ts2 - ts1) / 3600
+END:
+
+# Difference in days between two timestamps
+FUNC diff_days(ts1, ts2): START:
+    RETURN abs(ts2 - ts1) / 86400
+END:
+
+# ============================================
+# UTILITIES
+# ============================================
+
+# Sleep for specified seconds
+FUNC sleep(seconds): START:
+    USE PYTHON: START:
+    "import time; time.sleep(seconds)"
+    END:
+END:
+
+# Sleep for specified milliseconds
+FUNC sleep_ms(milliseconds): START:
+    USE PYTHON: START:
+    "import time; time.sleep(milliseconds / 1000.0)"
+    END:
+END:
+
+# Check if current day is weekend
+FUNC is_weekend(): START:
+    LET day = get_weekday()
+    RETURN day == 5 OR day == 6
+END:
+
+# Check if current day is weekday
+FUNC is_weekday(): START:
+    LET day = get_weekday()
+    RETURN day >= 0 AND day <= 4
+END:
+
+# Module initialization
+PRINT "DateTime Utils Module v1.0.0 loaded successfully!"
+
+SHARE MODULE_VERSION, MODULE_NAME

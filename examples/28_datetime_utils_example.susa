@@ -1,0 +1,117 @@
+# ============================================
+# DateTime Utils Module Example
+# Testing date and time functions
+# ============================================
+
+PRINT "📅 DateTime Utils Module Test"
+PRINT "=" * 60
+
+ADD datetime_utils
+
+# Test 1: Get Current Date and Time
+PRINT "\n1. Getting Current Date and Time..."
+let now = datetime_utils.now()
+PRINT "Current datetime: " + str(now)
+
+let today = datetime_utils.today()
+PRINT "Today's date: " + str(today)
+
+# Test 2: Create Date
+PRINT "\n2. Creating Custom Date..."
+let custom_date = datetime_utils.create_date(2024, 12, 25)
+PRINT "Christmas 2024: " + str(custom_date)
+
+# Test 3: Create DateTime
+PRINT "\n3. Creating Custom DateTime..."
+let custom_datetime = datetime_utils.create_datetime(2024, 1, 1, 0, 0, 0)
+PRINT "New Year 2024: " + str(custom_datetime)
+
+# Test 4: Format Date
+PRINT "\n4. Formatting Dates..."
+let formatted1 = datetime_utils.format_date(now, "YYYY-MM-DD")
+PRINT "Format YYYY-MM-DD: " + formatted1
+
+let formatted2 = datetime_utils.format_date(now, "DD/MM/YYYY")
+PRINT "Format DD/MM/YYYY: " + formatted2
+
+# Test 5: Parse Date
+PRINT "\n5. Parsing Date Strings..."
+let parsed = datetime_utils.parse_date("2024-06-15", "YYYY-MM-DD")
+PRINT "Parsed date: " + str(parsed)
+
+# Test 6: Add and Subtract Days
+PRINT "\n6. Adding and Subtracting Days..."
+let future = datetime_utils.add_days(now, 30)
+PRINT "30 days from now: " + str(future)
+
+let past = datetime_utils.subtract_days(now, 30)
+PRINT "30 days ago: " + str(past)
+
+# Test 7: Add and Subtract Months
+PRINT "\n7. Adding and Subtracting Months..."
+let next_month = datetime_utils.add_months(now, 1)
+PRINT "Next month: " + str(next_month)
+
+let last_month = datetime_utils.subtract_months(now, 1)
+PRINT "Last month: " + str(last_month)
+
+# Test 8: Difference Between Dates
+PRINT "\n8. Calculating Date Differences..."
+let date1 = datetime_utils.create_date(2024, 1, 1)
+let date2 = datetime_utils.create_date(2024, 12, 31)
+let diff_days = datetime_utils.difference_in_days(date1, date2)
+PRINT "Days between Jan 1 and Dec 31, 2024: " + str(diff_days)
+
+# Test 9: Day of Week
+PRINT "\n9. Getting Day of Week..."
+let day_name = datetime_utils.day_of_week(now)
+PRINT "Today is: " + day_name
+
+# Test 10: Is Leap Year
+PRINT "\n10. Checking Leap Years..."
+let is_2024_leap = datetime_utils.is_leap_year(2024)
+PRINT "2024 is leap year: " + str(is_2024_leap)
+
+let is_2023_leap = datetime_utils.is_leap_year(2023)
+PRINT "2023 is leap year: " + str(is_2023_leap)
+
+# Test 11: Days in Month
+PRINT "\n11. Getting Days in Month..."
+let days_feb_2024 = datetime_utils.days_in_month(2024, 2)
+PRINT "Days in February 2024: " + str(days_feb_2024)
+
+let days_feb_2023 = datetime_utils.days_in_month(2023, 2)
+PRINT "Days in February 2023: " + str(days_feb_2023)
+
+# Test 12: Start and End of Month
+PRINT "\n12. Getting Start and End of Month..."
+let month_start = datetime_utils.start_of_month(now)
+PRINT "Start of month: " + str(month_start)
+
+let month_end = datetime_utils.end_of_month(now)
+PRINT "End of month: " + str(month_end)
+
+# Test 13: Timestamp Conversions
+PRINT "\n13. Timestamp Conversions..."
+let timestamp = datetime_utils.to_timestamp(now)
+PRINT "Current timestamp: " + str(timestamp)
+
+let from_ts = datetime_utils.from_timestamp(timestamp)
+PRINT "From timestamp: " + str(from_ts)
+
+# Test 14: Time Components
+PRINT "\n14. Extracting Time Components..."
+let hour = datetime_utils.get_hour(now)
+let minute = datetime_utils.get_minute(now)
+let second = datetime_utils.get_second(now)
+PRINT "Current time: " + str(hour) + ":" + str(minute) + ":" + str(second)
+
+# Test 15: Date Components
+PRINT "\n15. Extracting Date Components..."
+let year = datetime_utils.get_year(now)
+let month = datetime_utils.get_month(now)
+let day = datetime_utils.get_day(now)
+PRINT "Current date: " + str(year) + "-" + str(month) + "-" + str(day)
+
+PRINT "\n" + "=" * 60
+PRINT "✅ DateTime Utils Module Test Complete!"

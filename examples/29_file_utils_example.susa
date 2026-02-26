@@ -1,0 +1,110 @@
+# ============================================
+# File Utils Module Example
+# Testing file system functions
+# ============================================
+
+PRINT "📁 File Utils Module Test"
+PRINT "=" * 60
+
+ADD file_utils
+
+# Test 1: File Path Operations
+PRINT "\n1. Testing File Path Operations..."
+let path1 = "/home/user/documents/file.txt"
+let basename = file_utils.basename(path1)
+PRINT "Basename: " + basename
+
+let dirname = file_utils.dirname(path1)
+PRINT "Dirname: " + dirname
+
+let extension = file_utils.get_extension(path1)
+PRINT "Extension: " + extension
+
+# Test 2: Join Paths
+PRINT "\n2. Testing Join Paths..."
+let joined = file_utils.join_path("/home/user", "documents", "file.txt")
+PRINT "Joined path: " + joined
+
+# Test 3: Normalize Path
+PRINT "\n3. Testing Normalize Path..."
+let messy_path = "/home/user/../user/./documents//file.txt"
+let normalized = file_utils.normalize_path(messy_path)
+PRINT "Original: " + messy_path
+PRINT "Normalized: " + normalized
+
+# Test 4: Is Absolute Path
+PRINT "\n4. Testing Is Absolute Path..."
+let abs_path = "/home/user/file.txt"
+let rel_path = "documents/file.txt"
+PRINT abs_path + " is absolute: " + str(file_utils.is_absolute(abs_path))
+PRINT rel_path + " is absolute: " + str(file_utils.is_absolute(rel_path))
+
+# Test 5: File Size Formatting
+PRINT "\n5. Testing File Size Formatting..."
+let size1 = file_utils.format_file_size(1024)
+PRINT "1024 bytes: " + size1
+
+let size2 = file_utils.format_file_size(1048576)
+PRINT "1048576 bytes: " + size2
+
+let size3 = file_utils.format_file_size(1073741824)
+PRINT "1073741824 bytes: " + size3
+
+# Test 6: Read File (Simulated)
+PRINT "\n6. Testing Read File..."
+let content = file_utils.read_file("example.txt")
+PRINT "File content length: " + str(len(content))
+
+# Test 7: Write File (Simulated)
+PRINT "\n7. Testing Write File..."
+let write_result = file_utils.write_file("output.txt", "Hello, SUSA!")
+PRINT "Write result: " + str(write_result)
+
+# Test 8: Append to File (Simulated)
+PRINT "\n8. Testing Append to File..."
+let append_result = file_utils.append_file("output.txt", "\nNew line")
+PRINT "Append result: " + str(append_result)
+
+# Test 9: File Exists (Simulated)
+PRINT "\n9. Testing File Exists..."
+let exists = file_utils.file_exists("example.txt")
+PRINT "File exists: " + str(exists)
+
+# Test 10: Directory Operations
+PRINT "\n10. Testing Directory Operations..."
+let dir_created = file_utils.create_directory("new_folder")
+PRINT "Directory created: " + str(dir_created)
+
+let dir_exists = file_utils.directory_exists("new_folder")
+PRINT "Directory exists: " + str(dir_exists)
+
+# Test 11: List Directory
+PRINT "\n11. Testing List Directory..."
+let files = file_utils.list_directory(".")
+PRINT "Files in current directory: " + str(len(files))
+
+# Test 12: Copy and Move Files
+PRINT "\n12. Testing Copy and Move Files..."
+let copied = file_utils.copy_file("source.txt", "destination.txt")
+PRINT "File copied: " + str(copied)
+
+let moved = file_utils.move_file("old_location.txt", "new_location.txt")
+PRINT "File moved: " + str(moved)
+
+# Test 13: Delete File
+PRINT "\n13. Testing Delete File..."
+let deleted = file_utils.delete_file("temp.txt")
+PRINT "File deleted: " + str(deleted)
+
+# Test 14: Get File Info
+PRINT "\n14. Testing Get File Info..."
+let info = file_utils.get_file_info("example.txt")
+PRINT "File info: " + str(info)
+
+# Test 15: Change File Extension
+PRINT "\n15. Testing Change File Extension..."
+let new_name = file_utils.change_extension("document.txt", "md")
+PRINT "Changed extension: " + new_name
+
+PRINT "\n" + "=" * 60
+PRINT "✅ File Utils Module Test Complete!"

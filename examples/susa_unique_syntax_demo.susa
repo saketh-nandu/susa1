@@ -1,0 +1,236 @@
+# SUSA Unique Syntax Demo
+# Showcasing English-like programming that's different from Python/JavaScript
+
+PRINT "=== SUSA: Programming in Plain English ==="
+PRINT ""
+
+# ============================================
+# 1. UNIQUE LOOP SYNTAX
+# ============================================
+PRINT "1. LOOP Syntax (Not 'for' or 'while')"
+PRINT "---"
+
+# Simple counting - reads like English!
+PRINT "Loop 5 times:"
+LOOP i FOR 5 TIMES: START:
+    PRINT "  Iteration " + STR(i)
+END:
+
+PRINT ""
+
+# Condition-based loop
+PRINT "Loop while condition:"
+let count = 0
+LOOP WHILE count < 3: START:
+    PRINT "  Count: " + STR(count)
+    count = count + 1
+END:
+
+PRINT ""
+
+# Do-loop (execute at least once)
+PRINT "Do loop (runs at least once):"
+let x = 10
+DO LOOP: START:
+    PRINT "  x = " + STR(x)
+    x = x + 1
+END: WHILE(x < 10):
+
+PRINT ""
+
+# ============================================
+# 2. START:/END: BLOCKS (Not curly braces)
+# ============================================
+PRINT "2. START:/END: Blocks (Clear and Explicit)"
+PRINT "---"
+
+IF true: START:
+    PRINT "  Inside IF block"
+    IF true: START:
+        PRINT "    Nested block"
+    END:
+END:
+
+PRINT ""
+
+# ============================================
+# 3. ENGLISH KEYWORDS
+# ============================================
+PRINT "3. English Keywords (Self-Explanatory)"
+PRINT "---"
+
+CONST MAX_VALUE = 100
+PRINT "  CONST (not 'const' or 'final'): " + STR(MAX_VALUE)
+
+STATIC counter = 0
+counter = counter + 1
+PRINT "  STATIC (persistent): " + STR(counter)
+
+ENUM Status: START:
+    PENDING = 0
+    ACTIVE = 1
+    DONE = 2
+END:
+PRINT "  ENUM Status.ACTIVE: " + STR(Status.ACTIVE)
+
+PRINT ""
+
+# ============================================
+# 4. NATURAL FUNCTIONS
+# ============================================
+PRINT "4. Function Syntax (FUNC keyword)"
+PRINT "---"
+
+FUNC greet(name): START:
+    RETURN "Hello, " + name + "!"
+END:
+
+PRINT "  " + greet("SUSA User")
+
+FUNC calculate(a, b): START:
+    RETURN a * b + 10
+END:
+
+PRINT "  calculate(5, 3) = " + STR(calculate(5, 3))
+
+PRINT ""
+
+# ============================================
+# 5. STRING INTERPOLATION
+# ============================================
+PRINT "5. String Interpolation (rt prefix)"
+PRINT "---"
+
+let username = "Alice"
+let age = 25
+PRINT rt"  User: {username}, Age: {age}"
+
+PRINT ""
+
+# ============================================
+# 6. ERROR HANDLING
+# ============================================
+PRINT "6. Error Handling (TRY/CATCH)"
+PRINT "---"
+
+TRY: START:
+    let result = 10 / 0
+END:
+CATCH error: START:
+    PRINT "  Caught: Division by zero"
+END:
+
+PRINT ""
+
+# ============================================
+# 7. TYPE DECLARATIONS (Optional but clear)
+# ============================================
+PRINT "7. Type Declarations (Optional)"
+PRINT "---"
+
+int number = 42
+string text = "Hello"
+bool flag = true
+
+PRINT "  int number = " + STR(number)
+PRINT "  string text = " + text
+PRINT "  bool flag = " + STR(flag)
+
+PRINT ""
+
+# ============================================
+# 8. SWITCH/CASE (Multi-way branching)
+# ============================================
+PRINT "8. SWITCH/CASE Statement"
+PRINT "---"
+
+let choice = 2
+PRINT "  Choice: " + STR(choice)
+SWITCH choice: START:
+    CASE 1: START:
+        PRINT "    Selected: Option One"
+    END:
+    CASE 2: START:
+        PRINT "    Selected: Option Two"
+    END:
+    DEFAULT: START:
+        PRINT "    Selected: Other"
+    END:
+END:
+
+PRINT ""
+
+# ============================================
+# 9. LAMBDA FUNCTIONS
+# ============================================
+PRINT "9. Lambda Functions (Anonymous)"
+PRINT "---"
+
+let square = LAMBDA x: x * x
+PRINT "  square(7) = " + STR(square(7))
+
+let sum_func = LAMBDA a, b: a + b
+PRINT "  sum_func(10, 20) = " + STR(sum_func(10, 20))
+
+PRINT ""
+
+# ============================================
+# 10. SPREAD OPERATOR
+# ============================================
+PRINT "10. Spread Operator (Array expansion)"
+PRINT "---"
+
+let arr1 = [1, 2, 3]
+let arr2 = [4, 5, 6]
+let combined = [...arr1, ...arr2]
+PRINT "  Combined: " + STR(combined)
+
+PRINT ""
+
+# ============================================
+# 11. LIST METHODS
+# ============================================
+PRINT "11. List Methods (Object-oriented)"
+PRINT "---"
+
+let numbers = [10, 20, 30]
+PRINT "  Initial: " + STR(numbers)
+
+numbers.push(40)
+PRINT "  After push(40): " + STR(numbers)
+
+let last = numbers.pop()
+PRINT "  Popped: " + STR(last)
+PRINT "  Final: " + STR(numbers)
+
+PRINT ""
+
+# ============================================
+# 12. BITWISE OPERATORS
+# ============================================
+PRINT "12. Bitwise Operators"
+PRINT "---"
+
+let a = 12
+let b = 10
+PRINT "  " + STR(a) + " & " + STR(b) + " = " + STR(a & b)
+PRINT "  " + STR(a) + " | " + STR(b) + " = " + STR(a | b)
+PRINT "  " + STR(a) + " << 1 = " + STR(a << 1)
+
+PRINT ""
+
+# ============================================
+# SUMMARY
+# ============================================
+PRINT "=== Why SUSA is Unique ==="
+PRINT ""
+PRINT "1. Reads like English instructions"
+PRINT "2. LOOP syntax instead of 'for'/'while'"
+PRINT "3. START:/END: instead of curly braces"
+PRINT "4. FUNC, CONST, STATIC - clear keywords"
+PRINT "5. DO LOOP: ... WHILE(condition): syntax"
+PRINT "6. Self-documenting code"
+PRINT "7. Beginner-friendly"
+PRINT "8. No ambiguity"
+PRINT ""
+PRINT "SUSA: Programming that feels like writing!"

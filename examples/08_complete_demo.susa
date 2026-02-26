@@ -1,0 +1,241 @@
+# SUSA Complete Demo - All Features Working Together
+
+PRINT "=== SUSA Complete Language Demo ==="
+
+# 1. Variables and basic operations
+let x = 20
+let y = 8
+let message = "SUSA Programming Language"
+let active = true
+
+PRINT "1. Basic Operations:"
+PRINT "x = " + x + ", y = " + y
+PRINT "x + y = " + (x + y)
+PRINT "x - y = " + (x - y)
+PRINT "x * y = " + (x * y)
+PRINT "x / y = " + (x / y)
+PRINT "x % y = " + (x % y)
+PRINT "message = " + message
+PRINT "active = " + active
+
+# 2. Lists and built-in functions
+let numbers = [5, 10, 15, 20, 25, 30]
+PRINT "2. Lists:"
+PRINT "numbers = " + numbers
+PRINT "length = " + len(numbers)
+PRINT "first = " + numbers[0]
+PRINT "last = " + numbers[len(numbers) - 1]
+
+append(numbers, 35)
+PRINT "after append(35) = " + numbers
+
+let popped = pop(numbers)
+PRINT "popped = " + popped
+PRINT "final numbers = " + numbers
+
+# 3. Control flow
+PRINT "3. Control Flow:"
+IF x > y:
+START:
+    PRINT "x is greater than y"
+    IF x > 15:
+    START:
+        PRINT "x is also greater than 15"
+    END:
+END:
+
+PRINT "FOR loop example:"
+LOOP i = 1 FOR 5 TIMES:
+START:
+    PRINT "  iteration " + i + ": " + (i * i)
+END:
+
+PRINT "WHILE loop example:"
+let countdown = 5
+LOOP WHILE countdown > 0:
+START:
+    PRINT "  countdown: " + countdown
+    countdown = countdown - 1
+END:
+
+# 4. Functions
+FUNC calculate_power(base, exponent):
+START:
+    let result = 1
+    LOOP i = 0 FOR exponent TIMES:
+    START:
+        result = result * base
+    END:
+    RETURN result
+END:
+
+FUNC process_list(data):
+START:
+    let sum = 0
+    let max = data[0]
+    
+    LOOP i = 0 FOR len(data) TIMES:
+    START:
+        sum = sum + data[i]
+        IF data[i] > max:
+        START:
+            max = data[i]
+        END:
+    END:
+    
+    PRINT "  Sum: " + sum
+    PRINT "  Max: " + max
+    PRINT "  Average: " + (sum / len(data))
+END:
+
+PRINT "4. Functions:"
+PRINT "calculate_power(2, 8) = " + calculate_power(2, 8)
+PRINT "Processing numbers list:"
+process_list(numbers)
+
+# 5. Classes and objects
+CLASS Calculator:
+START:
+    FUNC init():
+    START:
+        self.history = []
+    END:
+    
+    FUNC calculate_add(a, b):
+    START:
+        let result = a + b
+        append(self.history, "Added " + str(a) + " + " + str(b) + " = " + str(result))
+        RETURN result
+    END:
+    
+    FUNC calculate_multiply(a, b):
+    START:
+        let result = a * b
+        append(self.history, "Multiplied " + str(a) + " * " + str(b) + " = " + str(result))
+        RETURN result
+    END:
+    
+    FUNC show_history():
+    START:
+        PRINT "Calculator history:"
+        LOOP i = 0 FOR len(self.history) TIMES:
+        START:
+            PRINT "  " + self.history[i]
+        END:
+    END:
+END:
+
+PRINT "5. Object-Oriented Programming:"
+let calc = Calculator()
+calc.init()
+let sum_result = calc.calculate_add(15, 25)
+let mult_result = calc.calculate_multiply(6, 7)
+PRINT "Results: sum=" + sum_result + ", product=" + mult_result
+calc.show_history()
+
+# 6. Multi-language integration
+PRINT "6. Multi-Language Integration:"
+
+let dataset = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
+PRINT "Dataset: " + dataset
+
+# Python processing
+USE python:
+START:
+"print('Python analysis:')"
+"total = sum(dataset)"
+"mean = total / len(dataset)"
+"print(f'  Total: {total}')"
+"print(f'  Mean: {mean}')"
+"squares = [x*x for x in dataset[:5]]"
+"print(f'  First 5 squares: {squares}')"
+END:
+
+# JavaScript processing
+let dataset_js = dataset
+USE javascript SHARED:
+START:
+"console.log('JavaScript processing:');"
+"var sum = 0;"
+"var count = 0;"
+"if (typeof dataset_js !== 'undefined' && dataset_js.length > 0) {"
+"    for(var i = 0; i < dataset_js.length; i++) {"
+"        sum += dataset_js[i];"
+"        count++;"
+"    }"
+"    console.log('  Sum:', sum);"
+"    console.log('  Count:', count);"
+"} else {"
+"    console.log('  Dataset not available');"
+"}"
+END:
+
+# 7. Shared mode demonstration
+let shared_counter = 50
+PRINT "7. Shared Mode Variable Modification:"
+PRINT "Initial counter: " + shared_counter
+
+USE python SHARED:
+START:
+"print('Python processing counter:', shared_counter)"
+"shared_counter = shared_counter * 2"
+"print('Python doubled to:', shared_counter)"
+END:
+
+PRINT "After Python: " + shared_counter
+
+USE javascript SHARED:
+START:
+"console.log('JavaScript sees counter:', shared_counter);"
+"shared_counter = shared_counter + 25;"
+"console.log('JavaScript added 25, now:', shared_counter);"
+END:
+
+PRINT "Final counter: " + shared_counter
+
+# 8. Advanced algorithm example
+FUNC quick_sort_partition(arr, low, high):
+START:
+    let pivot = arr[high]
+    let i = low - 1
+    
+    LOOP j = low FOR high - low TIMES:
+    START:
+        IF arr[j] <= pivot:
+        START:
+            i = i + 1
+            let temp = arr[i]
+            arr[i] = arr[j]
+            arr[j] = temp
+        END:
+    END:
+    
+    let temp = arr[i + 1]
+    arr[i + 1] = arr[high]
+    arr[high] = temp
+    
+    RETURN i + 1
+END:
+
+PRINT "8. Algorithm Example:"
+let test_data = [3, 6, 8, 10, 1, 2, 1]
+PRINT "Demonstrating sorting concepts with: " + test_data
+
+# Simple bubble sort for demonstration
+LOOP i = 0 FOR len(test_data) - 1 TIMES:
+START:
+    LOOP j = 0 FOR len(test_data) - i - 1 TIMES:
+    START:
+        IF test_data[j] > test_data[j + 1]:
+        START:
+            let temp = test_data[j]
+            test_data[j] = test_data[j + 1]
+            test_data[j + 1] = temp
+        END:
+    END:
+END:
+
+PRINT "Sorted result: " + test_data
+
+PRINT "=== SUSA Complete Demo Finished ==="
+PRINT "Successfully demonstrated all language features!"

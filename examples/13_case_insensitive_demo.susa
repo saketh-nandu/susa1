@@ -1,0 +1,105 @@
+# SUSA Case-Insensitive & Indentation-Independent Demo
+# This example demonstrates SUSA's flexible syntax features
+
+PRINT "=== SUSA Flexible Syntax Demo ==="
+
+# Test 1: Case-insensitive keywords
+LET upperCase = "UPPERCASE keywords work"
+let lowerCase = "lowercase keywords work"
+Let MixedCase = "MixedCase keywords work"
+
+PRINT upperCase
+print lowerCase
+Print MixedCase
+
+# Test 2: Indentation-independent blocks
+PRINT "\n=== Indentation Independence ==="
+
+# No indentation
+if true:
+start:
+print "No indentation required"
+end:
+
+# Heavy indentation (ignored)
+        if true:
+        start:
+                    print "Heavy indentation ignored"
+        end:
+
+# Mixed indentation styles
+    if true:
+start:
+        print "Mixed indentation works"
+    end:
+
+# Test 3: Complex nested structures with mixed case
+PRINT "\n=== Complex Nested Example ==="
+
+IF true:
+START:
+    LET counter = 0
+    LOOP i = 1 FOR 3 TIMES:
+    START:
+        if i == 2:
+        start:
+            PRINT "Middle iteration: " + i
+        end:
+        else:
+        START:
+            print "Iteration: " + i
+        END:
+        counter = counter + 1
+    END:
+    PRINT "Total iterations: " + counter
+END:
+
+# Test 4: Function definitions with mixed case
+FUNC DemoFunction(name):
+START:
+    let greeting = "Hello, " + name + "!"
+    RETURN greeting
+END:
+
+func anotherFunction():
+start:
+    return "Functions work with any case"
+end:
+
+PRINT "\n=== Function Calls ==="
+PRINT DemoFunction("SUSA")
+print anotherFunction()
+
+# Test 5: Variable names preserve case (not keywords)
+let myVariable = "Variable names keep their case"
+LET MyOtherVariable = "Even when declared with uppercase LET"
+let ALLCAPS = "All caps variable name"
+
+PRINT "\n=== Variable Case Preservation ==="
+print myVariable
+PRINT MyOtherVariable
+Print ALLCAPS
+
+# Test 6: String literals always preserve case
+PRINT "\n=== String Preservation ==="
+print "This String Keeps Its EXACT Case"
+PRINT "EVEN when printed with UPPERCASE PRINT"
+Print "Mixed Case Print Command"
+
+# Test 7: Boolean operations with mixed case
+let flag1 = TRUE
+LET flag2 = false
+let flag3 = True
+
+IF flag1 OR flag2:
+START:
+    print "Boolean operations work with mixed case"
+END:
+
+if flag1 AND NOT flag2:
+start:
+    PRINT "Complex boolean expressions work"
+end:
+
+PRINT "\n=== Demo Complete ==="
+print "SUSA supports flexible, readable code!"

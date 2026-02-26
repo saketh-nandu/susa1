@@ -1,0 +1,184 @@
+# ============================================
+# Cloud & DevOps Module Example
+# Testing real cloud/DevOps functions
+# ============================================
+
+PRINT "☁️ Cloud & DevOps Module Test"
+PRINT "=" * 60
+
+ADD cloud_devops
+
+# Test 1: Docker Container Config
+PRINT "\n1. Creating Docker Container Config..."
+let container = cloud_devops.create_container_config(
+    "nginx:latest",
+    ["80:80", "443:443"],
+    {"NODE_ENV": "production"}
+)
+PRINT "Container config created for: " + container["image"]
+
+# Test 2: Docker Build
+PRINT "\n2. Docker Build Command..."
+let build = cloud_devops.docker_build(".", "myapp", "v1.0")
+PRINT "Build command: " + build["command"]
+
+# Test 3: Docker Compose
+PRINT "\n3. Creating Docker Compose..."
+let services = {
+    "web": {"image": "nginx:latest", "ports": ["80:80"]},
+    "db": {"image": "postgres:13", "ports": ["5432:5432"]}
+}
+let compose = cloud_devops.create_docker_compose(services)
+PRINT "Docker Compose created with " + str(len(services)) + " services"
+
+# Test 4: Kubernetes Deployment
+PRINT "\n4. Creating Kubernetes Deployment..."
+let deployment = cloud_devops.create_k8s_deployment("myapp", "myapp:v1", 3, 8080)
+PRINT "K8s deployment: " + deployment["metadata"]["name"]
+PRINT "Replicas: " + str(deployment["spec"]["replicas"])
+
+# Test 5: Kubernetes Service
+PRINT "\n5. Creating Kubernetes Service..."
+let service = cloud_devops.create_k8s_service("myapp", 80, 8080, "LoadBalancer")
+PRINT "K8s service: " + service["metadata"]["name"]
+PRINT "Type: " + service["spec"]["type"]
+
+# Test 6: Scale Deployment
+PRINT "\n6. Scaling Kubernetes Deployment..."
+let scale = cloud_devops.scale_k8s_deployment("myapp", 5)
+PRINT "Scale command: " + scale["command"]
+
+# Test 7: AWS S3 Bucket
+PRINT "\n7. Creating AWS S3 Bucket Config..."
+let s3_bucket = cloud_devops.create_s3_bucket_config("my-data-bucket", "us-east-1", true)
+PRINT "S3 bucket: " + s3_bucket["bucket_name"]
+PRINT "Region: " + s3_bucket["region"]
+
+# Test 8: AWS EC2 Instance
+PRINT "\n8. Creating AWS EC2 Config..."
+let ec2 = cloud_devops.create_ec2_config("t3.medium", "ami-12345", "my-key", ["sg-12345"])
+PRINT "EC2 instance type: " + ec2["instance_type"]
+
+# Test 9: AWS Lambda Function
+PRINT "\n9. Creating AWS Lambda Config..."
+let lambda_func = cloud_devops.create_lambda_config("myFunction", "python3.9", "index.handler", 512, 30)
+PRINT "Lambda function: " + lambda_func["function_name"]
+PRINT "Runtime: " + lambda_func["runtime"]
+
+# Test 10: Terraform Resource
+PRINT "\n10. Creating Terraform Resource..."
+let tf_resource = cloud_devops.create_terraform_resource(
+    "aws_instance",
+    "web_server",
+    {"ami": "ami-12345", "instance_type": "t2.micro"}
+)
+PRINT "Terraform resource created"
+
+# Test 11: Terraform Module
+PRINT "\n11. Creating Terraform Module..."
+let tf_module = cloud_devops.create_terraform_module(
+    "vpc",
+    "terraform-aws-modules/vpc/aws",
+    {"cidr": "10.0.0.0/16", "azs": ["us-east-1a", "us-east-1b"]}
+)
+PRINT "Terraform module: " + tf_module["module"]["name"]
+
+# Test 12: GitHub Actions Workflow
+PRINT "\n12. Creating GitHub Actions Workflow..."
+let workflow = cloud_devops.create_github_workflow(
+    "CI/CD Pipeline",
+    ["push", "pull_request"],
+    {"build": {"runs-on": "ubuntu-latest", "steps": ["checkout", "build", "test"]}}
+)
+PRINT "GitHub workflow: " + workflow["workflow"]["name"]
+
+# Test 13: Jenkins Pipeline
+PRINT "\n13. Creating Jenkins Pipeline..."
+let stages = {
+    "Build": ["npm install", "npm run build"],
+    "Test": ["npm test"],
+    "Deploy": ["./deploy.sh"]
+}
+let pipeline = cloud_devops.create_jenkins_pipeline(stages)
+PRINT "Jenkins pipeline created with " + str(len(stages)) + " stages"
+
+# Test 14: GitLab CI
+PRINT "\n14. Creating GitLab CI Config..."
+let gitlab_stages = ["build", "test", "deploy"]
+let gitlab_jobs = {
+    "build_job": {"stage": "build", "script": ["npm install", "npm run build"]},
+    "test_job": {"stage": "test", "script": ["npm test"]}
+}
+let gitlab_ci = cloud_devops.create_gitlab_ci(gitlab_stages, gitlab_jobs)
+PRINT "GitLab CI config created"
+
+# Test 15: Prometheus Config
+PRINT "\n15. Creating Prometheus Config..."
+let scrape_configs = [
+    {"job_name": "app", "targets": ["localhost:9090"]},
+    {"job_name": "node", "targets": ["localhost:9100"]}
+]
+let prometheus = cloud_devops.create_prometheus_config(scrape_configs)
+PRINT "Prometheus config with " + str(len(scrape_configs)) + " scrape configs"
+
+# Test 16: Log Query
+PRINT "\n16. Creating Log Query..."
+let log_query = cloud_devops.create_log_query("web-service", "ERROR", "last-1h")
+PRINT "Log query: " + log_query["query_string"]
+
+# Test 17: Ansible Playbook
+PRINT "\n17. Creating Ansible Playbook..."
+let tasks = [
+    {"name": "Install nginx", "module": "apt", "params": "name=nginx state=present"},
+    {"name": "Start nginx", "module": "service", "params": "name=nginx state=started"}
+]
+let playbook = cloud_devops.create_ansible_playbook("webservers", tasks)
+PRINT "Ansible playbook with " + str(len(tasks)) + " tasks"
+
+# Test 18: CloudFormation Template
+PRINT "\n18. Creating CloudFormation Template..."
+let resources = {
+    "MyBucket": {"Type": "AWS::S3::Bucket", "Properties": {"BucketName": "my-bucket"}}
+}
+let cfn = cloud_devops.create_cloudformation_template(resources)
+PRINT "CloudFormation template with " + str(len(resources)) + " resources"
+
+# Test 19: Docker Swarm Service
+PRINT "\n19. Creating Docker Swarm Service..."
+let swarm = cloud_devops.create_swarm_service("web", "nginx:latest", 3, ["80:80"])
+PRINT "Swarm service: " + swarm["service"]["name"]
+
+# Test 20: Helm Chart Values
+PRINT "\n20. Creating Helm Values..."
+let helm = cloud_devops.create_helm_values(
+    "myapp",
+    "myapp:v1",
+    3,
+    {"cpu_limit": "500m", "memory_limit": "512Mi"}
+)
+PRINT "Helm values created for: myapp"
+
+# Test 21: Kubernetes Secret
+PRINT "\n21. Creating Kubernetes Secret..."
+let secret = cloud_devops.create_k8s_secret("db-credentials", {"username": "admin", "password": "secret123"})
+PRINT "K8s secret: " + secret["metadata"]["name"]
+
+# Test 22: Environment File
+PRINT "\n22. Creating Environment File..."
+let env_vars = {"NODE_ENV": "production", "PORT": "3000", "DB_HOST": "localhost"}
+let env_file = cloud_devops.create_env_file(env_vars)
+PRINT "Environment file created with " + str(len(env_vars)) + " variables"
+
+# Test 23: NGINX Load Balancer
+PRINT "\n23. Creating NGINX Load Balancer Config..."
+let servers = ["192.168.1.10:8080", "192.168.1.11:8080", "192.168.1.12:8080"]
+let nginx_lb = cloud_devops.create_nginx_lb_config(servers, 80)
+PRINT "NGINX load balancer for " + str(len(servers)) + " servers"
+
+# Test 24: HAProxy Config
+PRINT "\n24. Creating HAProxy Config..."
+let haproxy = cloud_devops.create_haproxy_config(servers, 80)
+PRINT "HAProxy config created"
+
+PRINT "\n" + "=" * 60
+PRINT "✅ Cloud & DevOps Module Test Complete!"

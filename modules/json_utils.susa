@@ -1,0 +1,578 @@
+# JSON Utilities Module for SUSA
+# Comprehensive JSON parsing and manipulation functions
+# Version: 1.0.0
+# Author: SUSA Development Team
+# License: MIT
+
+SHARE parse, stringify, validate, pretty_print, minify, merge, deep_merge, get_value,
+      set_value, has_key, remove_key, get_keys, get_values, flatten_json, unflatten_json,
+      json_to_csv, csv_to_json, json_schema_validate, create_schema, filter_json,
+      transform_json, sort_json, search_json, json_diff, json_patch
+
+let MODULE_VERSION = "1.0.0"
+let MODULE_NAME = "json_utils"
+
+# Parse JSON string to object
+FUNC parse(json_string): START:
+    USE PYTHON: START:
+    "
+    import json
+    try:
+        return json.loads(json_string)
+    except json.JSONDecodeError as e:
+        raise Exception(f'Invalid JSON: {str(e)}')
+    "
+    END:
+END:
+
+# Convert object to JSON string
+FUNC stringify(obj, indent): START:
+    USE PYTHON: START:
+    "
+    import json
+    try:
+        if indent is None:
+            return json.dumps(obj, ensure_ascii=False)
+        else:
+            return json.dumps(obj, indent=indent, ensure_ascii=False)
+    except Exception as e:
+        raise Exception(f'Error converting to JSON: {str(e)}')
+    "
+    END:
+END:
+
+# Validate JSON string
+FUNC validate(json_string): START:
+    USE PYTHON: START:
+    "
+    import json
+    try:
+        json.loads(json_string)
+        return True
+    except json.JSONDecodeError:
+        return False
+    "
+    END:
+END:
+
+# Pretty print JSON with indentation
+FUNC pretty_print(obj): START:
+    RETURN stringify(obj, 2)
+END:
+
+# Minify JSON (remove whitespace)
+FUNC minify(json_string): START:
+    let obj = parse(json_string)
+    RETURN stringify(obj, null)
+END:
+
+# Merge two JSON objects (shallow)
+FUNC merge(obj1, obj2): START:
+    USE PYTHON: START:
+    "
+    result = obj1.copy() if isinstance(obj1, dict) else obj1
+    if isinstance(obj2, dict) and isinstance(result, dict):
+        result.update(obj2)
+    return result
+    "
+    END:
+END:
+
+# Deep merge two JSON objects
+FUNC deep_merge(obj1, obj2): START:
+    USE PYTHON: START:
+    "
+    def deep_merge_dicts(dict1, dict2):
+        result = dict1.copy()
+        for key, value in dict2.items():
+            if key in result and isinstance(result[key], dict) and isinstance(value, dict):
+                result[key] = deep_merge_dicts(result[key], value)
+            else:
+                result[key] = value
+        return result
+    
+    if isinstance(obj1, dict) and isinstance(obj2, dict):
+        return deep_merge_dicts(obj1, obj2)
+    else:
+        return obj2
+    "
+    END:
+END:
+
+# Get value from JSON object using dot notation
+FUNC get_value(obj, path): START:
+    USE PYTHON: START:
+    "
+    keys = path.split('.')
+    current = obj
+    
+    try:
+        for key in keys:
+            if isinstance(current, dict):
+                current = current[key]
+            elif isinstance(current, list):
+                current = current[int(key)]
+            else:
+                return None
+        return current
+    except (KeyError, IndexError, ValueError):
+        return None
+    "
+    END:
+END:
+
+# Set value in JSON object using dot notation
+FUNC set_value(obj, path, value): START:
+    USE PYTHON: START:
+    "
+    keys = path.split('.')
+    current = obj
+    
+    for key in keys[:-1]:
+        if isinstance(current, dict):
+            if key not in current:
+                current[key] = {}
+            current = current[key]
+        elif isinstance(current, list):
+            index = int(key)
+            while len(current) <= index:
+                current.append({})
+            current = current[index]
+    
+    final_key = keys[-1]
+    if isinstance(current, dict):
+        current[final_key] = value
+    elif isinstance(current, list):
+        index = int(final_key)
+        while len(current) <= index:
+            current.append(None)
+        current[index] = value
+    
+    return obj
+    "
+    END:
+END:
+
+# Check if key exists in JSON object
+FUNC has_key(obj, key): START:
+    USE PYTHON: START:
+    "
+    return key in obj if isinstance(obj, dict) else False
+    "
+    END:
+END:
+
+# Remove key from JSON object
+FUNC remove_key(obj, key): START:
+    USE PYTHON: START:
+    "
+    if isinstance(obj, dict) and key in obj:
+        del obj[key]
+    return obj
+    "
+    END:
+END:
+
+# Get all keys from JSON object
+FUNC get_keys(obj): START:
+    USE PYTHON: START:
+    "
+    return list(obj.keys()) if isinstance(obj, dict) else []
+    "
+    END:
+END:
+
+# Get all values from JSON object
+FUNC get_values(obj): START:
+    USE PYTHON: START:
+    "
+    return list(obj.values()) if isinstance(obj, dict) else []
+    "
+    END:
+END:
+
+# Flatten nested JSON object
+FUNC flatten_json(obj, separator): START:
+    USE PYTHON: START:
+    "
+    def flatten(obj, parent_key='', sep='.'):
+        items = []
+        if isinstance(obj, dict):
+            for k, v in obj.items():
+                new_key = f'{parent_key}{sep}{k}' if parent_key else k
+                if isinstance(v, dict):
+                    items.extend(flatten(v, new_key, sep).items())
+                elif isinstance(v, list):
+                    for i, item in enumerate(v):
+                        items.extend(flatten(item, f'{new_key}{sep}{i}', sep).items())
+                else:
+                    items.append((new_key, v))
+        return dict(items)
+    
+    return flatten(obj, '', separator)
+    "
+    END:
+END:
+
+# Unflatten JSON object
+FUNC unflatten_json(obj, separator): START:
+    USE PYTHON: START:
+    "
+    def unflatten(flat_dict, sep='.'):
+        result = {}
+        for key, value in flat_dict.items():
+            keys = key.split(sep)
+            current = result
+            for k in keys[:-1]:
+                if k not in current:
+                    current[k] = {}
+                current = current[k]
+            current[keys[-1]] = value
+        return result
+    
+    return unflatten(obj, separator)
+    "
+    END:
+END:
+
+# Convert JSON to CSV
+FUNC json_to_csv(json_array): START:
+    USE PYTHON: START:
+    "
+    import csv
+    import io
+    
+    if not json_array or not isinstance(json_array, list):
+        return ''
+    
+    output = io.StringIO()
+    if isinstance(json_array[0], dict):
+        fieldnames = json_array[0].keys()
+        writer = csv.DictWriter(output, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(json_array)
+    else:
+        writer = csv.writer(output)
+        writer.writerows(json_array)
+    
+    return output.getvalue()
+    "
+    END:
+END:
+
+# Convert CSV to JSON
+FUNC csv_to_json(csv_string): START:
+    USE PYTHON: START:
+    "
+    import csv
+    import io
+    
+    input_stream = io.StringIO(csv_string)
+    reader = csv.DictReader(input_stream)
+    return list(reader)
+    "
+    END:
+END:
+
+# Validate JSON against schema
+FUNC json_schema_validate(obj, schema): START:
+    USE PYTHON: START:
+    "
+    # Basic schema validation (simplified)
+    def validate_type(value, expected_type):
+        type_map = {
+            'string': str,
+            'number': (int, float),
+            'integer': int,
+            'boolean': bool,
+            'array': list,
+            'object': dict,
+            'null': type(None)
+        }
+        
+        expected_python_type = type_map.get(expected_type)
+        if expected_python_type:
+            return isinstance(value, expected_python_type)
+        return False
+    
+    def validate_object(obj, schema):
+        if 'type' in schema:
+            if not validate_type(obj, schema['type']):
+                return False
+        
+        if schema.get('type') == 'object' and isinstance(obj, dict):
+            if 'properties' in schema:
+                for prop, prop_schema in schema['properties'].items():
+                    if prop in obj:
+                        if not validate_object(obj[prop], prop_schema):
+                            return False
+            
+            if 'required' in schema:
+                for required_prop in schema['required']:
+                    if required_prop not in obj:
+                        return False
+        
+        elif schema.get('type') == 'array' and isinstance(obj, list):
+            if 'items' in schema:
+                for item in obj:
+                    if not validate_object(item, schema['items']):
+                        return False
+        
+        return True
+    
+    return validate_object(obj, schema)
+    "
+    END:
+END:
+
+# Create basic JSON schema from object
+FUNC create_schema(obj): START:
+    USE PYTHON: START:
+    "
+    def infer_type(value):
+        if isinstance(value, str):
+            return 'string'
+        elif isinstance(value, bool):
+            return 'boolean'
+        elif isinstance(value, int):
+            return 'integer'
+        elif isinstance(value, float):
+            return 'number'
+        elif isinstance(value, list):
+            return 'array'
+        elif isinstance(value, dict):
+            return 'object'
+        elif value is None:
+            return 'null'
+        else:
+            return 'string'
+    
+    def create_schema_recursive(obj):
+        if isinstance(obj, dict):
+            schema = {
+                'type': 'object',
+                'properties': {},
+                'required': list(obj.keys())
+            }
+            for key, value in obj.items():
+                schema['properties'][key] = create_schema_recursive(value)
+            return schema
+        elif isinstance(obj, list):
+            schema = {'type': 'array'}
+            if obj:
+                schema['items'] = create_schema_recursive(obj[0])
+            return schema
+        else:
+            return {'type': infer_type(obj)}
+    
+    return create_schema_recursive(obj)
+    "
+    END:
+END:
+
+# Filter JSON object based on condition
+FUNC filter_json(obj, condition_func): START:
+    USE PYTHON: START:
+    "
+    def filter_recursive(obj):
+        if isinstance(obj, dict):
+            result = {}
+            for key, value in obj.items():
+                if condition_func(key, value):
+                    result[key] = filter_recursive(value)
+            return result
+        elif isinstance(obj, list):
+            return [filter_recursive(item) for item in obj if condition_func(None, item)]
+        else:
+            return obj
+    
+    return filter_recursive(obj)
+    "
+    END:
+END:
+
+# Transform JSON object values
+FUNC transform_json(obj, transform_func): START:
+    USE PYTHON: START:
+    "
+    def transform_recursive(obj):
+        if isinstance(obj, dict):
+            result = {}
+            for key, value in obj.items():
+                result[key] = transform_recursive(transform_func(key, value))
+            return result
+        elif isinstance(obj, list):
+            return [transform_recursive(transform_func(None, item)) for item in obj]
+        else:
+            return transform_func(None, obj)
+    
+    return transform_recursive(obj)
+    "
+    END:
+END:
+
+# Sort JSON object by keys
+FUNC sort_json(obj, reverse): START:
+    USE PYTHON: START:
+    "
+    def sort_recursive(obj):
+        if isinstance(obj, dict):
+            sorted_dict = {}
+            for key in sorted(obj.keys(), reverse=reverse):
+                sorted_dict[key] = sort_recursive(obj[key])
+            return sorted_dict
+        elif isinstance(obj, list):
+            return [sort_recursive(item) for item in obj]
+        else:
+            return obj
+    
+    return sort_recursive(obj)
+    "
+    END:
+END:
+
+# Search for values in JSON object
+FUNC search_json(obj, search_value): START:
+    USE PYTHON: START:
+    "
+    results = []
+    
+    def search_recursive(obj, path=''):
+        if isinstance(obj, dict):
+            for key, value in obj.items():
+                current_path = f'{path}.{key}' if path else key
+                if value == search_value:
+                    results.append(current_path)
+                search_recursive(value, current_path)
+        elif isinstance(obj, list):
+            for i, item in enumerate(obj):
+                current_path = f'{path}[{i}]' if path else f'[{i}]'
+                if item == search_value:
+                    results.append(current_path)
+                search_recursive(item, current_path)
+        elif obj == search_value:
+            results.append(path)
+    
+    search_recursive(obj)
+    return results
+    "
+    END:
+END:
+
+# Compare two JSON objects and return differences
+FUNC json_diff(obj1, obj2): START:
+    USE PYTHON: START:
+    "
+    def diff_recursive(obj1, obj2, path=''):
+        differences = []
+        
+        if type(obj1) != type(obj2):
+            differences.append({
+                'path': path,
+                'type': 'type_change',
+                'old_value': obj1,
+                'new_value': obj2
+            })
+            return differences
+        
+        if isinstance(obj1, dict):
+            all_keys = set(obj1.keys()) | set(obj2.keys())
+            for key in all_keys:
+                current_path = f'{path}.{key}' if path else key
+                
+                if key not in obj1:
+                    differences.append({
+                        'path': current_path,
+                        'type': 'added',
+                        'value': obj2[key]
+                    })
+                elif key not in obj2:
+                    differences.append({
+                        'path': current_path,
+                        'type': 'removed',
+                        'value': obj1[key]
+                    })
+                else:
+                    differences.extend(diff_recursive(obj1[key], obj2[key], current_path))
+        
+        elif isinstance(obj1, list):
+            max_len = max(len(obj1), len(obj2))
+            for i in range(max_len):
+                current_path = f'{path}[{i}]' if path else f'[{i}]'
+                
+                if i >= len(obj1):
+                    differences.append({
+                        'path': current_path,
+                        'type': 'added',
+                        'value': obj2[i]
+                    })
+                elif i >= len(obj2):
+                    differences.append({
+                        'path': current_path,
+                        'type': 'removed',
+                        'value': obj1[i]
+                    })
+                else:
+                    differences.extend(diff_recursive(obj1[i], obj2[i], current_path))
+        
+        elif obj1 != obj2:
+            differences.append({
+                'path': path,
+                'type': 'changed',
+                'old_value': obj1,
+                'new_value': obj2
+            })
+        
+        return differences
+    
+    return diff_recursive(obj1, obj2)
+    "
+    END:
+END:
+
+# Apply JSON patch to object
+FUNC json_patch(obj, patch): START:
+    USE PYTHON: START:
+    "
+    import copy
+    result = copy.deepcopy(obj)
+    
+    for operation in patch:
+        op = operation.get('op')
+        path = operation.get('path', '')
+        value = operation.get('value')
+        
+        keys = path.strip('/').split('/') if path else []
+        
+        if op == 'add':
+            current = result
+            for key in keys[:-1]:
+                if key not in current:
+                    current[key] = {}
+                current = current[key]
+            if keys:
+                current[keys[-1]] = value
+        
+        elif op == 'remove':
+            current = result
+            for key in keys[:-1]:
+                current = current[key]
+            if keys and keys[-1] in current:
+                del current[keys[-1]]
+        
+        elif op == 'replace':
+            current = result
+            for key in keys[:-1]:
+                current = current[key]
+            if keys:
+                current[keys[-1]] = value
+    
+    return result
+    "
+    END:
+END:
+
+# Module initialization
+PRINT rt"JSON Utils Module v{MODULE_VERSION} loaded successfully!"
+
+SHARE MODULE_VERSION, MODULE_NAME

@@ -1,0 +1,112 @@
+# ============================================
+# Data Structures Module Example
+# Testing advanced data structures
+# ============================================
+
+PRINT "🏗️ Data Structures Module Test"
+PRINT "=" * 60
+
+ADD data_structures
+
+# Test 1: Stack Operations
+PRINT "\n1. Testing Stack..."
+let stack = data_structures.Stack()
+stack.push(10)
+stack.push(20)
+stack.push(30)
+PRINT "Stack size: " + str(stack.get_size())
+PRINT "Stack peek: " + str(stack.peek())
+PRINT "Stack pop: " + str(stack.pop())
+PRINT "Stack is empty: " + str(stack.is_empty())
+
+# Test 2: Queue Operations
+PRINT "\n2. Testing Queue..."
+let queue = data_structures.Queue()
+queue.enqueue("First")
+queue.enqueue("Second")
+queue.enqueue("Third")
+PRINT "Queue size: " + str(queue.get_size())
+PRINT "Queue front: " + str(queue.peek())
+PRINT "Queue dequeue: " + str(queue.dequeue())
+PRINT "Queue is empty: " + str(queue.is_empty())
+
+# Test 3: Linked List Operations
+PRINT "\n3. Testing Linked List..."
+let linked_list = data_structures.LinkedList()
+linked_list.append(1)
+linked_list.append(2)
+linked_list.append(3)
+linked_list.prepend(0)
+PRINT "Linked list size: " + str(linked_list.get_size())
+PRINT "Linked list to array: " + str(linked_list.to_array())
+
+# Test 4: Binary Tree Operations
+PRINT "\n4. Testing Binary Tree..."
+let tree = data_structures.BinaryTree()
+tree.insert(10)
+tree.insert(5)
+tree.insert(15)
+tree.insert(3)
+tree.insert(7)
+tree.insert(12)
+tree.insert(17)
+PRINT "Tree contains 7: " + str(tree.search(7))
+PRINT "Tree contains 20: " + str(tree.search(20))
+PRINT "Tree height: " + str(tree.get_height())
+
+# Test 5: Hash Map Operations
+PRINT "\n5. Testing Hash Map..."
+let hash_map = data_structures.HashMap()
+hash_map.put("name", "John")
+hash_map.put("age", 30)
+hash_map.put("city", "NYC")
+PRINT "HashMap size: " + str(hash_map.get_size())
+PRINT "Get 'name': " + hash_map.get("name")
+PRINT "Has 'age': " + str(hash_map.has_key("age"))
+PRINT "Keys: " + str(hash_map.keys())
+
+# Test 6: Set Operations
+PRINT "\n6. Testing Set..."
+let set1 = data_structures.Set()
+set1.add_item(1)
+set1.add_item(2)
+set1.add_item(3)
+set1.add_item(2)  # Duplicate
+PRINT "Set size: " + str(set1.get_size())
+PRINT "Set contains 2: " + str(set1.contains(2))
+PRINT "Set to array: " + str(set1.to_array())
+
+# Test 7: Priority Queue Operations
+PRINT "\n7. Testing Priority Queue..."
+let pq = data_structures.PriorityQueue()
+pq.enqueue("Low priority task", 3)
+pq.enqueue("High priority task", 1)
+pq.enqueue("Medium priority task", 2)
+PRINT "Priority queue size: " + str(pq.get_size())
+PRINT "Dequeue (highest priority): " + str(pq.dequeue())
+
+# Test 8: Graph Operations
+PRINT "\n8. Testing Graph..."
+let graph = data_structures.Graph()
+graph.insert_vertex("A")
+graph.insert_vertex("B")
+graph.insert_vertex("C")
+graph.insert_edge("A", "B")
+graph.insert_edge("B", "C")
+graph.insert_edge("A", "C")
+PRINT "Graph vertices: " + str(graph.get_vertices())
+PRINT "Graph has edge A-B: " + str(graph.has_edge("A", "B"))
+PRINT "Neighbors of A: " + str(graph.get_neighbors("A"))
+
+# Test 9: Trie Operations
+PRINT "\n9. Testing Trie..."
+let trie = data_structures.Trie()
+trie.insert("hello")
+trie.insert("world")
+trie.insert("help")
+PRINT "Trie contains 'hello': " + str(trie.search("hello"))
+PRINT "Trie contains 'hell': " + str(trie.search("hell"))
+PRINT "Words with prefix 'hel': " + str(trie.get_words_with_prefix("hel"))
+
+PRINT "\n" + "=" * 60
+PRINT "✅ Data Structures Module Test Complete!"

@@ -1,0 +1,131 @@
+# SUSA Multi-Language Integration
+
+PRINT "=== SUSA Multi-Language Integration ==="
+
+# Python integration
+PRINT "1. Python Integration:"
+let data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+let name = "SUSA"
+
+USE python:
+START:
+"print('Python processing data:', data)"
+"print('Language:', name)"
+"print('Sum:', sum(data))"
+"print('Average:', sum(data) / len(data))"
+"evens = [x for x in data if x % 2 == 0]"
+"odds = [x for x in data if x % 2 == 1]"
+"print('Evens:', evens)"
+"print('Odds:', odds)"
+END:
+
+# JavaScript integration
+PRINT "2. JavaScript Integration:"
+let jsNumbers = [5, 10, 15, 20, 25]
+let radius = 7
+
+USE javascript:
+START:
+"console.log('JavaScript processing numbers:', jsNumbers);"
+"console.log('Radius for circle:', radius);"
+"console.log('Math.PI:', Math.PI);"
+"var area = Math.PI * radius * radius;"
+"console.log('Circle area:', area);"
+"var doubled = [];"
+"for(var i = 0; i < jsNumbers.length; i++) {"
+"    doubled[i] = jsNumbers[i] * 2;"
+"}"
+"console.log('Doubled numbers:', doubled);"
+END:
+
+# C integration
+PRINT "3. C Integration:"
+let cValue = 15
+
+USE c:
+START:
+"printf('C processing value: %d', cValue);"
+"int square = cValue * cValue;"
+"printf('Square: %d', square);"
+"double pi = 3.14159;"
+"double area = pi * 5 * 5;"
+"printf('Circle area: %.2f', area);"
+END:
+
+# Shared mode - Cross-language variable modification
+PRINT "4. Shared Mode - Variable Sharing:"
+let counter = 10
+let multiplier = 2
+
+PRINT "Initial values:"
+PRINT "counter = " + counter
+PRINT "multiplier = " + multiplier
+
+# Python modifies variables
+USE python SHARED:
+START:
+"print('Python sees counter:', counter, 'multiplier:', multiplier)"
+"counter = counter * multiplier"
+"multiplier = multiplier + 1"
+"print('Python changed counter to:', counter, 'multiplier to:', multiplier)"
+END:
+
+PRINT "After Python:"
+PRINT "counter = " + counter
+PRINT "multiplier = " + multiplier
+
+# JavaScript modifies variables
+USE javascript SHARED:
+START:
+"console.log('JavaScript sees counter:', counter, 'multiplier:', multiplier);"
+"counter = counter + 5;"
+"multiplier = multiplier * 2;"
+"console.log('JavaScript changed counter to:', counter, 'multiplier to:', multiplier);"
+END:
+
+PRINT "Final values:"
+PRINT "counter = " + counter
+PRINT "multiplier = " + multiplier
+
+# Data processing across languages
+PRINT "5. Multi-Language Data Processing:"
+let dataset = [12, 8, 15, 23, 4, 19, 7, 11]
+PRINT "Dataset: " + dataset
+
+# Python: Statistical analysis
+USE python:
+START:
+"print('Python - Statistical Analysis:')"
+"mean = sum(dataset) / len(dataset)"
+"print(f'Mean: {mean:.2f}')"
+"above_mean = [x for x in dataset if x > mean]"
+"print(f'Above average: {above_mean}')"
+END:
+
+# JavaScript: Array transformations
+USE javascript:
+START:
+"console.log('JavaScript - Array Processing:');"
+"var sum = 0;"
+"for(var i = 0; i < dataset.length; i++) {"
+"    sum = sum + dataset[i];"
+"}"
+"console.log('Sum:', sum);"
+"console.log('Average:', sum / dataset.length);"
+END:
+
+# C: Mathematical operations
+USE c:
+START:
+"printf('C - Mathematical Operations:');"
+"int sum = 0;"
+"int max = dataset[0];"
+"for(int i = 0; i < 8; i++) {"
+"    sum = sum + dataset[i];"
+"    if(dataset[i] > max) max = dataset[i];"
+"}"
+"printf('Sum: %d', sum);"
+"printf('Max: %d', max);"
+END:
+
+PRINT "=== Multi-Language Demo Complete ==="

@@ -1,0 +1,67 @@
+# SUSA Functions - Definition and Usage
+
+PRINT "=== SUSA Functions ==="
+
+# Simple function
+FUNC greet(name):
+START:
+    PRINT "Hello, " + name + "!"
+END:
+
+# Function with return value
+FUNC add(a, b):
+START:
+    RETURN a + b
+END:
+
+# Function with complex logic
+FUNC factorial(n):
+START:
+    IF n <= 1:
+    START:
+        RETURN 1
+    END:
+    ELSE:
+    START:
+        RETURN n * factorial(n - 1)
+    END:
+END:
+
+# Function with multiple parameters
+FUNC calculate_area(length, width):
+START:
+    IF length <= 0 OR width <= 0:
+    START:
+        PRINT "Invalid dimensions"
+        RETURN 0
+    END:
+    RETURN length * width
+END:
+
+# Using functions
+PRINT "Function calls:"
+greet("Alice")
+greet("SUSA")
+
+let sum = add(15, 25)
+PRINT "15 + 25 = " + sum
+
+let area = calculate_area(8, 6)
+PRINT "Area of 8x6 rectangle = " + area
+
+PRINT "Factorial examples:"
+PRINT "factorial(5) = " + factorial(5)
+PRINT "factorial(6) = " + factorial(6)
+
+# Function that uses loops
+FUNC sum_range(from, to):
+START:
+    let total = 0
+    LOOP i = from FOR to - from + 1 TIMES:
+    START:
+        total = total + i
+    END:
+    RETURN total
+END:
+
+PRINT "sum_range(1, 10) = " + sum_range(1, 10)

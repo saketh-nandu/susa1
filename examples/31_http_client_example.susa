@@ -1,0 +1,125 @@
+# ============================================
+# HTTP Client Module Example
+# Testing HTTP request functions
+# ============================================
+
+PRINT "🌐 HTTP Client Module Test"
+PRINT "=" * 60
+
+ADD http_client
+
+# Test 1: Create HTTP Client
+PRINT "\n1. Creating HTTP Client..."
+let client = http_client.create_client()
+PRINT "Client created with default settings"
+
+# Test 2: GET Request
+PRINT "\n2. Testing GET Request..."
+let get_response = http_client.get("https://api.example.com/users")
+PRINT "GET response status: " + str(get_response["status"])
+
+# Test 3: POST Request
+PRINT "\n3. Testing POST Request..."
+let post_data = {"name": "John Doe", "email": "john@example.com"}
+let post_response = http_client.post("https://api.example.com/users", post_data)
+PRINT "POST response status: " + str(post_response["status"])
+
+# Test 4: PUT Request
+PRINT "\n4. Testing PUT Request..."
+let put_data = {"name": "Jane Doe", "email": "jane@example.com"}
+let put_response = http_client.put("https://api.example.com/users/1", put_data)
+PRINT "PUT response status: " + str(put_response["status"])
+
+# Test 5: DELETE Request
+PRINT "\n5. Testing DELETE Request..."
+let delete_response = http_client.delete("https://api.example.com/users/1")
+PRINT "DELETE response status: " + str(delete_response["status"])
+
+# Test 6: Set Headers
+PRINT "\n6. Testing Set Headers..."
+let headers = {
+    "Authorization": "Bearer token123",
+    "Content-Type": "application/json"
+}
+client = http_client.set_headers(client, headers)
+PRINT "Headers set: " + str(len(headers)) + " headers"
+
+# Test 7: Set Timeout
+PRINT "\n7. Testing Set Timeout..."
+client = http_client.set_timeout(client, 30)
+PRINT "Timeout set to: 30 seconds"
+
+# Test 8: Query Parameters
+PRINT "\n8. Testing Query Parameters..."
+let params = {"page": 1, "limit": 10, "sort": "name"}
+let url_with_params = http_client.build_url("https://api.example.com/users", params)
+PRINT "URL with params: " + url_with_params
+
+# Test 9: Parse URL
+PRINT "\n9. Testing Parse URL..."
+let url = "https://api.example.com:8080/users?page=1&limit=10"
+let parsed_url = http_client.parse_url(url)
+PRINT "Protocol: " + parsed_url["protocol"]
+PRINT "Host: " + parsed_url["host"]
+PRINT "Port: " + str(parsed_url["port"])
+PRINT "Path: " + parsed_url["path"]
+
+# Test 10: Form Data
+PRINT "\n10. Testing Form Data..."
+let form_data = {"username": "john", "password": "secret"}
+let encoded_form = http_client.encode_form_data(form_data)
+PRINT "Encoded form data: " + encoded_form
+
+# Test 11: Upload File
+PRINT "\n11. Testing File Upload..."
+let file_data = {"file": "document.pdf", "description": "Important document"}
+let upload_response = http_client.upload_file("https://api.example.com/upload", file_data)
+PRINT "Upload response: " + str(upload_response["status"])
+
+# Test 12: Download File
+PRINT "\n12. Testing File Download..."
+let download_result = http_client.download_file(
+    "https://example.com/file.pdf",
+    "downloaded_file.pdf"
+)
+PRINT "Download complete: " + str(download_result["success"])
+
+# Test 13: Basic Authentication
+PRINT "\n13. Testing Basic Authentication..."
+client = http_client.set_basic_auth(client, "username", "password")
+PRINT "Basic auth configured"
+
+# Test 14: Bearer Token
+PRINT "\n14. Testing Bearer Token..."
+client = http_client.set_bearer_token(client, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...")
+PRINT "Bearer token set"
+
+# Test 15: Response Parsing
+PRINT "\n15. Testing Response Parsing..."
+let json_response = "{"status": "success", "data": [1, 2, 3]}"
+let parsed_response = http_client.parse_json_response(json_response)
+PRINT "Parsed response: " + str(parsed_response)
+
+# Test 16: Status Code Check
+PRINT "\n16. Testing Status Code Checks..."
+PRINT "Is 200 success: " + str(http_client.is_success(200))
+PRINT "Is 404 success: " + str(http_client.is_success(404))
+PRINT "Is 404 client error: " + str(http_client.is_client_error(404))
+PRINT "Is 500 server error: " + str(http_client.is_server_error(500))
+
+# Test 17: Retry Configuration
+PRINT "\n17. Testing Retry Configuration..."
+client = http_client.set_retry(client, 3, 1000)
+PRINT "Retry configured: 3 attempts, 1000ms delay"
+
+# Test 18: Request with Custom Client
+PRINT "\n18. Testing Request with Custom Client..."
+let custom_response = http_client.request(
+    client,
+    "GET",
+    "https://api.example.com/data"
+)
+PRINT "Custom request status: " + str(custom_response["status"])
+
+PRINT "\n" + "=" * 60
+PRINT "✅ HTTP Client Module Test Complete!"

@@ -1,0 +1,147 @@
+name: Build SUSA for All Platforms
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup MinGW
+        uses: egor-tensin/setup-mingw@v2
+        with:
+          platform: x64
+      
+      - name: Build Windows
+        run: |
+          cd cpp-core
+          g++ -std=c++17 -O2 main.cpp -o susa.exe
+      
+      - name: Upload Windows Binary
+        uses: actions/upload-artifact@v3
+        with:
+          name: susa-windows
+          path: cpp-core/susa.exe
+
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Install Build Tools
+        run: sudo apt-get update && sudo apt-get install -y build-essential
+      
+      - name: Build Linux
+        run: |
+          cd cpp-core
+          g++ -std=c++17 -O2 main.cpp -o susa
+          chmod +x susa
+      
+      - name: Create Linux Packages
+        run: |
+          chmod +x create-linux-package.sh
+          ./create-linux-package.sh
+      
+      - name: Upload Linux Binary
+        uses: actions/upload-artifact@v3
+        with:
+          name: susa-linux
+          path: cpp-core/susa
+      
+      - name: Upload Linux Packages
+        uses: actions/upload-artifact@v3
+        with:
+          name: susa-linux-packages
+          path: |
+            SUSA-Linux-*.tar.gz
+            susa_*.deb
+            susa-*.rpm
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Build macOS (Intel)
+        run: |
+          cd cpp-core
+          clang++ -std=c++17 -O2 -arch x86_64 main.cpp -o susa-intel
+      
+      - name: Build macOS (Apple Silicon)
+        run: |
+          cd cpp-core
+          clang++ -std=c++17 -O2 -arch arm64 main.cpp -o susa-arm
+      
+      - name: Create Universal Binary
+        run: |
+          cd cpp-core
+          lipo -create susa-intel susa-arm -output susa
+          chmod +x susa
+      
+      - name: Create macOS Packages
+        run: |
+          chmod +x create-macos-package.sh
+          ./create-macos-package.sh
+      
+      - name: Upload macOS Binary
+        uses: actions/upload-artifact@v3
+        with:
+          name: susa-macos
+          path: cpp-core/susa
+      
+      - name: Upload macOS Packages
+        uses: actions/upload-artifact@v3
+        with:
+          name: susa-macos-packages
+          path: |
+            SUSA-macOS-*.tar.gz
+            SUSA-macOS-*.dmg
+
+  create-release:
+    needs: [build-windows, build-linux, build-macos]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Download All Artifacts
+        uses: actions/download-artifact@v3
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            susa-windows/susa.exe
+            susa-linux/susa
+            susa-macos/susa
+            susa-linux-packages/*
+            susa-macos-packages/*
+          body: |
+            # SUSA v${{ github.ref_name }}
+            
+            ## Downloads
+            
+            ### Windows
+            - `susa.exe` - Windows executable
+            
+            ### Linux
+            - `susa` - Linux executable
+            - `SUSA-Linux-*.tar.gz` - Universal tarball
+            - `susa_*.deb` - Debian/Ubuntu package
+            - `susa-*.rpm` - Fedora/RHEL package
+            
+            ### macOS
+            - `susa` - Universal binary (Intel + Apple Silicon)
+            - `SUSA-macOS-*.tar.gz` - Tarball
+            - `SUSA-macOS-*.dmg` - DMG installer
+            
+            ## Installation
+            
+            See [documentation](https://susastudio.online/docs) for installation instructions.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

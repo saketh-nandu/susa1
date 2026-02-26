@@ -1,0 +1,850 @@
+# Data Structures Module for SUSA
+# Implementation of common data structures
+# Version: 1.0.0
+# Author: SUSA Development Team
+# License: MIT
+
+SHARE Stack, Queue, LinkedList, BinaryTree, HashMap, Set, PriorityQueue, Graph, Trie, ListNode, TreeNode
+
+let MODULE_VERSION = "1.0.0"
+let MODULE_NAME = "data_structures"
+
+# Stack implementation
+CLASS Stack: START:
+    FUNC init(): START:
+        self.items = []
+        self.size = 0
+    END:
+    
+    FUNC push(item): START:
+        append(self.items, item)
+        self.size = self.size + 1
+    END:
+    
+    FUNC pop(): START:
+        IF self.is_empty(): START:
+            THROW "Stack is empty"
+        END:
+        
+        let item = self.items[self.size - 1]
+        self.items = self.items[0 to self.size - 1]
+        self.size = self.size - 1
+        RETURN item
+    END:
+    
+    FUNC peek(): START:
+        IF self.is_empty(): START:
+            THROW "Stack is empty"
+        END:
+        RETURN self.items[self.size - 1]
+    END:
+    
+    FUNC is_empty(): START:
+        RETURN self.size == 0
+    END:
+    
+    FUNC get_size(): START:
+        RETURN self.size
+    END:
+    
+    FUNC clear(): START:
+        self.items = []
+        self.size = 0
+    END:
+END:
+
+# Queue implementation
+CLASS Queue: START:
+    FUNC init(): START:
+        self.items = []
+        self.front = 0
+        self.rear = 0
+    END:
+    
+    FUNC enqueue(item): START:
+        append(self.items, item)
+        self.rear = self.rear + 1
+    END:
+    
+    FUNC dequeue(): START:
+        IF self.is_empty(): START:
+            THROW "Queue is empty"
+        END:
+        
+        let item = self.items[self.front]
+        self.front = self.front + 1
+        
+        # Reset pointers if queue becomes empty
+        IF self.front == self.rear: START:
+            self.front = 0
+            self.rear = 0
+            self.items = []
+        END:
+        
+        RETURN item
+    END:
+    
+    FUNC peek(): START:
+        IF self.is_empty(): START:
+            THROW "Queue is empty"
+        END:
+        RETURN self.items[self.front]
+    END:
+    
+    FUNC is_empty(): START:
+        RETURN self.front == self.rear
+    END:
+    
+    FUNC get_size(): START:
+        RETURN self.rear - self.front
+    END:
+    
+    FUNC clear(): START:
+        self.items = []
+        self.front = 0
+        self.rear = 0
+    END:
+END:
+
+# Linked List Node
+CLASS ListNode: START:
+    FUNC init(data): START:
+        self.data = data
+        self.next = null
+    END:
+END:
+
+# Linked List implementation
+CLASS LinkedList: START:
+    FUNC init(): START:
+        self.head = null
+        self.size = 0
+    END:
+    
+    FUNC append(data): START:
+        let new_node = ListNode(data)
+        
+        IF self.head == null:
+        START:
+            self.head = new_node
+        END:
+        ELSE:
+        START:
+            let current = self.head
+            LOOP WHILE current.next != null:
+            START:
+                current = current.next
+            END:
+            current.next = new_node
+        END:
+        
+        self.size = self.size + 1
+    END:
+    
+    FUNC prepend(data): START:
+        let new_node = ListNode(data)
+        new_node.next = self.head
+        self.head = new_node
+        self.size = self.size + 1
+    END:
+    
+    FUNC insert_at(index, data): START:
+        IF index < 0 OR index > self.size: START:
+            THROW "Index out of bounds"
+        END:
+        
+        IF index == 0:
+        START:
+            self.prepend(data)
+            RETURN null
+        END:
+        
+        let new_node = ListNode(data)
+        let current = self.head
+        
+        LOOP i = 0 FOR index - 1 TIMES: START:
+            current = current.next
+        END:
+        
+        new_node.next = current.next
+        current.next = new_node
+        self.size = self.size + 1
+    END:
+    
+    FUNC remove_at(index): START:
+        IF index < 0 OR index >= self.size: START:
+            THROW "Index out of bounds"
+        END:
+        
+        IF index == 0: START:
+            let data = self.head.data
+            self.head = self.head.next
+            self.size = self.size - 1
+            RETURN data
+        END:
+        
+        let current = self.head
+        LOOP i = 0 FOR index - 1 TIMES: START:
+            current = current.next
+        END:
+        
+        let data = current.next.data
+        current.next = current.next.next
+        self.size = self.size - 1
+        RETURN data
+    END:
+    
+    FUNC find(data): START:
+        let current = self.head
+        let index = 0
+        
+        LOOP WHILE current != null:
+        START:
+            IF current.data == data: START:
+                RETURN index
+            END:
+            current = current.next
+            index = index + 1
+        END:
+        
+        RETURN -1
+    END:
+    
+    FUNC get_at(index): START:
+        IF index < 0 OR index >= self.size: START:
+            THROW "Index out of bounds"
+        END:
+        
+        let current = self.head
+        LOOP i = 0 FOR index TIMES: START:
+            current = current.next
+        END:
+        
+        RETURN current.data
+    END:
+    
+    FUNC to_array(): START:
+        let result = []
+        let current = self.head
+        
+        LOOP WHILE current != null:
+        START:
+            append(result, current.data)
+            current = current.next
+        END:
+        
+        RETURN result
+    END:
+    
+    FUNC get_size(): START:
+        RETURN self.size
+    END:
+    
+    FUNC is_empty(): START:
+        RETURN self.size == 0
+    END:
+END:
+
+# Binary Tree Node
+CLASS TreeNode: START:
+    FUNC init(data): START:
+        self.data = data
+        self.left = null
+        self.right = null
+    END:
+END:
+
+# Binary Tree implementation
+CLASS BinaryTree: START:
+    FUNC init(): START:
+        self.root = null
+        self.size = 0
+    END:
+    
+    FUNC insert(data): START:
+        self.root = self._insert_recursive(self.root, data)
+        self.size = self.size + 1
+    END:
+    
+    FUNC _insert_recursive(node, data): START:
+        IF node == null: START:
+            RETURN TreeNode(data)
+        END:
+        
+        IF data < node.data:
+        START:
+            node.left = self._insert_recursive(node.left, data)
+        END:
+        ELSE:
+        START:
+            node.right = self._insert_recursive(node.right, data)
+        END:
+        
+        RETURN node
+    END:
+    
+    FUNC search(data): START:
+        RETURN self._search_recursive(self.root, data)
+    END:
+    
+    FUNC _search_recursive(node, data): START:
+        IF node == null OR node.data == data: START:
+            RETURN node != null
+        END:
+        
+        IF data < node.data:
+        START:
+            RETURN self._search_recursive(node.left, data)
+        END:
+        ELSE:
+        START:
+            RETURN self._search_recursive(node.right, data)
+        END:
+    END:
+    
+    FUNC inorder_traversal(): START:
+        let result = []
+        self._inorder_recursive(self.root, result)
+        RETURN result
+    END:
+    
+    FUNC _inorder_recursive(node, result): START:
+        IF node != null: START:
+            self._inorder_recursive(node.left, result)
+            append(result, node.data)
+            self._inorder_recursive(node.right, result)
+        END:
+    END:
+    
+    FUNC preorder_traversal(): START:
+        let result = []
+        self._preorder_recursive(self.root, result)
+        RETURN result
+    END:
+    
+    FUNC _preorder_recursive(node, result): START:
+        IF node != null: START:
+            append(result, node.data)
+            self._preorder_recursive(node.left, result)
+            self._preorder_recursive(node.right, result)
+        END:
+    END:
+    
+    FUNC postorder_traversal(): START:
+        let result = []
+        self._postorder_recursive(self.root, result)
+        RETURN result
+    END:
+    
+    FUNC _postorder_recursive(node, result): START:
+        IF node != null: START:
+            self._postorder_recursive(node.left, result)
+            self._postorder_recursive(node.right, result)
+            append(result, node.data)
+        END:
+    END:
+    
+    FUNC get_height(): START:
+        RETURN self._height_recursive(self.root)
+    END:
+    
+    FUNC _height_recursive(node): START:
+        IF node == null: START:
+            RETURN 0
+        END:
+        
+        let left_height = self._height_recursive(node.left)
+        let right_height = self._height_recursive(node.right)
+        
+        IF left_height > right_height:
+        START:
+            RETURN left_height + 1
+        END:
+        ELSE:
+        START:
+            RETURN right_height + 1
+        END:
+    END:
+    
+    FUNC get_size(): START:
+        RETURN self.size
+    END:
+END:
+
+# HashMap implementation (using arrays)
+CLASS HashMap: START:
+    FUNC init(capacity): START:
+        IF capacity == null: START:
+            capacity = 16
+        END:
+        
+        self.capacity = capacity
+        self.size = 0
+        self.buckets = []
+        
+        LOOP i = 0 FOR capacity TIMES: START:
+            append(self.buckets, [])
+        END:
+    END:
+    
+    FUNC _hash(key): START:
+        USE PYTHON: START:
+        "
+        return hash(str(key)) % self.capacity
+        "
+        END:
+    END:
+    
+    FUNC put(key, value): START:
+        let index = self._hash(key)
+        let bucket = self.buckets[index]
+        
+        # Check if key already exists
+        LOOP i = 0 FOR length(bucket) TIMES: START:
+            IF bucket[i][0] == key: START:
+                bucket[i][1] = value
+                RETURN null
+            END:
+        END:
+        
+        # Add new key-value pair
+        append(bucket, [key, value])
+        self.size = self.size + 1
+    END:
+    
+    FUNC get(key): START:
+        let index = self._hash(key)
+        let bucket = self.buckets[index]
+        
+        LOOP i = 0 FOR length(bucket) TIMES: START:
+            IF bucket[i][0] == key: START:
+                RETURN bucket[i][1]
+            END:
+        END:
+        
+        THROW rt"Key '{key}' not found"
+    END:
+    
+    FUNC has_key(key): START:
+        let index = self._hash(key)
+        let bucket = self.buckets[index]
+        
+        LOOP i = 0 FOR length(bucket) TIMES: START:
+            IF bucket[i][0] == key: START:
+                RETURN true
+            END:
+        END:
+        
+        RETURN false
+    END:
+    
+    FUNC remove_key(key): START:
+        let index = self._hash(key)
+        let bucket = self.buckets[index]
+        
+        LOOP i = 0 FOR length(bucket) TIMES: START:
+            IF bucket[i][0] == key: START:
+                let value = bucket[i][1]
+                # Remove item from bucket
+                let new_bucket = []
+                LOOP j = 0 FOR length(bucket) TIMES: START:
+                    IF j != i: START:
+                        append(new_bucket, bucket[j])
+                    END:
+                END:
+                self.buckets[index] = new_bucket
+                self.size = self.size - 1
+                RETURN value
+            END:
+        END:
+        
+        THROW rt"Key '{key}' not found"
+    END:
+    
+    FUNC keys(): START:
+        let result = []
+        
+        LOOP i = 0 FOR self.capacity TIMES: START:
+            let bucket = self.buckets[i]
+            LOOP j = 0 FOR length(bucket) TIMES: START:
+                append(result, bucket[j][0])
+            END:
+        END:
+        
+        RETURN result
+    END:
+    
+    FUNC values(): START:
+        let result = []
+        
+        LOOP i = 0 FOR self.capacity TIMES: START:
+            let bucket = self.buckets[i]
+            LOOP j = 0 FOR length(bucket) TIMES: START:
+                append(result, bucket[j][1])
+            END:
+        END:
+        
+        RETURN result
+    END:
+    
+    FUNC get_size(): START:
+        RETURN self.size
+    END:
+END:
+
+# Set implementation
+CLASS Set: START:
+    FUNC init(): START:
+        self.items = []
+    END:
+    
+    FUNC add_item(item): START:
+        IF NOT self.contains(item): START:
+            append(self.items, item)
+        END:
+    END:
+    
+    FUNC remove_item(item): START:
+        let new_items = []
+        let found = false
+        
+        LOOP i = 0 FOR length(self.items) TIMES: START:
+            IF self.items[i] != item:
+            START:
+                append(new_items, self.items[i])
+            END:
+            ELSE:
+            START:
+                found = true
+            END:
+        END:
+        
+        IF NOT found: START:
+            THROW rt"Item '{item}' not found in set"
+        END:
+        
+        self.items = new_items
+    END:
+    
+    FUNC contains(item): START:
+        LOOP i = 0 FOR length(self.items) TIMES: START:
+            IF self.items[i] == item: START:
+                RETURN true
+            END:
+        END:
+        RETURN false
+    END:
+    
+    FUNC union(other_set): START:
+        let result = Set()
+        
+        LOOP i = 0 FOR length(self.items) TIMES: START:
+            result.add_item(self.items[i])
+        END:
+        
+        LOOP i = 0 FOR length(other_set.items) TIMES: START:
+            result.add_item(other_set.items[i])
+        END:
+        
+        RETURN result
+    END:
+    
+    FUNC intersection(other_set): START:
+        let result = Set()
+        
+        LOOP i = 0 FOR length(self.items) TIMES: START:
+            IF other_set.contains(self.items[i]): START:
+                result.add_item(self.items[i])
+            END:
+        END:
+        
+        RETURN result
+    END:
+    
+    FUNC difference(other_set): START:
+        let result = Set()
+        
+        LOOP i = 0 FOR length(self.items) TIMES: START:
+            IF NOT other_set.contains(self.items[i]): START:
+                result.add_item(self.items[i])
+            END:
+        END:
+        
+        RETURN result
+    END:
+    
+    FUNC to_array(): START:
+        RETURN self.items
+    END:
+    
+    FUNC get_size(): START:
+        RETURN length(self.items)
+    END:
+    
+    FUNC is_empty(): START:
+        RETURN length(self.items) == 0
+    END:
+END:
+
+# Priority Queue implementation (min-heap)
+CLASS PriorityQueue: START:
+    FUNC init(): START:
+        self.heap = []
+        self.size = 0
+    END:
+    
+    FUNC enqueue(item, priority): START:
+        append(self.heap, [priority, item])
+        self.size = self.size + 1
+        self._heapify_up(self.size - 1)
+    END:
+    
+    FUNC dequeue(): START:
+        IF self.is_empty(): START:
+            THROW "Priority queue is empty"
+        END:
+        
+        let min_item = self.heap[0][1]
+        
+        # Move last element to root
+        self.heap[0] = self.heap[self.size - 1]
+        self.size = self.size - 1
+        
+        IF self.size > 0: START:
+            self._heapify_down(0)
+        END:
+        
+        RETURN min_item
+    END:
+    
+    FUNC peek(): START:
+        IF self.is_empty(): START:
+            THROW "Priority queue is empty"
+        END:
+        RETURN self.heap[0][1]
+    END:
+    
+    FUNC _heapify_up(index): START:
+        IF index == 0: START:
+            RETURN null
+        END:
+        
+        let parent_index = (index - 1) / 2
+        
+        IF self.heap[index][0] < self.heap[parent_index][0]: START:
+            # Swap with parent
+            let temp = self.heap[index]
+            self.heap[index] = self.heap[parent_index]
+            self.heap[parent_index] = temp
+            
+            self._heapify_up(parent_index)
+        END:
+    END:
+    
+    FUNC _heapify_down(index): START:
+        let left_child = 2 * index + 1
+        let right_child = 2 * index + 2
+        let smallest = index
+        
+        IF left_child < self.size AND self.heap[left_child][0] < self.heap[smallest][0]: START:
+            smallest = left_child
+        END:
+        
+        IF right_child < self.size AND self.heap[right_child][0] < self.heap[smallest][0]: START:
+            smallest = right_child
+        END:
+        
+        IF smallest != index: START:
+            # Swap with smallest child
+            let temp = self.heap[index]
+            self.heap[index] = self.heap[smallest]
+            self.heap[smallest] = temp
+            
+            self._heapify_down(smallest)
+        END:
+    END:
+    
+    FUNC is_empty(): START:
+        RETURN self.size == 0
+    END:
+    
+    FUNC get_size(): START:
+        RETURN self.size
+    END:
+END:
+
+# Graph implementation (adjacency list)
+CLASS Graph: START:
+    FUNC init(directed): START:
+        IF directed == null: START:
+            directed = false
+        END:
+        
+        self.directed = directed
+        self.vertices = {}
+        self.vertex_count = 0
+    END:
+    
+    FUNC insert_vertex(vertex): START:
+        IF NOT self.has_vertex(vertex): START:
+            self.vertices[vertex] = []
+            self.vertex_count = self.vertex_count + 1
+        END:
+    END:
+    
+    FUNC insert_edge(from_vertex, to_vertex, weight): START:
+        IF weight == null: START:
+            weight = 1
+        END:
+        
+        self.insert_vertex(from_vertex)
+        self.insert_vertex(to_vertex)
+        
+        append(self.vertices[from_vertex], [to_vertex, weight])
+        
+        IF NOT self.directed: START:
+            append(self.vertices[to_vertex], [from_vertex, weight])
+        END:
+    END:
+    
+    FUNC has_vertex(vertex): START:
+        USE PYTHON: START:
+        "return vertex in self.vertices"
+        END:
+    END:
+    
+    FUNC has_edge(from_vertex, to_vertex): START:
+        IF NOT self.has_vertex(from_vertex): START:
+            RETURN false
+        END:
+        
+        let edges = self.vertices[from_vertex]
+        LOOP i = 0 FOR length(edges) TIMES: START:
+            IF edges[i][0] == to_vertex: START:
+                RETURN true
+            END:
+        END:
+        
+        RETURN false
+    END:
+    
+    FUNC get_neighbors(vertex): START:
+        IF NOT self.has_vertex(vertex): START:
+            RETURN []
+        END:
+        
+        let neighbors = []
+        let edges = self.vertices[vertex]
+        
+        LOOP i = 0 FOR length(edges) TIMES: START:
+            append(neighbors, edges[i][0])
+        END:
+        
+        RETURN neighbors
+    END:
+    
+    FUNC get_vertices(): START:
+        USE PYTHON: START:
+        "return list(self.vertices.keys())"
+        END:
+    END:
+    
+    FUNC get_vertex_count(): START:
+        RETURN self.vertex_count
+    END:
+END:
+
+# Trie (Prefix Tree) implementation
+CLASS Trie: START:
+    FUNC init(): START:
+        self.root = {}
+        self.end_symbol = "*"
+    END:
+    
+    FUNC insert(word): START:
+        let current = self.root
+        
+        LOOP i = 0 FOR length(word) TIMES: START:
+            let char = word[i]
+            
+            USE PYTHON: START:
+            "
+            if char not in current:
+                current[char] = {}
+            current = current[char]
+            "
+            END:
+        END:
+        
+        current[self.end_symbol] = true
+    END:
+    
+    FUNC search(word): START:
+        let current = self.root
+        
+        LOOP i = 0 FOR length(word) TIMES: START:
+            let char = word[i]
+            
+            USE PYTHON: START:
+            "
+            if char not in current:
+                return False
+            current = current[char]
+            "
+            END:
+        END:
+        
+        USE PYTHON: START:
+        "return self.end_symbol in current"
+        END:
+    END:
+    
+    FUNC starts_with(prefix): START:
+        let current = self.root
+        
+        LOOP i = 0 FOR length(prefix) TIMES: START:
+            let char = prefix[i]
+            
+            USE PYTHON: START:
+            "
+            if char not in current:
+                return False
+            current = current[char]
+            "
+            END:
+        END:
+        
+        RETURN true
+    END:
+    
+    FUNC get_words_with_prefix(prefix): START:
+        USE PYTHON: START:
+        "
+        def dfs(node, current_word, words):
+            if self.end_symbol in node:
+                words.append(current_word)
+            
+            for char, child_node in node.items():
+                if char != self.end_symbol:
+                    dfs(child_node, current_word + char, words)
+        
+        # Navigate to prefix node
+        current = self.root
+        for char in prefix:
+            if char not in current:
+                return []
+            current = current[char]
+        
+        # Collect all words with this prefix
+        words = []
+        dfs(current, prefix, words)
+        return words
+        "
+        END:
+    END:
+END:
+
+# Module initialization
+PRINT rt"Data Structures Module v{MODULE_VERSION} loaded successfully!"
+
+SHARE MODULE_VERSION, MODULE_NAME

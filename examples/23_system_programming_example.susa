@@ -1,0 +1,161 @@
+# ============================================
+# System Programming Module Example
+# Testing real system-level functions
+# ============================================
+
+PRINT "⚙️ System Programming Module Test"
+PRINT "=" * 60
+
+ADD system_programming
+
+# Test 1: Allocate Memory
+PRINT "\n1. Allocating Memory..."
+let buffer = system_programming.allocate_memory(1024)
+PRINT "Allocated: " + str(buffer["size"]) + " bytes"
+PRINT "Address: " + buffer["address"]
+
+# Test 2: Free Memory
+PRINT "\n2. Freeing Memory..."
+buffer = system_programming.free_memory(buffer)
+PRINT "Memory freed: " + str(not buffer["allocated"])
+
+# Test 3: Get Memory Usage
+PRINT "\n3. Getting Memory Usage..."
+let memory = system_programming.get_memory_usage()
+PRINT "Total memory: " + str(memory["total"] / 1073741824) + " GB"
+PRINT "Used memory: " + str(memory["used"] / 1073741824) + " GB"
+PRINT "Memory usage: " + str(memory["percent"]) + "%"
+
+# Test 4: Get Process Info
+PRINT "\n4. Getting Process Information..."
+let process = system_programming.get_process_info()
+PRINT "Process ID: " + str(process["pid"])
+PRINT "Process name: " + process["name"]
+PRINT "Status: " + process["status"]
+PRINT "CPU usage: " + str(process["cpu_percent"]) + "%"
+
+# Test 5: List Processes
+PRINT "\n5. Listing Running Processes..."
+let processes = system_programming.list_processes()
+PRINT "Total processes: " + str(len(processes))
+PRINT "First 5 processes:"
+for i in range(5): START:
+    if i < len(processes): START:
+        let proc = processes[i]
+        PRINT "  PID " + str(proc["pid"]) + ": " + proc["name"]
+    END:
+END:
+
+# Test 6: Get CPU Count
+PRINT "\n6. Getting CPU Count..."
+let cpu_count = system_programming.get_cpu_count()
+PRINT "Physical CPUs: " + str(cpu_count["physical"])
+PRINT "Logical CPUs: " + str(cpu_count["logical"])
+
+# Test 7: Create Thread
+PRINT "\n7. Creating Thread..."
+let thread = system_programming.create_thread("worker_thread", "process_data")
+PRINT "Thread: " + thread["name"]
+PRINT "Thread ID: " + str(thread["id"])
+
+# Test 8: Get Thread Count
+PRINT "\n8. Getting Thread Count..."
+let thread_count = system_programming.get_thread_count()
+PRINT "Active threads: " + str(thread_count)
+
+# Test 9: Get Disk Usage
+PRINT "\n9. Getting Disk Usage..."
+let disk = system_programming.get_disk_usage("/")
+PRINT "Total disk: " + str(disk["total"] / 1073741824) + " GB"
+PRINT "Used disk: " + str(disk["used"] / 1073741824) + " GB"
+PRINT "Free disk: " + str(disk["free"] / 1073741824) + " GB"
+PRINT "Disk usage: " + str(disk["percent"]) + "%"
+
+# Test 10: List Disk Partitions
+PRINT "\n10. Listing Disk Partitions..."
+let partitions = system_programming.list_disk_partitions()
+PRINT "Partitions found: " + str(len(partitions))
+for partition in partitions: START:
+    PRINT "  " + partition["device"] + " → " + partition["mountpoint"]
+END:
+
+# Test 11: Get Network Interfaces
+PRINT "\n11. Getting Network Interfaces..."
+let interfaces = system_programming.get_network_interfaces()
+PRINT "Network interfaces: " + str(len(interfaces))
+
+# Test 12: Get Network Stats
+PRINT "\n12. Getting Network Statistics..."
+let net_stats = system_programming.get_network_stats()
+PRINT "Bytes sent: " + str(net_stats["bytes_sent"] / 1048576) + " MB"
+PRINT "Bytes received: " + str(net_stats["bytes_recv"] / 1048576) + " MB"
+PRINT "Packets sent: " + str(net_stats["packets_sent"])
+PRINT "Packets received: " + str(net_stats["packets_recv"])
+
+# Test 13: Get CPU Percent
+PRINT "\n13. Getting CPU Usage..."
+let cpu_percent = system_programming.get_cpu_percent(0.1)
+PRINT "CPU usage: " + str(cpu_percent) + "%"
+
+# Test 14: Get CPU Times
+PRINT "\n14. Getting CPU Times..."
+let cpu_times = system_programming.get_cpu_times()
+PRINT "User time: " + str(cpu_times["user"]) + "s"
+PRINT "System time: " + str(cpu_times["system"]) + "s"
+PRINT "Idle time: " + str(cpu_times["idle"]) + "s"
+
+# Test 15: Get System Info
+PRINT "\n15. Getting System Information..."
+let sys_info = system_programming.get_system_info()
+PRINT "System: " + sys_info["system"]
+PRINT "Release: " + sys_info["release"]
+PRINT "Machine: " + sys_info["machine"]
+PRINT "Processor: " + sys_info["processor"]
+
+# Test 16: Get System Uptime
+PRINT "\n16. Getting System Uptime..."
+let uptime = system_programming.get_uptime()
+PRINT "Uptime: " + str(uptime["hours"]) + " hours"
+PRINT "Uptime: " + str(uptime["days"]) + " days"
+
+# Test 17: Get Environment Variable
+PRINT "\n17. Getting Environment Variable..."
+let path_var = system_programming.get_env_variable("PATH")
+PRINT "PATH exists: " + str(path_var["exists"])
+if path_var["exists"]: START:
+    PRINT "PATH length: " + str(len(path_var["value"])) + " characters"
+END:
+
+# Test 18: Set Environment Variable
+PRINT "\n18. Setting Environment Variable..."
+let set_result = system_programming.set_env_variable("SUSA_TEST", "test_value")
+PRINT "Variable set: " + set_result["name"] + " = " + set_result["value"]
+
+# Test 19: Bytes to Hex Conversion
+PRINT "\n19. Converting Bytes to Hex..."
+let data = "Hello, SUSA!"
+let hex_data = system_programming.bytes_to_hex(data)
+PRINT "Original: " + data
+PRINT "Hex: " + hex_data
+
+# Test 20: Hex to Bytes Conversion
+PRINT "\n20. Converting Hex to Bytes..."
+let bytes_data = system_programming.hex_to_bytes(hex_data)
+PRINT "Converted back: " + bytes_data
+
+# Test 21: Benchmark Function
+PRINT "\n21. Benchmarking Function..."
+let benchmark = system_programming.benchmark_function(1000000)
+PRINT "Iterations: " + str(benchmark["iterations"])
+PRINT "Elapsed: " + str(benchmark["elapsed_seconds"]) + " seconds"
+PRINT "Iterations/sec: " + str(benchmark["iterations_per_second"])
+
+# Test 22: Profile Memory
+PRINT "\n22. Profiling Memory..."
+let mem_profile = system_programming.profile_memory()
+PRINT "RSS: " + str(mem_profile["rss"] / 1048576) + " MB"
+PRINT "VMS: " + str(mem_profile["vms"] / 1048576) + " MB"
+PRINT "Memory %: " + str(mem_profile["percent"]) + "%"
+
+PRINT "\n" + "=" * 60
+PRINT "✅ System Programming Module Test Complete!"

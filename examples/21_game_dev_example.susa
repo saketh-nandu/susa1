@@ -1,0 +1,141 @@
+# ============================================
+# Game Development Module Example
+# Testing real game development functions
+# ============================================
+
+PRINT "🎮 Game Development Module Test"
+PRINT "=" * 60
+
+ADD game_dev
+
+# Test 1: Create Game Engine
+PRINT "\n1. Creating Game Engine..."
+let engine = game_dev.create_game_engine(800, 600, 60)
+PRINT "Engine: " + str(engine["width"]) + "x" + str(engine["height"]) + " @ " + str(engine["fps"]) + "fps"
+
+# Test 2: Create Sprites
+PRINT "\n2. Creating Sprites..."
+let player = game_dev.create_sprite("player", 100, 100, 32, 32)
+PRINT "Player sprite at (" + str(player["x"]) + ", " + str(player["y"]) + ")"
+
+let enemy = game_dev.create_sprite("enemy", 300, 200, 32, 32)
+PRINT "Enemy sprite at (" + str(enemy["x"]) + ", " + str(enemy["y"]) + ")"
+
+# Test 3: Move Sprite
+PRINT "\n3. Moving Sprites..."
+player = game_dev.move_sprite(player, 50, 0)
+PRINT "Player moved to (" + str(player["x"]) + ", " + str(player["y"]) + ")"
+
+# Test 4: Apply Gravity
+PRINT "\n4. Applying Gravity..."
+player["velocity_y"] = 0
+player = game_dev.apply_gravity(player, 0.5)
+PRINT "Player Y velocity: " + str(player["velocity_y"])
+PRINT "Player Y position: " + str(player["y"])
+
+# Test 5: Collision Detection
+PRINT "\n5. Testing Collision Detection..."
+let collision1 = game_dev.detect_collision(player, enemy)
+PRINT "Player-Enemy collision: " + str(collision1)
+
+# Move player closer to enemy
+player["x"] = 295
+player["y"] = 195
+let collision2 = game_dev.detect_collision(player, enemy)
+PRINT "After moving closer: " + str(collision2)
+
+# Test 6: Create Animation
+PRINT "\n6. Creating Animation..."
+let frames = ["frame1.png", "frame2.png", "frame3.png", "frame4.png"]
+let animation = game_dev.create_animation("walk", frames, 0.1)
+PRINT "Animation: " + animation["name"] + " (" + str(len(animation["frames"])) + " frames)"
+
+# Test 7: Update Animation
+PRINT "\n7. Updating Animation..."
+animation = game_dev.update_animation(animation, 0.15)
+PRINT "Current frame: " + str(animation["current_frame"])
+
+# Test 8: Create Player
+PRINT "\n8. Creating Player Object..."
+let game_player = game_dev.create_player(50, 50, 100, 5)
+PRINT "Player health: " + str(game_player["health"]) + "/" + str(game_player["max_health"])
+PRINT "Player speed: " + str(game_player["speed"])
+
+# Test 9: Create Enemy
+PRINT "\n9. Creating Enemy Object..."
+let game_enemy = game_dev.create_enemy(400, 300, 50, 10)
+PRINT "Enemy health: " + str(game_enemy["health"])
+PRINT "Enemy damage: " + str(game_enemy["damage"])
+
+# Test 10: Particle System
+PRINT "\n10. Creating Particle System..."
+let particles = game_dev.create_particle_system(200, 200, 50)
+PRINT "Particle system: " + str(len(particles["particles"])) + " particles"
+
+# Test 11: Update Particles
+PRINT "\n11. Updating Particles..."
+particles = game_dev.update_particles(particles, 1.0)
+PRINT "Active particles: " + str(len(particles["particles"]))
+PRINT "System active: " + str(particles["active"])
+
+# Test 12: Create Tilemap
+PRINT "\n12. Creating Tilemap..."
+let tilemap = game_dev.create_tilemap(20, 15, 32)
+PRINT "Tilemap: " + str(tilemap["width"]) + "x" + str(tilemap["height"])
+PRINT "Tile size: " + str(tilemap["tile_size"]) + "px"
+
+# Test 13: Set Tiles
+PRINT "\n13. Setting Tiles..."
+tilemap = game_dev.set_tile(tilemap, 5, 5, 1)
+tilemap = game_dev.set_tile(tilemap, 6, 5, 1)
+tilemap = game_dev.set_tile(tilemap, 7, 5, 1)
+PRINT "Tiles set in tilemap"
+
+# Test 14: Create Camera
+PRINT "\n14. Creating Camera..."
+let camera = game_dev.create_camera(0, 0, 800, 600)
+PRINT "Camera: " + str(camera["width"]) + "x" + str(camera["height"])
+
+# Test 15: Camera Follow Target
+PRINT "\n15. Camera Following Target..."
+camera = game_dev.follow_target(camera, game_player, 0.1)
+PRINT "Camera position: (" + str(camera["x"]) + ", " + str(camera["y"]) + ")"
+
+# Test 16: Create Sound
+PRINT "\n16. Creating Sound..."
+let jump_sound = game_dev.create_sound("jump", "sounds/jump.wav", 0.8)
+PRINT "Sound: " + jump_sound["name"]
+PRINT "Volume: " + str(jump_sound["volume"])
+
+# Test 17: Play Sound
+PRINT "\n17. Playing Sound..."
+jump_sound = game_dev.play_sound(jump_sound)
+PRINT "Sound playing: " + str(jump_sound["playing"])
+
+# Test 18: Create Input Manager
+PRINT "\n18. Creating Input Manager..."
+let input_mgr = game_dev.create_input_manager()
+PRINT "Input manager created"
+
+# Test 19: Check Key Press
+PRINT "\n19. Checking Key Press..."
+input_mgr["keys_pressed"]["space"] = True
+let space_pressed = game_dev.is_key_pressed(input_mgr, "space")
+PRINT "Space key pressed: " + str(space_pressed)
+
+# Test 20: Create Game States
+PRINT "\n20. Creating Game States..."
+let menu_state = game_dev.create_game_state("menu")
+let play_state = game_dev.create_game_state("playing")
+let pause_state = game_dev.create_game_state("paused")
+PRINT "States created: menu, playing, paused"
+
+# Test 21: Switch Game State
+PRINT "\n21. Switching Game States..."
+menu_state["active"] = True
+play_state = game_dev.switch_state(menu_state, play_state)
+PRINT "Current state active: " + str(play_state["active"])
+PRINT "Menu state active: " + str(menu_state["active"])
+
+PRINT "\n" + "=" * 60
+PRINT "✅ Game Development Module Test Complete!"
