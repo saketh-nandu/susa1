@@ -41,8 +41,8 @@ jobs:
           mkdir -p susa-cli-deb/usr/local/bin
           mkdir -p susa-cli-deb/usr/local/share/susa/{modules,examples}
           cp cpp-core/susa susa-cli-deb/usr/local/bin/
-          cp -r modules/* susa-cli-deb/usr/local/share/susa/modules/
-          cp -r examples/* susa-cli-deb/usr/local/share/susa/examples/
+          if [ -d "modules" ]; then cp -r modules/* susa-cli-deb/usr/local/share/susa/modules/ 2>/dev/null || true; fi
+          if [ -d "examples" ]; then cp -r examples/* susa-cli-deb/usr/local/share/susa/examples/ 2>/dev/null || true; fi
           cat > susa-cli-deb/DEBIAN/control << EOF
           Package: susa-cli
           Version: 1.0.0
@@ -83,8 +83,8 @@ jobs:
           mkdir -p susa-complete-deb/opt/susa-ide
           mkdir -p susa-complete-deb/usr/share/applications
           cp cpp-core/susa susa-complete-deb/usr/local/bin/
-          cp -r modules/* susa-complete-deb/usr/local/share/susa/modules/
-          cp -r examples/* susa-complete-deb/usr/local/share/susa/examples/
+          if [ -d "modules" ]; then cp -r modules/* susa-complete-deb/usr/local/share/susa/modules/ 2>/dev/null || true; fi
+          if [ -d "examples" ]; then cp -r examples/* susa-complete-deb/usr/local/share/susa/examples/ 2>/dev/null || true; fi
           cp susa-ide/remix-of-susa-studio-ide-main/dist-electron/*.AppImage susa-complete-deb/opt/susa-ide/susa-ide || true
           cat > susa-complete-deb/DEBIAN/control << EOF
           Package: susa-complete
@@ -141,8 +141,8 @@ jobs:
       
       - name: Create PKG Installers
         run: |
-          # Copy logo for installers
-          cp "susa logo.png" susa-logo.png
+          # Copy logo for installers (handle space in filename)
+          cp 'susa logo.png' susa-logo.png 2>/dev/null || echo "Logo not found, continuing..."
           
           # Create professional welcome page with logo
           cat > welcome.html << 'EOF'
@@ -269,8 +269,8 @@ jobs:
           mkdir -p susa-cli-pkg/usr/local/bin
           mkdir -p susa-cli-pkg/usr/local/share/susa/{modules,examples}
           cp cpp-core/susa susa-cli-pkg/usr/local/bin/
-          cp -r modules/* susa-cli-pkg/usr/local/share/susa/modules/
-          cp -r examples/* susa-cli-pkg/usr/local/share/susa/examples/
+          if [ -d "modules" ]; then cp -r modules/* susa-cli-pkg/usr/local/share/susa/modules/ 2>/dev/null || true; fi
+          if [ -d "examples" ]; then cp -r examples/* susa-cli-pkg/usr/local/share/susa/examples/ 2>/dev/null || true; fi
           pkgbuild --root susa-cli-pkg --identifier com.susa.cli --version 1.0.0 --install-location / SUSA-CLI-1.0.0-component.pkg
           
           cat > distribution-cli.xml << 'EOF'
@@ -300,8 +300,8 @@ jobs:
           mkdir -p susa-complete-pkg/usr/local/bin
           mkdir -p susa-complete-pkg/usr/local/share/susa/{modules,examples}
           cp cpp-core/susa susa-complete-pkg/usr/local/bin/
-          cp -r modules/* susa-complete-pkg/usr/local/share/susa/modules/
-          cp -r examples/* susa-complete-pkg/usr/local/share/susa/examples/
+          if [ -d "modules" ]; then cp -r modules/* susa-complete-pkg/usr/local/share/susa/modules/ 2>/dev/null || true; fi
+          if [ -d "examples" ]; then cp -r examples/* susa-complete-pkg/usr/local/share/susa/examples/ 2>/dev/null || true; fi
           pkgbuild --root susa-complete-pkg --identifier com.susa.complete --version 1.0.0 --install-location / SUSA-Complete-1.0.0-component.pkg
           
           cat > distribution-complete.xml << 'EOF'
