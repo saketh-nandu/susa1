@@ -15,6 +15,7 @@ build/
 
 # IDE folders (too large for GitHub)
 susa-ide/remix-of-susa-studio-ide-main/dist-electron/
+susa-ide/remix-of-susa-studio-ide-main/dist/
 susa-ide/remix-of-susa-studio-ide-main/node_modules/
 susa-setup/
 

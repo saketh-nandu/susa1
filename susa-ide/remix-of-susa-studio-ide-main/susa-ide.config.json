@@ -1,0 +1,97 @@
+{
+  "ide": {
+    "name": "SUSA IDE",
+    "version": "1.0.0",
+    "description": "Modern Desktop IDE for SUSA Programming Language"
+  },
+  "interpreter": {
+    "type": "embedded",
+    "path": "../../../susa.py",
+    "cppCore": {
+      "enabled": true,
+      "path": "../../../susa-cpp.exe",
+      "priority": "high",
+      "description": "C++ core provides 10-100x performance boost"
+    },
+    "timeout": 30000,
+    "encoding": "utf-8"
+  },
+  "editor": {
+    "defaultTheme": "dark",
+    "fontSize": 14,
+    "tabSize": 4,
+    "wordWrap": true,
+    "minimap": true,
+    "lineNumbers": true,
+    "autoSave": true,
+    "autoSaveDelay": 2000
+  },
+  "features": {
+    "syntaxHighlighting": true,
+    "codeCompletion": true,
+    "errorChecking": true,
+    "codeFormatting": true,
+    "multilineComments": true,
+    "stringInterpolation": true,
+    "multiLanguageSupport": true,
+    "cppCoreSupport": true,
+    "performanceIndicator": true
+  },
+  "modules": {
+    "cppModules": [
+      "math_utils",
+      "string_utils",
+      "array_utils",
+      "datetime_utils",
+      "file_utils",
+      "json_utils",
+      "http_client",
+      "data_structures",
+      "algorithms"
+    ],
+    "pythonModules": [
+      "ai_ml",
+      "web_framework",
+      "data_science",
+      "cloud_devops",
+      "cybersecurity",
+      "automation",
+      "game_dev",
+      "mobile_dev",
+      "system_programming",
+      "testing"
+    ],
+    "totalFunctions": 500
+  },
+  "shortcuts": {
+    "runFile": "F5",
+    "runSelection": "F9",
+    "newFile": "Ctrl+N",
+    "openFile": "Ctrl+O",
+    "saveFile": "Ctrl+S",
+    "saveAsFile": "Ctrl+Shift+S",
+    "formatCode": "Shift+Alt+F",
+    "find": "Ctrl+F",
+    "replace": "Ctrl+H",
+    "toggleTerminal": "Ctrl+`"
+  },
+  "examples": {
+    "loadOnStartup": true,
+    "showInWelcome": true,
+    "categories": [
+      "basics",
+      "control_flow", 
+      "functions",
+      "classes",
+      "advanced"
+    ]
+  },
+  "build": {
+    "outputDir": "dist-electron",
+    "appId": "com.susa.ide",
+    "productName": "SUSA IDE",
+    "compression": "normal",
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true
+  }
+}

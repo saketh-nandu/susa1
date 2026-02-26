@@ -1,0 +1,430 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root,
+  .dark {
+    /* SUSA Studio Dark Theme - Catppuccin Inspired */
+    --background: 232 23% 8%;
+    --foreground: 226 64% 88%;
+
+    --card: 233 23% 11%;
+    --card-foreground: 226 64% 88%;
+
+    --popover: 233 23% 11%;
+    --popover-foreground: 226 64% 88%;
+
+    --primary: 189 94% 43%;
+    --primary-foreground: 232 23% 8%;
+
+    --secondary: 233 23% 15%;
+    --secondary-foreground: 226 64% 88%;
+
+    --muted: 233 23% 18%;
+    --muted-foreground: 228 24% 55%;
+
+    --accent: 267 84% 81%;
+    --accent-foreground: 232 23% 8%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 226 64% 88%;
+
+    --border: 233 23% 18%;
+    --input: 233 23% 15%;
+    --ring: 189 94% 43%;
+
+    --radius: 0.5rem;
+
+    /* SUSA Syntax Highlighting */
+    --syntax-keyword: 189 94% 58%;
+    --syntax-string: 95 70% 65%;
+    --syntax-number: 35 95% 68%;
+    --syntax-comment: 228 24% 45%;
+    --syntax-function: 267 84% 76%;
+    --syntax-variable: 226 64% 88%;
+    --syntax-operator: 343 81% 75%;
+    --syntax-constant: 35 95% 68%;
+    --syntax-type: 189 94% 68%;
+
+    /* Editor Colors */
+    --editor-bg: 232 23% 10%;
+    --editor-gutter: 233 23% 14%;
+    --editor-line-highlight: 233 23% 14%;
+    --editor-selection: 189 94% 43% / 0.2;
+    --editor-cursor: 189 94% 58%;
+
+    /* Panel Colors */
+    --panel-bg: 232 23% 9%;
+    --panel-header: 233 23% 12%;
+    --panel-border: 233 23% 16%;
+
+    /* Sidebar */
+    --sidebar-background: 232 23% 9%;
+    --sidebar-foreground: 226 64% 88%;
+    --sidebar-primary: 189 94% 43%;
+    --sidebar-primary-foreground: 232 23% 8%;
+    --sidebar-accent: 233 23% 15%;
+    --sidebar-accent-foreground: 226 64% 88%;
+    --sidebar-border: 233 23% 16%;
+    --sidebar-ring: 189 94% 43%;
+
+    /* Status Colors */
+    --status-error: 0 72% 51%;
+    --status-warning: 35 95% 58%;
+    --status-success: 142 76% 48%;
+    --status-info: 189 94% 43%;
+
+    /* Tab Colors */
+    --tab-active: 233 23% 14%;
+    --tab-inactive: 232 23% 9%;
+    --tab-border: 233 23% 18%;
+  }
+
+  .light {
+    --background: 220 14% 96%;
+    --foreground: 224 71% 4%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 224 71% 4%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 71% 4%;
+
+    --primary: 189 94% 38%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 14% 92%;
+    --secondary-foreground: 224 71% 4%;
+
+    --muted: 220 14% 92%;
+    --muted-foreground: 220 9% 46%;
+
+    --accent: 267 84% 60%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 13% 87%;
+    --input: 220 13% 91%;
+    --ring: 189 94% 38%;
+
+    /* Editor Colors - Light */
+    --editor-bg: 0 0% 100%;
+    --editor-gutter: 220 14% 96%;
+    --editor-line-highlight: 220 14% 94%;
+    --editor-selection: 189 94% 38% / 0.15;
+    --editor-cursor: 189 94% 38%;
+
+    /* Panel Colors - Light */
+    --panel-bg: 220 14% 96%;
+    --panel-header: 0 0% 100%;
+    --panel-border: 220 13% 87%;
+
+    /* Sidebar - Light */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 224 71% 4%;
+    --sidebar-primary: 189 94% 38%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 14% 92%;
+    --sidebar-accent-foreground: 224 71% 4%;
+    --sidebar-border: 220 13% 87%;
+    --sidebar-ring: 189 94% 38%;
+
+    /* Tab Colors - Light */
+    --tab-active: 0 0% 100%;
+    --tab-inactive: 220 14% 96%;
+    --tab-border: 220 13% 87%;
+
+    /* Syntax - Light (adjusted for readability) */
+    --syntax-keyword: 189 94% 32%;
+    --syntax-string: 142 70% 35%;
+    --syntax-number: 25 95% 45%;
+    --syntax-comment: 220 9% 55%;
+    --syntax-function: 267 84% 55%;
+    --syntax-variable: 224 71% 20%;
+    --syntax-operator: 343 81% 45%;
+  }
+
+  .susa-midnight {
+    --background: 260 30% 8%;
+    --foreground: 260 20% 90%;
+
+    --card: 260 30% 11%;
+    --card-foreground: 260 20% 90%;
+
+    --popover: 260 30% 11%;
+    --popover-foreground: 260 20% 90%;
+
+    --primary: 270 91% 65%;
+    --primary-foreground: 260 30% 8%;
+
+    --secondary: 260 30% 15%;
+    --secondary-foreground: 260 20% 90%;
+
+    --muted: 260 30% 18%;
+    --muted-foreground: 260 20% 55%;
+
+    --accent: 320 80% 70%;
+    --accent-foreground: 260 30% 8%;
+
+    --border: 260 30% 18%;
+    --input: 260 30% 15%;
+    --ring: 270 91% 65%;
+
+    /* Editor Colors */
+    --editor-bg: 260 30% 10%;
+    --editor-gutter: 260 30% 14%;
+    --editor-line-highlight: 260 30% 14%;
+    --editor-cursor: 270 91% 65%;
+
+    /* Panel Colors */
+    --panel-bg: 260 30% 9%;
+    --panel-header: 260 30% 12%;
+    --panel-border: 260 30% 16%;
+
+    /* Sidebar */
+    --sidebar-background: 260 30% 9%;
+    --sidebar-foreground: 260 20% 90%;
+    --sidebar-primary: 270 91% 65%;
+    --sidebar-border: 260 30% 16%;
+
+    /* Tab Colors */
+    --tab-active: 260 30% 14%;
+    --tab-inactive: 260 30% 9%;
+    --tab-border: 260 30% 18%;
+
+    /* Syntax */
+    --syntax-keyword: 270 91% 70%;
+    --syntax-string: 142 60% 60%;
+    --syntax-function: 320 80% 70%;
+  }
+
+  .susa-ocean {
+    --background: 200 40% 8%;
+    --foreground: 200 20% 88%;
+
+    --card: 200 40% 11%;
+    --card-foreground: 200 20% 88%;
+
+    --popover: 200 40% 11%;
+    --popover-foreground: 200 20% 88%;
+
+    --primary: 195 85% 50%;
+    --primary-foreground: 200 40% 8%;
+
+    --secondary: 200 40% 15%;
+    --secondary-foreground: 200 20% 88%;
+
+    --muted: 200 40% 18%;
+    --muted-foreground: 200 20% 55%;
+
+    --accent: 165 70% 55%;
+    --accent-foreground: 200 40% 8%;
+
+    --border: 200 40% 18%;
+    --input: 200 40% 15%;
+    --ring: 195 85% 50%;
+
+    /* Editor Colors */
+    --editor-bg: 200 40% 10%;
+    --editor-gutter: 200 40% 14%;
+    --editor-line-highlight: 200 40% 14%;
+    --editor-cursor: 195 85% 55%;
+
+    /* Panel Colors */
+    --panel-bg: 200 40% 9%;
+    --panel-header: 200 40% 12%;
+    --panel-border: 200 40% 16%;
+
+    /* Sidebar */
+    --sidebar-background: 200 40% 9%;
+    --sidebar-foreground: 200 20% 88%;
+    --sidebar-primary: 195 85% 50%;
+    --sidebar-border: 200 40% 16%;
+
+    /* Tab Colors */
+    --tab-active: 200 40% 14%;
+    --tab-inactive: 200 40% 9%;
+    --tab-border: 200 40% 18%;
+
+    /* Syntax */
+    --syntax-keyword: 195 85% 55%;
+    --syntax-string: 165 70% 55%;
+    --syntax-function: 280 70% 70%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--background));
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted));
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground));
+  }
+
+  /* Monaco Editor overrides */
+  .monaco-editor {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace !important;
+  }
+
+  .monaco-editor .margin {
+    background: hsl(var(--editor-gutter)) !important;
+  }
+}
+
+@layer components {
+  .susa-panel {
+    @apply bg-panel-bg border-panel-border;
+  }
+
+  .susa-tab {
+    @apply px-4 py-2 text-sm font-medium transition-colors duration-150;
+  }
+
+  .susa-tab-active {
+    @apply bg-tab-active text-foreground border-b-2 border-primary;
+  }
+
+  .susa-tab-inactive {
+    @apply bg-tab-inactive text-muted-foreground hover:text-foreground hover:bg-secondary;
+  }
+
+  .susa-button {
+    @apply inline-flex items-center justify-center gap-2 px-3 py-1.5 text-sm font-medium rounded-md transition-all duration-150;
+  }
+
+  .susa-button-primary {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90;
+  }
+
+  .susa-button-ghost {
+    @apply text-muted-foreground hover:text-foreground hover:bg-secondary;
+  }
+
+  .susa-icon-button {
+    @apply p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors duration-150;
+  }
+
+  .file-tree-item {
+    @apply flex items-center gap-2 px-2 py-1 text-sm rounded-md cursor-pointer transition-colors duration-100;
+  }
+
+  .file-tree-item:hover {
+    @apply bg-secondary;
+  }
+
+  .file-tree-item.active {
+    @apply bg-primary/20 text-primary;
+  }
+
+  .panel-tab {
+    @apply px-3 py-1.5 text-xs font-medium uppercase tracking-wider transition-colors duration-150 border-b-2 border-transparent;
+  }
+
+  .panel-tab.active {
+    @apply text-foreground border-primary;
+  }
+
+  .panel-tab:not(.active) {
+    @apply text-muted-foreground hover:text-foreground;
+  }
+
+  .status-bar {
+    @apply h-6 bg-primary text-primary-foreground text-xs flex items-center px-2 gap-4;
+  }
+
+  .command-palette-overlay {
+    @apply fixed inset-0 bg-background/80 backdrop-blur-sm z-50;
+  }
+
+  .command-palette {
+    @apply fixed top-1/4 left-1/2 -translate-x-1/2 w-full max-w-xl bg-card border border-border rounded-lg shadow-2xl overflow-hidden z-50;
+  }
+
+  /* Resize Handle Styles */
+  .resize-handle {
+    @apply transition-all duration-150;
+  }
+
+  .resize-handle:hover {
+    @apply bg-primary/30;
+  }
+
+  .resize-handle.resizing {
+    @apply bg-primary/50;
+  }
+
+  .resize-handle-horizontal {
+    @apply absolute top-0 right-0 w-1 h-full cursor-col-resize;
+  }
+
+  .resize-handle-horizontal:hover {
+    @apply w-2;
+  }
+
+  .resize-handle-vertical {
+    @apply absolute bottom-0 left-0 w-full h-1 cursor-row-resize;
+  }
+
+  .resize-handle-vertical:hover {
+    @apply h-2;
+  }
+}
+
+@layer utilities {
+  .font-code {
+    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.15s ease-out;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.2s ease-out;
+  }
+
+  .animate-slide-down {
+    animation: slideDown 0.2s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}

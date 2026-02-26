@@ -1,0 +1,91 @@
+{
+  "appId": "com.susa.ide",
+  "productName": "SUSA IDE",
+  "directories": {
+    "output": "dist-electron"
+  },
+  "files": [
+    "dist/**/*",
+    "public/electron.cjs",
+    "public/preload.cjs", 
+    "public/susa-interpreter.cjs",
+    "modules/**/*",
+    "node_modules/**/*",
+    "!node_modules/.cache/**/*",
+    "!node_modules/.vite/**/*",
+    {
+      "from": "dist",
+      "to": ".",
+      "filter": ["**/*"]
+    }
+  ],
+  "extraFiles": [
+    {
+      "from": "../../susa-cpp.exe",
+      "to": "susa-cpp.exe"
+    },
+    {
+      "from": "../../modules",
+      "to": "modules",
+      "filter": ["**/*.susa", "**/*.json"]
+    },
+    {
+      "from": "../../examples",
+      "to": "examples",
+      "filter": ["**/*.susa"]
+    }
+  ],
+  "win": {
+    "target": [
+      {
+        "target": "nsis",
+        "arch": ["x64"]
+      }
+    ],
+    "icon": "public/susa-logo.ico",
+    "requestedExecutionLevel": "requireAdministrator"
+  },
+  "nsis": {
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true,
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true,
+    "shortcutName": "SUSA IDE",
+    "installerIcon": "public/susa-logo.ico",
+    "uninstallerIcon": "public/susa-logo.ico",
+    "installerHeaderIcon": "public/susa-logo.ico",
+    "deleteAppDataOnUninstall": false,
+    "runAfterFinish": true,
+    "menuCategory": "Development",
+    "artifactName": "SUSA-IDE-Desktop-App-${version}.exe",
+    "license": "../../LICENSE",
+    "warningsAsErrors": false,
+    "perMachine": true,
+    "allowElevation": true
+  },
+  "mac": {
+    "category": "public.app-category.developer-tools",
+    "icon": "public/susa-icon.icns",
+    "target": [
+      {
+        "target": "dmg",
+        "arch": ["x64", "arm64"]
+      }
+    ]
+  },
+  "linux": {
+    "target": [
+      {
+        "target": "AppImage",
+        "arch": ["x64"]
+      },
+      {
+        "target": "deb",
+        "arch": ["x64"]
+      }
+    ],
+    "icon": "public/susa-icon.png",
+    "category": "Development"
+  },
+  "publish": null
+}

@@ -1,0 +1,121 @@
+/* Desktop App Styles - Hide web-like elements */
+
+/* Hide scrollbars to look more native */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Remove text selection highlighting that looks too web-like */
+.desktop-app {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Allow text selection only in editor areas */
+.monaco-editor,
+.terminal,
+.output-panel,
+input,
+textarea {
+  -webkit-user-select: text !important;
+  user-select: text !important;
+}
+
+/* Hide any web-specific elements */
+.web-only {
+  display: none !important;
+}
+
+/* Make the app feel more native */
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+/* Remove web-like focus outlines */
+button:focus,
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+}
+
+/* Native-like window controls */
+.window-controls {
+  -webkit-app-region: no-drag;
+}
+
+.titlebar {
+  -webkit-app-region: drag;
+}
+
+/* Disable context menu on non-interactive elements */
+.no-context-menu {
+  -webkit-context-menu: none;
+}
+
+/* Hide any development/debug elements in production */
+.debug-info,
+.dev-tools,
+.inspector-panel {
+  display: none !important;
+}
+
+/* Make panels look more native */
+.panel {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+}
+
+/* Native-like buttons */
+.native-button {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  padding: 6px 12px;
+  color: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.native-button:hover {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.1) 100%);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.native-button:active {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.1) 100%);
+  transform: translateY(1px);
+}
+
+/* Hide web browser specific elements */
+.web-browser-only,
+.url-bar,
+.browser-controls {
+  display: none !important;
+}
+
+/* Make the IDE feel like a native desktop application */
+.ide-container {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background: var(--background-color, #1a1625);
+}
