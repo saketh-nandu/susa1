@@ -3,7 +3,11 @@
   "private": true,
   "version": "1.0.0",
   "description": "SUSA IDE - Professional Development Environment for SUSA Programming Language",
-  "author": "SUSA Development Team",
+  "author": {
+    "name": "SUSA Development Team",
+    "email": "contact@susastudio.online"
+  },
+  "maintainer": "SUSA Development Team <contact@susastudio.online>",
   "type": "module",
   "main": "public/electron.cjs",
   "homepage": "./",
