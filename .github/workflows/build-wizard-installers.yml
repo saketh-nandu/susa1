@@ -291,17 +291,47 @@ jobs:
           
           productbuild --distribution distribution-cli.xml --resources . SUSA-CLI-1.0.0.pkg
           
-          # 2. IDE (DMG - already has logo)
+          # 2. IDE PKG
+          mkdir -p susa-ide-pkg/Applications
+          if [ -d susa-ide/remix-of-susa-studio-ide-main/dist-electron/mac*/*.app ]; then
+            cp -r susa-ide/remix-of-susa-studio-ide-main/dist-electron/mac*/*.app susa-ide-pkg/Applications/ 2>/dev/null || true
+          fi
+          pkgbuild --root susa-ide-pkg --identifier com.susa.ide --version 1.0.0 --install-location / SUSA-IDE-1.0.0-component.pkg
+          
+          cat > distribution-ide.xml << 'EOF'
+          <?xml version="1.0"?>
+          <installer-gui-script minSpecVersion="1">
+              <title>SUSA IDE v1.0.0</title>
+              <organization>com.susa</organization>
+              <welcome file="welcome.html"/>
+              <license file="license.txt"/>
+              <conclusion file="conclusion.html"/>
+              <background file="susa-logo.png" alignment="bottomleft" scaling="none"/>
+              <pkg-ref id="com.susa.ide"/>
+              <choices-outline><line choice="com.susa.ide"/></choices-outline>
+              <choice id="com.susa.ide" title="SUSA IDE"><pkg-ref id="com.susa.ide"/></choice>
+              <pkg-ref id="com.susa.ide">SUSA-IDE-1.0.0-component.pkg</pkg-ref>
+          </installer-gui-script>
+          EOF
+          
+          productbuild --distribution distribution-ide.xml --resources . SUSA-IDE-1.0.0.pkg
+          
+          # Also keep DMG for IDE
           if [ -f susa-ide/remix-of-susa-studio-ide-main/dist-electron/*.dmg ]; then
             cp susa-ide/remix-of-susa-studio-ide-main/dist-electron/*.dmg SUSA-IDE-1.0.0.dmg
           fi
           
-          # 3. Complete PKG
+          # 3. Complete PKG (CLI + IDE)
           mkdir -p susa-complete-pkg/usr/local/bin
           mkdir -p susa-complete-pkg/usr/local/share/susa/{modules,examples}
+          mkdir -p susa-complete-pkg/Applications
           cp cpp-core/susa susa-complete-pkg/usr/local/bin/
           if [ -d "modules" ]; then cp -r modules/* susa-complete-pkg/usr/local/share/susa/modules/ 2>/dev/null || true; fi
           if [ -d "examples" ]; then cp -r examples/* susa-complete-pkg/usr/local/share/susa/examples/ 2>/dev/null || true; fi
+          # Copy IDE app if it exists
+          if [ -d susa-ide/remix-of-susa-studio-ide-main/dist-electron/mac*/*.app ]; then
+            cp -r susa-ide/remix-of-susa-studio-ide-main/dist-electron/mac*/*.app susa-complete-pkg/Applications/ 2>/dev/null || true
+          fi
           pkgbuild --root susa-complete-pkg --identifier com.susa.complete --version 1.0.0 --install-location / SUSA-Complete-1.0.0-component.pkg
           
           cat > distribution-complete.xml << 'EOF'
@@ -328,5 +358,6 @@ jobs:
           name: macos-pkg-all
           path: |
             SUSA-CLI-1.0.0.pkg
+            SUSA-IDE-1.0.0.pkg
             SUSA-IDE-1.0.0.dmg
             SUSA-Complete-1.0.0.pkg
