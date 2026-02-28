@@ -48,62 +48,111 @@ jobs:
           
           Write-Host "=== Preparing Complete Installer ===" -ForegroundColor Cyan
           
-          # Create resources directory for CLI
-          New-Item -ItemType Directory -Force -Path "resources-cli"
+          # Copy CLI binary and resources directly to public folder
+          Write-Host "Copying CLI files..."
+          Copy-Item "../../cpp-core/susa.exe" "public/susa.exe" -Force
+          Copy-Item -Recurse "../../examples" "public/examples" -Force
+          Copy-Item -Recurse "../../modules" "public/modules" -Force
           
-          # Copy CLI binary and resources
-          Copy-Item "../../cpp-core/susa.exe" "resources-cli/susa.exe"
-          Copy-Item -Recurse "../../examples" "resources-cli/" -Force
-          Copy-Item -Recurse "../../modules" "resources-cli/" -Force
-          
-          Write-Host "✅ CLI files copied to resources-cli/"
+          Write-Host "✅ CLI files copied to public/"
           
           # Copy branding files
           if (-not (Test-Path "public/susa-icon.ico")) {
             Copy-Item "../../susa logo.ico" "public/susa-icon.ico"
           }
           
-          # Copy sidebar BMP to root (where electron-builder expects it)
+          # Copy sidebar BMP to root
           Copy-Item "../../susa-sidebar.bmp" "susa-sidebar.bmp" -Force
           
           Write-Host "✅ Branding files ready"
           
-          # Update package.json for Complete edition
-          $pkg = Get-Content "package.json" -Raw | ConvertFrom-Json
+          # Read package.json
+          $pkgContent = Get-Content "package.json" -Raw
+          $pkg = $pkgContent | ConvertFrom-Json
           
-          # Change product name
+          # Change product name and description
           $pkg.build.productName = "SUSA Complete"
           $pkg.name = "susa-complete"
           $pkg.description = "SUSA Programming Language - Complete Edition (CLI + IDE)"
           
-          # Add CLI files as extraResources
-          $pkg.build | Add-Member -MemberType NoteProperty -Name "extraResources" -Value @(
-            @{
-              "from" = "resources-cli"
-              "to" = "cli"
-            }
-          ) -Force
+          # Ensure extraResources exists and add CLI files
+          if (-not $pkg.build.PSObject.Properties['extraResources']) {
+            $pkg.build | Add-Member -MemberType NoteProperty -Name "extraResources" -Value @()
+          }
           
-          # Update NSIS config
+          $pkg.build.extraResources = @(
+            @{
+              "from" = "public/susa.exe"
+              "to" = "cli/susa.exe"
+            },
+            @{
+              "from" = "public/examples"
+              "to" = "cli/examples"
+            },
+            @{
+              "from" = "public/modules"
+              "to" = "cli/modules"
+            }
+          )
+          
+          # Update sidebar path
           $pkg.build.nsis.installerSidebar = "susa-sidebar.bmp"
           
-          # Save updated package.json
-          $pkg | ConvertTo-Json -Depth 10 | Set-Content "package.json"
+          # Save with proper formatting
+          $jsonOutput = $pkg | ConvertTo-Json -Depth 10
+          [System.IO.File]::WriteAllText("$PWD\package.json", $jsonOutput, [System.Text.Encoding]::UTF8)
           
-          Write-Host "✅ package.json updated for Complete edition"
+          Write-Host "✅ package.json updated"
+          Write-Host "`npackage.json extraResources:"
+          $pkg.build.extraResources | ConvertTo-Json
           
           # Copy complete installer NSIS script
           Copy-Item "../../complete-installer.nsh" "installer.nsh" -Force
           
           Write-Host "✅ Complete installer configured"
+          
+          # Verify files exist
+          Write-Host "`nVerifying files:"
+          Write-Host "  susa.exe: $(Test-Path 'public/susa.exe')"
+          Write-Host "  examples: $(Test-Path 'public/examples')"
+          Write-Host "  modules: $(Test-Path 'public/modules')"
+          Write-Host "  sidebar: $(Test-Path 'susa-sidebar.bmp')"
       
       - name: Build Complete Installer
         run: |
           cd susa-ide/remix-of-susa-studio-ide-main
+          
+          Write-Host "`n=== Building Complete Installer ===" -ForegroundColor Cyan
+          
+          # Show what will be included
+          Write-Host "`nFiles to be packaged:"
+          Get-ChildItem -Path "public" -Recurse -File | Select-Object FullName, @{Name="Size(MB)";Expression={[math]::Round($_.Length/1MB, 2)}} | Format-Table
+          
           npm install
           npm run dist:win
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Verify Complete Installer Contents
+        run: |
+          cd susa-ide/remix-of-susa-studio-ide-main
+          
+          Write-Host "`n=== Verifying Installer Contents ===" -ForegroundColor Cyan
+          
+          # Check dist-electron folder
+          if (Test-Path "dist-electron") {
+            Write-Host "`nFiles in dist-electron:"
+            Get-ChildItem -Path "dist-electron" -Recurse | Select-Object FullName, @{Name="Size(MB)";Expression={[math]::Round($_.Length/1MB, 2)}}
+          }
+          
+          # Check if resources folder was created
+          $winUnpacked = Get-ChildItem -Path "dist-electron" -Directory -Filter "*win-unpacked" | Select-Object -First 1
+          if ($winUnpacked) {
+            Write-Host "`nChecking unpacked resources:"
+            if (Test-Path "$($winUnpacked.FullName)\resources") {
+              Get-ChildItem -Path "$($winUnpacked.FullName)\resources" -Recurse | Select-Object FullName
+            }
+          }
       
       - name: Find and rename installer
         run: |
