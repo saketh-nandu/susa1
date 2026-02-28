@@ -108,7 +108,8 @@ jobs:
               "uninstallerIcon": "public/susa-icon.ico",
               "installerSidebar": "susa-sidebar.bmp",
               "include": "installer.nsh"
-            }
+            },
+            "publish": null
           }
           "@ | Out-File -FilePath "electron-builder-complete.json" -Encoding UTF8
           
