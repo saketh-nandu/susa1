@@ -83,14 +83,12 @@ jobs:
               "nsis": {
                 "oneClick": false,
                 "allowToChangeInstallationDirectory": true,
-                "createDesktopShortcut": "ask",
+                "createDesktopShortcut": true,
                 "createStartMenuShortcut": true,
                 "installerIcon": "icon.ico",
                 "uninstallerIcon": "icon.ico",
                 "installerSidebar": "sidebar.bmp",
-                "license": "LICENSE.txt",
-                "perMachine": false,
-                "allowElevation": true
+                "license": "LICENSE.txt"
               },
               "files": [
                 "**/*"
