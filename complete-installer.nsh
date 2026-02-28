@@ -1,7 +1,7 @@
 !macro customInstall
-  ; Add SUSA CLI to PATH via registry (points to cli folder in resources)
+  ; Add SUSA CLI to PATH via registry (CLI is in resources\app.asar.unpacked\dist\cli)
   ReadRegStr $0 HKCU "Environment" "PATH"
-  WriteRegExpandStr HKCU "Environment" "PATH" "$INSTDIR\resources\cli;$0"
+  WriteRegExpandStr HKCU "Environment" "PATH" "$INSTDIR\resources\app.asar.unpacked\dist\cli;$0"
   SendMessage ${HWND_BROADCAST} ${WM_WININICHANGE} 0 "STR:Environment" /TIMEOUT=5000
   
   ; Register .susa file association

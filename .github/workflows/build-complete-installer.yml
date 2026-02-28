@@ -109,20 +109,6 @@ jobs:
               "public/susa-interpreter.cjs",
               "node_modules/**/*"
             ],
-            "extraResources": [
-              {
-                "from": "public/susa.exe",
-                "to": "cli/susa.exe"
-              },
-              {
-                "from": "public/examples",
-                "to": "cli/examples"
-              },
-              {
-                "from": "public/modules",
-                "to": "cli/modules"
-              }
-            ],
             "win": {
               "target": "nsis",
               "icon": "public/susa-icon.ico"
@@ -173,19 +159,38 @@ jobs:
           if (Test-Path "dist") {
             $distSize = (Get-ChildItem -Path "dist" -Recurse -File | Measure-Object -Property Length -Sum).Sum
             Write-Host "  IDE dist size: $([math]::Round($distSize/1MB, 2)) MB"
+            
+            # Copy CLI files directly into dist folder
+            Write-Host "`nCopying CLI files into dist/cli..."
+            New-Item -ItemType Directory -Force -Path "dist/cli"
+            Copy-Item "public/susa.exe" "dist/cli/susa.exe" -Force
+            
+            if (Test-Path "public/examples") {
+              Copy-Item -Recurse "public/examples" "dist/cli/examples" -Force
+              Write-Host "  ✅ Examples copied to dist/cli/"
+            }
+            
+            if (Test-Path "public/modules") {
+              Copy-Item -Recurse "public/modules" "dist/cli/modules" -Force
+              Write-Host "  ✅ Modules copied to dist/cli/"
+            }
+            
+            # Verify CLI files in dist
+            Write-Host "`nCLI files in dist/cli:"
+            Get-ChildItem -Path "dist/cli" | ForEach-Object {
+              if ($_.PSIsContainer) {
+                $count = (Get-ChildItem -Path $_.FullName -Recurse -File).Count
+                Write-Host "  - $($_.Name)/ ($count files)"
+              } else {
+                Write-Host "  - $($_.Name) ($([math]::Round($_.Length/1KB, 2)) KB)"
+              }
+            }
+            
+            $totalSize = (Get-ChildItem -Path "dist" -Recurse -File | Measure-Object -Property Length -Sum).Sum
+            Write-Host "`nTotal dist size (IDE + CLI): $([math]::Round($totalSize/1MB, 2)) MB"
           } else {
             Write-Host "  ⚠️ dist folder not found!"
-          }
-          
-          # Show what will be packaged
-          Write-Host "`nFiles to be packaged:"
-          Write-Host "  IDE: dist/ folder"
-          Write-Host "  CLI: public/susa.exe"
-          if (Test-Path "public/examples") {
-            Write-Host "  Examples: public/examples/"
-          }
-          if (Test-Path "public/modules") {
-            Write-Host "  Modules: public/modules/"
+            exit 1
           }
           
           # Build installer using electron-builder
