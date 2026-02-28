@@ -131,12 +131,30 @@ jobs:
       
       - name: Find and rename installer
         run: |
-          $installer = Get-ChildItem -Path "cli-electron-app/dist" -Filter "*.exe" -Recurse | Where-Object { $_.Name -notlike "*blockmap" } | Select-Object -First 1
+          # List all files to debug
+          Write-Host "=== Listing cli-electron-app directory ==="
+          Get-ChildItem -Path "cli-electron-app" -Recurse -Filter "*.exe" | Select-Object FullName, Length
+          
+          # Try multiple possible locations
+          $installer = $null
+          $searchPaths = @("cli-electron-app/dist", "cli-electron-app/dist-electron", "cli-electron-app/out")
+          
+          foreach ($path in $searchPaths) {
+            if (Test-Path $path) {
+              Write-Host "Searching in: $path"
+              $installer = Get-ChildItem -Path $path -Filter "*.exe" -Recurse | Where-Object { $_.Name -notlike "*blockmap" -and $_.Name -notlike "*uninstaller*" } | Select-Object -First 1
+              if ($installer) {
+                Write-Host "Found installer: $($installer.FullName)"
+                break
+              }
+            }
+          }
+          
           if ($installer) {
             Copy-Item $installer.FullName -Destination "susa-cli-${{ env.SUSA_VERSION }}-windows.exe"
-            Write-Host "✅ CLI installer created"
+            Write-Host "✅ CLI installer created: susa-cli-${{ env.SUSA_VERSION }}-windows.exe"
           } else {
-            Write-Error "Installer not found!"
+            Write-Error "Installer not found in any expected location!"
             exit 1
           }
       
@@ -169,10 +187,14 @@ jobs:
       
       - name: Find and rename installer
         run: |
-          $installer = Get-ChildItem -Path "susa-ide/remix-of-susa-studio-ide-main/dist-electron" -Filter "*.exe" -Recurse | Where-Object { $_.Name -notlike "*blockmap" } | Select-Object -First 1
+          # List all files to debug
+          Write-Host "=== Listing IDE dist directory ==="
+          Get-ChildItem -Path "susa-ide/remix-of-susa-studio-ide-main" -Recurse -Filter "*.exe" | Select-Object FullName, Length
+          
+          $installer = Get-ChildItem -Path "susa-ide/remix-of-susa-studio-ide-main/dist-electron" -Filter "*.exe" -Recurse | Where-Object { $_.Name -notlike "*blockmap" -and $_.Name -notlike "*uninstaller*" } | Select-Object -First 1
           if ($installer) {
             Copy-Item $installer.FullName -Destination "susa-ide-${{ env.SUSA_VERSION }}-windows.exe"
-            Write-Host "✅ IDE installer created"
+            Write-Host "✅ IDE installer created: susa-ide-${{ env.SUSA_VERSION }}-windows.exe"
           } else {
             Write-Error "Installer not found!"
             exit 1
@@ -273,10 +295,14 @@ jobs:
       
       - name: Find and rename installer
         run: |
-          $installer = Get-ChildItem -Path "susa-ide/remix-of-susa-studio-ide-main/dist-electron" -Filter "*.exe" -Recurse | Where-Object { $_.Name -notlike "*blockmap" } | Select-Object -First 1
+          # List all files to debug
+          Write-Host "=== Listing Complete dist directory ==="
+          Get-ChildItem -Path "susa-ide/remix-of-susa-studio-ide-main" -Recurse -Filter "*.exe" | Select-Object FullName, Length
+          
+          $installer = Get-ChildItem -Path "susa-ide/remix-of-susa-studio-ide-main/dist-electron" -Filter "*.exe" -Recurse | Where-Object { $_.Name -notlike "*blockmap" -and $_.Name -notlike "*uninstaller*" } | Select-Object -First 1
           if ($installer) {
             Copy-Item $installer.FullName -Destination "susa-complete-${{ env.SUSA_VERSION }}-windows.exe"
-            Write-Host "✅ Complete installer created"
+            Write-Host "✅ Complete installer created: susa-complete-${{ env.SUSA_VERSION }}-windows.exe"
           } else {
             Write-Error "Installer not found!"
             exit 1
