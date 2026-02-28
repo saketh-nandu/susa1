@@ -161,13 +161,35 @@ jobs:
           
           Write-Host "`n=== Building Complete Installer ===" -ForegroundColor Cyan
           
-          # Show what will be included
-          Write-Host "`nFiles to be packaged:"
-          Get-ChildItem -Path "public" -Recurse -File | Select-Object FullName, @{Name="Size(MB)";Expression={[math]::Round($_.Length/1MB, 2)}} | Format-Table
-          
+          # Install dependencies
+          Write-Host "Installing dependencies..."
           npm install
           
-          # Build using separate config file
+          # Build the IDE first (Vite build)
+          Write-Host "`nBuilding IDE application..."
+          npm run build
+          
+          Write-Host "`nIDE build complete. Checking dist folder..."
+          if (Test-Path "dist") {
+            $distSize = (Get-ChildItem -Path "dist" -Recurse -File | Measure-Object -Property Length -Sum).Sum
+            Write-Host "  IDE dist size: $([math]::Round($distSize/1MB, 2)) MB"
+          } else {
+            Write-Host "  ⚠️ dist folder not found!"
+          }
+          
+          # Show what will be packaged
+          Write-Host "`nFiles to be packaged:"
+          Write-Host "  IDE: dist/ folder"
+          Write-Host "  CLI: public/susa.exe"
+          if (Test-Path "public/examples") {
+            Write-Host "  Examples: public/examples/"
+          }
+          if (Test-Path "public/modules") {
+            Write-Host "  Modules: public/modules/"
+          }
+          
+          # Build installer using electron-builder
+          Write-Host "`nPackaging with electron-builder..."
           npx electron-builder --win --config electron-builder-complete.json
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
