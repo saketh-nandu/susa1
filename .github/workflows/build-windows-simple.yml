@@ -75,11 +75,8 @@ jobs:
                 "createStartMenuShortcut": true,
                 "installerIcon": "icon.ico",
                 "uninstallerIcon": "icon.ico",
-                "installerHeaderIcon": "icon.ico",
                 "installerSidebar": "sidebar.png",
-                "uninstallerSidebar": "sidebar.png",
                 "license": "LICENSE.txt",
-                "displayLanguageSelector": false,
                 "perMachine": false,
                 "allowElevation": true,
                 "include": "installer.nsh"
