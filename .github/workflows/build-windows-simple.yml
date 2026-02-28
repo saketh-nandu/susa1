@@ -47,10 +47,22 @@ jobs:
           # Create a minimal electron app for CLI
           New-Item -ItemType Directory -Force -Path "cli-electron-app"
           
+          # Convert PNG to BMP for NSIS (164x314 pixels required)
+          Add-Type -AssemblyName System.Drawing
+          $png = [System.Drawing.Image]::FromFile("$PWD\susa-side-panel.png")
+          $bmp = New-Object System.Drawing.Bitmap(164, 314)
+          $graphics = [System.Drawing.Graphics]::FromImage($bmp)
+          $graphics.DrawImage($png, 0, 0, 164, 314)
+          $bmp.Save("$PWD\cli-electron-app\sidebar.bmp", [System.Drawing.Imaging.ImageFormat]::Bmp)
+          $graphics.Dispose()
+          $bmp.Dispose()
+          $png.Dispose()
+          
           # Copy SUSA branding files
           Copy-Item "susa logo.ico" "cli-electron-app/icon.ico"
-          Copy-Item "susa-side-panel.png" "cli-electron-app/sidebar.png"
           Copy-Item "LICENSE" "cli-electron-app/LICENSE.txt"
+          
+          Write-Host "✅ Sidebar BMP created: $(Get-Item 'cli-electron-app/sidebar.bmp' | Select-Object -ExpandProperty Length) bytes"
           
           # Create package.json with proper paths
           @"
@@ -75,11 +87,10 @@ jobs:
                 "createStartMenuShortcut": true,
                 "installerIcon": "icon.ico",
                 "uninstallerIcon": "icon.ico",
-                "installerSidebar": "sidebar.png",
+                "installerSidebar": "sidebar.bmp",
                 "license": "LICENSE.txt",
                 "perMachine": false,
-                "allowElevation": true,
-                "include": "installer.nsh"
+                "allowElevation": true
               },
               "files": [
                 "**/*"
@@ -111,24 +122,6 @@ jobs:
             app.quit();
           });
           "@ | Out-File -FilePath "cli-electron-app/main.js" -Encoding UTF8
-          
-          # Create NSIS script for PATH addition
-          @"
-          !macro customInstall
-            ; Add SUSA to PATH
-            EnVar::SetHKCU
-            EnVar::AddValue "PATH" "`$INSTDIR\resources"
-            Pop `$0
-            DetailPrint "Added SUSA to PATH: `$0"
-          !macroend
-          
-          !macro customUnInstall
-            ; Remove SUSA from PATH
-            EnVar::SetHKCU
-            EnVar::DeleteValue "PATH" "`$INSTDIR\resources"
-            Pop `$0
-          !macroend
-          "@ | Out-File -FilePath "cli-electron-app/installer.nsh" -Encoding UTF8
       
       - name: Install dependencies and build
         run: |
@@ -226,47 +219,13 @@ jobs:
           Copy-Item -Recurse "../../examples" "public/" -Force
           Copy-Item -Recurse "../../modules" "public/" -Force
           
-          # Ensure branding files are present
+          # Ensure branding files are present (BMP format for sidebar)
           if (-not (Test-Path "public/susa-icon.ico")) {
             Copy-Item "../../susa logo.ico" "public/susa-icon.ico"
           }
-          if (-not (Test-Path "public/susa-sidebar.png")) {
-            Copy-Item "../../susa-side-panel.png" "public/susa-sidebar.png"
+          if (-not (Test-Path "public/susa-sidebar.bmp")) {
+            Copy-Item "../../susa-sidebar.bmp" "public/susa-sidebar.bmp"
           }
-          
-          # Create NSIS script for Complete installer (PATH + file associations)
-          @"
-          !macro customInstall
-            ; Add SUSA CLI to PATH
-            EnVar::SetHKCU
-            EnVar::AddValue "PATH" "`$INSTDIR\resources"
-            Pop `$0
-            DetailPrint "Added SUSA to PATH: `$0"
-            
-            ; Register .susa file association
-            WriteRegStr HKCU "Software\Classes\.susa" "" "SUSA.File"
-            WriteRegStr HKCU "Software\Classes\SUSA.File" "" "SUSA Source File"
-            WriteRegStr HKCU "Software\Classes\SUSA.File\DefaultIcon" "" "`$INSTDIR\`${APP_EXECUTABLE_FILENAME},0"
-            WriteRegStr HKCU "Software\Classes\SUSA.File\shell\open\command" "" '"`$INSTDIR\`${APP_EXECUTABLE_FILENAME}" "%1"'
-            
-            ; Refresh shell icons
-            System::Call 'shell32.dll::SHChangeNotify(i, i, i, i) v (0x08000000, 0, 0, 0)'
-          !macroend
-          
-          !macro customUnInstall
-            ; Remove SUSA from PATH
-            EnVar::SetHKCU
-            EnVar::DeleteValue "PATH" "`$INSTDIR\resources"
-            Pop `$0
-            
-            ; Remove .susa file association
-            DeleteRegKey HKCU "Software\Classes\.susa"
-            DeleteRegKey HKCU "Software\Classes\SUSA.File"
-            
-            ; Refresh shell icons
-            System::Call 'shell32.dll::SHChangeNotify(i, i, i, i) v (0x08000000, 0, 0, 0)'
-          !macroend
-          "@ | Out-File -FilePath "installer.nsh" -Encoding UTF8
           
           # Build IDE with embedded CLI
           npm install

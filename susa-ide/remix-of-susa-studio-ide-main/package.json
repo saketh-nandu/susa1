@@ -139,10 +139,9 @@
       "createStartMenuShortcut": true,
       "installerIcon": "public/susa-icon.ico",
       "uninstallerIcon": "public/susa-icon.ico",
-      "installerSidebar": "public/susa-sidebar.png",
+      "installerSidebar": "public/susa-sidebar.bmp",
       "perMachine": false,
-      "allowElevation": true,
-      "include": "installer.nsh"
+      "allowElevation": true
     }
   }
 }
