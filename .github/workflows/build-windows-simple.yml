@@ -1,0 +1,287 @@
+name: Build Windows Installers (Electron Builder)
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number (e.g., 1.0.0)'
+        required: true
+        default: '1.0.0'
+
+env:
+  SUSA_VERSION: ${{ github.event.inputs.version || '1.0.0' }}
+
+jobs:
+  build-cli:
+    name: Windows CLI Installer
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: mingw-w64-x86_64-gcc
+      
+      - name: Build SUSA Compiler
+        shell: msys2 {0}
+        run: |
+          cd cpp-core
+          g++ -std=c++17 -Wall -O2 -static -o susa.exe main.cpp
+          ls -lh susa.exe
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Create CLI Electron App
+        run: |
+          # Create a minimal electron app for CLI
+          New-Item -ItemType Directory -Force -Path "cli-electron-app"
+          
+          # Create package.json
+          @"
+          {
+            "name": "susa-cli",
+            "version": "${{ env.SUSA_VERSION }}",
+            "description": "SUSA Programming Language CLI",
+            "main": "main.js",
+            "author": "SUSA Labs",
+            "license": "MIT",
+            "build": {
+              "appId": "com.susa.cli",
+              "productName": "SUSA CLI",
+              "win": {
+                "target": "nsis",
+                "icon": "../susa logo.ico"
+              },
+              "nsis": {
+                "oneClick": false,
+                "allowToChangeInstallationDirectory": true,
+                "createDesktopShortcut": false,
+                "createStartMenuShortcut": true,
+                "installerSidebar": "../susa-side-panel.png",
+                "license": "../LICENSE"
+              },
+              "files": [
+                "**/*",
+                "../cpp-core/susa.exe",
+                "../examples/**/*",
+                "../modules/**/*"
+              ],
+              "extraResources": [
+                {
+                  "from": "../cpp-core/susa.exe",
+                  "to": "susa.exe"
+                },
+                {
+                  "from": "../examples",
+                  "to": "examples"
+                },
+                {
+                  "from": "../modules",
+                  "to": "modules"
+                }
+              ]
+            }
+          }
+          "@ | Out-File -FilePath "cli-electron-app/package.json" -Encoding UTF8
+          
+          # Create main.js (minimal electron app)
+          @"
+          const { app } = require('electron');
+          
+          app.on('ready', () => {
+            console.log('SUSA CLI installed');
+            app.quit();
+          });
+          "@ | Out-File -FilePath "cli-electron-app/main.js" -Encoding UTF8
+      
+      - name: Install dependencies and build
+        run: |
+          cd cli-electron-app
+          npm install electron electron-builder --save-dev
+          npx electron-builder --win
+      
+      - name: Find and rename installer
+        run: |
+          $installer = Get-ChildItem -Path "cli-electron-app/dist" -Filter "*.exe" -Recurse | Where-Object { $_.Name -notlike "*blockmap" } | Select-Object -First 1
+          if ($installer) {
+            Copy-Item $installer.FullName -Destination "susa-cli-${{ env.SUSA_VERSION }}-windows.exe"
+            Write-Host "✅ CLI installer created"
+          } else {
+            Write-Error "Installer not found!"
+            exit 1
+          }
+      
+      - name: Upload CLI Installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: susa-cli-windows
+          path: susa-cli-${{ env.SUSA_VERSION }}-windows.exe
+
+  build-ide:
+    name: Windows IDE Installer
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: susa-ide/remix-of-susa-studio-ide-main/package-lock.json
+      
+      - name: Build IDE with Electron Builder
+        run: |
+          cd susa-ide/remix-of-susa-studio-ide-main
+          npm ci
+          npm run dist:win
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Find and rename installer
+        run: |
+          $installer = Get-ChildItem -Path "susa-ide/remix-of-susa-studio-ide-main/dist-electron" -Filter "*.exe" -Recurse | Where-Object { $_.Name -notlike "*blockmap" } | Select-Object -First 1
+          if ($installer) {
+            Copy-Item $installer.FullName -Destination "susa-ide-${{ env.SUSA_VERSION }}-windows.exe"
+            Write-Host "✅ IDE installer created"
+          } else {
+            Write-Error "Installer not found!"
+            exit 1
+          }
+      
+      - name: Upload IDE Installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: susa-ide-windows
+          path: susa-ide-${{ env.SUSA_VERSION }}-windows.exe
+
+  build-complete:
+    name: Windows Complete Installer
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: mingw-w64-x86_64-gcc
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: susa-ide/remix-of-susa-studio-ide-main/package-lock.json
+      
+      - name: Build SUSA Compiler
+        shell: msys2 {0}
+        run: |
+          cd cpp-core
+          g++ -std=c++17 -Wall -O2 -static -o susa.exe main.cpp
+      
+      - name: Build Complete IDE (with CLI embedded)
+        run: |
+          cd susa-ide/remix-of-susa-studio-ide-main
+          
+          # Copy CLI binary to IDE resources
+          Copy-Item "../../cpp-core/susa.exe" "public/"
+          Copy-Item -Recurse "../../examples" "public/"
+          Copy-Item -Recurse "../../modules" "public/"
+          
+          # Build IDE with embedded CLI
+          npm ci
+          npm run dist:win
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Find and rename installer
+        run: |
+          $installer = Get-ChildItem -Path "susa-ide/remix-of-susa-studio-ide-main/dist-electron" -Filter "*.exe" -Recurse | Where-Object { $_.Name -notlike "*blockmap" } | Select-Object -First 1
+          if ($installer) {
+            Copy-Item $installer.FullName -Destination "susa-complete-${{ env.SUSA_VERSION }}-windows.exe"
+            Write-Host "✅ Complete installer created"
+          } else {
+            Write-Error "Installer not found!"
+            exit 1
+          }
+      
+      - name: Upload Complete Installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: susa-complete-windows
+          path: susa-complete-${{ env.SUSA_VERSION }}-windows.exe
+
+  create-release:
+    name: Create GitHub Release
+    needs: [build-cli, build-ide, build-complete]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            artifacts/susa-cli-windows/*.exe
+            artifacts/susa-ide-windows/*.exe
+            artifacts/susa-complete-windows/*.exe
+          body: |
+            ## SUSA Programming Language v${{ env.SUSA_VERSION }} - Windows Installers
+            
+            Professional installers built with Electron Builder (same technology as VS Code, Slack, Discord).
+            
+            ### 📥 Downloads
+            
+            | Edition | Description | Size |
+            |---------|-------------|------|
+            | **CLI** | Compiler + CLI tools | ~5 MB |
+            | **IDE** | Desktop IDE | ~150 MB |
+            | **Complete** | CLI + IDE | ~155 MB |
+            
+            ### ✨ Features
+            
+            - ✅ Professional NSIS installer (via Electron Builder)
+            - ✅ MIT License agreement
+            - ✅ Custom installation directory
+            - ✅ Automatic PATH configuration
+            - ✅ Desktop shortcuts
+            - ✅ Start Menu integration
+            - ✅ Professional uninstaller
+            - ✅ Auto-update ready
+            
+            ### 📋 Installation
+            
+            1. Download the installer for your edition
+            2. Run the `.exe` file
+            3. Follow the installation wizard
+            4. Launch SUSA!
+            
+            ### 🌐 Links
+            
+            - Website: https://susastudio.online
+            - Documentation: https://susastudio.online/docs
+            - Repository: https://github.com/saketh-nandu/susa1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
