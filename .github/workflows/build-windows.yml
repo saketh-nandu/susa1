@@ -46,17 +46,11 @@ jobs:
           }
           Write-Host "✅ CLI binary verified"
       
-      - name: Install NSIS
-        run: |
-          choco install nsis -y
-          $env:PATH = "C:\Program Files (x86)\NSIS;$env:PATH"
-          Write-Host "✅ NSIS installed"
-      
       - name: Build NSIS Installer
-        run: |
-          $env:PATH = "C:\Program Files (x86)\NSIS;$env:PATH"
-          cd installers/windows/cli
-          makensis susa-cli.nsi
+        uses: joncloud/makensis-action@v4
+        with:
+          script-file: installers/windows/cli/susa-cli.nsi
+          arguments: "/V4"
       
       - name: Verify installer
         run: |
@@ -211,17 +205,11 @@ jobs:
           }
           Write-Host "✅ Both CLI and IDE built successfully"
       
-      - name: Install NSIS
-        run: |
-          choco install nsis -y
-          $env:PATH = "C:\Program Files (x86)\NSIS;$env:PATH"
-          Write-Host "✅ NSIS installed"
-      
       - name: Build NSIS Installer
-        run: |
-          $env:PATH = "C:\Program Files (x86)\NSIS;$env:PATH"
-          cd installers/windows/complete
-          makensis susa-complete.nsi
+        uses: joncloud/makensis-action@v4
+        with:
+          script-file: installers/windows/complete/susa-complete.nsi
+          arguments: "/V4"
       
       - name: Verify installer
         run: |
