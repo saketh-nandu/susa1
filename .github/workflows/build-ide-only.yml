@@ -1,0 +1,109 @@
+name: Build IDE Installer Only
+
+on:
+  push:
+    tags:
+      - 'ide-v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number (e.g., 1.0.0)'
+        required: true
+        default: '1.0.0'
+
+env:
+  SUSA_VERSION: ${{ github.event.inputs.version || '1.0.0' }}
+
+jobs:
+  build-ide:
+    name: Windows IDE Installer
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Verify branding files exist
+        run: |
+          Write-Host "=== Checking branding files ==="
+          if (Test-Path "susa-ide/remix-of-susa-studio-ide-main/public/susa-icon.ico") {
+            Write-Host "✅ Icon found"
+          } else {
+            Write-Host "❌ Icon missing"
+          }
+          
+          if (Test-Path "susa-ide/remix-of-susa-studio-ide-main/public/susa-sidebar.bmp") {
+            Write-Host "✅ Sidebar BMP found"
+            $bmp = Get-Item "susa-ide/remix-of-susa-studio-ide-main/public/susa-sidebar.bmp"
+            Write-Host "   Size: $($bmp.Length) bytes"
+          } else {
+            Write-Host "❌ Sidebar BMP missing"
+          }
+          
+          if (Test-Path "susa-ide/remix-of-susa-studio-ide-main/installer.nsh") {
+            Write-Host "✅ installer.nsh found"
+          } else {
+            Write-Host "❌ installer.nsh missing"
+          }
+      
+      - name: Build IDE with Electron Builder
+        run: |
+          cd susa-ide/remix-of-susa-studio-ide-main
+          npm install
+          npm run dist:win
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Find and rename installer
+        run: |
+          Write-Host "=== Listing IDE dist directory ==="
+          Get-ChildItem -Path "susa-ide/remix-of-susa-studio-ide-main/dist-electron" -Recurse -Filter "*.exe" | ForEach-Object {
+            Write-Host "$($_.FullName) - $([math]::Round($_.Length/1MB, 2)) MB"
+          }
+          
+          $installer = Get-ChildItem -Path "susa-ide/remix-of-susa-studio-ide-main/dist-electron" -Filter "*.exe" -Recurse | Where-Object { $_.Name -notlike "*blockmap" -and $_.Name -notlike "*uninstaller*" } | Select-Object -First 1
+          
+          if ($installer) {
+            Copy-Item $installer.FullName -Destination "susa-ide-${{ env.SUSA_VERSION }}-windows.exe"
+            Write-Host "✅ IDE installer created: susa-ide-${{ env.SUSA_VERSION }}-windows.exe"
+            $final = Get-Item "susa-ide-${{ env.SUSA_VERSION }}-windows.exe"
+            Write-Host "   Final size: $([math]::Round($final.Length/1MB, 2)) MB"
+          } else {
+            Write-Error "Installer not found!"
+            exit 1
+          }
+      
+      - name: Upload IDE Installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: susa-ide-windows
+          path: susa-ide-${{ env.SUSA_VERSION }}-windows.exe
+      
+      - name: Create Release (if tag)
+        if: startsWith(github.ref, 'refs/tags/ide-v')
+        uses: softprops/action-gh-release@v1
+        with:
+          files: susa-ide-${{ env.SUSA_VERSION }}-windows.exe
+          body: |
+            ## SUSA IDE v${{ env.SUSA_VERSION }} - Windows Installer
+            
+            Professional IDE installer with:
+            - ✅ SUSA sidebar image
+            - ✅ SUSA logo icon
+            - ✅ Desktop shortcut
+            - ✅ Start Menu shortcut
+            - ✅ .susa file association
+            - ✅ Custom installation directory
+            
+            ### Installation
+            1. Download `susa-ide-${{ env.SUSA_VERSION }}-windows.exe`
+            2. Run the installer
+            3. Follow the wizard
+            4. Launch SUSA IDE!
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
