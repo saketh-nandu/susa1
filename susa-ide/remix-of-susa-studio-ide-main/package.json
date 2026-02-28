@@ -135,8 +135,16 @@
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
-      "createDesktopShortcut": true,
-      "createStartMenuShortcut": true
+      "createDesktopShortcut": "ask",
+      "createStartMenuShortcut": true,
+      "installerIcon": "public/susa-icon.ico",
+      "uninstallerIcon": "public/susa-icon.ico",
+      "installerHeaderIcon": "public/susa-icon.ico",
+      "installerSidebar": "public/susa-sidebar.png",
+      "uninstallerSidebar": "public/susa-sidebar.png",
+      "perMachine": false,
+      "allowElevation": true,
+      "include": "installer.nsh"
     }
   }
 }
