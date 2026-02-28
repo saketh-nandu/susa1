@@ -1,0 +1,681 @@
+name: Build SUSA Installers
+
+on:
+  push:
+    branches: [ main ]
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  SUSA_VERSION: "1.0.0"
+
+jobs:
+  build-windows:
+    name: Build Windows Installer
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: >-
+            mingw-w64-x86_64-gcc
+            mingw-w64-x86_64-cmake
+            make
+      
+      - name: Build SUSA Compiler
+        shell: msys2 {0}
+        run: |
+          cd cpp-core
+          mkdir -p build
+          cd build
+          cmake .. -G "MinGW Makefiles"
+          cmake --build . --config Release
+          cp susa.exe ../
+      
+      - name: Create LICENSE.txt
+        run: |
+          echo "MIT License" > LICENSE.txt
+          echo "" >> LICENSE.txt
+          echo "Copyright (c) 2026 SUSA Team" >> LICENSE.txt
+          echo "" >> LICENSE.txt
+          echo "Permission is hereby granted, free of charge, to any person obtaining a copy" >> LICENSE.txt
+          echo "of this software and associated documentation files (the \"Software\"), to deal" >> LICENSE.txt
+          echo "in the Software without restriction, including without limitation the rights" >> LICENSE.txt
+          echo "to use, copy, modify, merge, publish, distribute, sublicense, and/or sell" >> LICENSE.txt
+          echo "copies of the Software, and to permit persons to whom the Software is" >> LICENSE.txt
+          echo "furnished to do so, subject to the following conditions:" >> LICENSE.txt
+          echo "" >> LICENSE.txt
+          echo "The above copyright notice and this permission notice shall be included in all" >> LICENSE.txt
+          echo "copies or substantial portions of the Software." >> LICENSE.txt
+          echo "" >> LICENSE.txt
+          echo "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR" >> LICENSE.txt
+          echo "IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY," >> LICENSE.txt
+          echo "FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE" >> LICENSE.txt
+          echo "AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER" >> LICENSE.txt
+          echo "LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM," >> LICENSE.txt
+          echo "OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE" >> LICENSE.txt
+          echo "SOFTWARE." >> LICENSE.txt
+      
+      - name: Create README.txt
+        run: |
+          echo "SUSA Programming Language v${{ env.SUSA_VERSION }}" > README.txt
+          echo "========================================" >> README.txt
+          echo "" >> README.txt
+          echo "The first AI-made programming language" >> README.txt
+          echo "" >> README.txt
+          echo "Website: https://susastudio.online" >> README.txt
+          echo "Documentation: https://susastudio.online/docs" >> README.txt
+          echo "" >> README.txt
+          echo "Getting Started:" >> README.txt
+          echo "1. Open Command Prompt or PowerShell" >> README.txt
+          echo "2. Type 'susa --version' to verify installation" >> README.txt
+          echo "3. Create a file 'hello.susa' with your code" >> README.txt
+          echo "4. Run 'susa hello.susa' to execute" >> README.txt
+          echo "" >> README.txt
+          echo "For more information, visit our website." >> README.txt
+      
+      - name: Create NSIS Installer Script
+        run: |
+          $nsiContent = @'
+          ; SUSA Programming Language Installer
+          !define PRODUCT_NAME "SUSA Programming Language"
+          !define PRODUCT_VERSION "${{ env.SUSA_VERSION }}"
+          !define PRODUCT_PUBLISHER "SUSA Team"
+          !define PRODUCT_WEB_SITE "https://susastudio.online"
+          
+          !include "MUI2.nsh"
+          
+          !define MUI_ABORTWARNING
+          !define MUI_ICON "${NSISDIR}\Contrib\Graphics\Icons\modern-install.ico"
+          !define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall.ico"
+          
+          !insertmacro MUI_PAGE_WELCOME
+          !insertmacro MUI_PAGE_LICENSE "LICENSE.txt"
+          !insertmacro MUI_PAGE_DIRECTORY
+          !insertmacro MUI_PAGE_COMPONENTS
+          !insertmacro MUI_PAGE_INSTFILES
+          !insertmacro MUI_PAGE_FINISH
+          
+          !insertmacro MUI_UNPAGE_CONFIRM
+          !insertmacro MUI_UNPAGE_INSTFILES
+          
+          !insertmacro MUI_LANGUAGE "English"
+          
+          Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
+          OutFile "SUSA-Complete-Setup-${{ env.SUSA_VERSION }}.exe"
+          InstallDir "$PROGRAMFILES64\SUSA"
+          ShowInstDetails show
+          ShowUnInstDetails show
+          RequestExecutionLevel admin
+          
+          Section "SUSA Core (Required)" SEC01
+            SectionIn RO
+            
+            DetailPrint "Stopping SUSA processes..."
+            nsExec::ExecToLog 'taskkill /F /IM susa.exe /T'
+            Sleep 1000
+            
+            SetOutPath "$INSTDIR"
+            File "cpp-core\susa.exe"
+            File "LICENSE.txt"
+            File "README.txt"
+            
+            WriteUninstaller "$INSTDIR\uninstall.exe"
+            
+            WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SUSA" "DisplayName" "${PRODUCT_NAME}"
+            WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SUSA" "UninstallString" "$INSTDIR\uninstall.exe"
+            WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SUSA" "DisplayIcon" "$INSTDIR\susa.exe"
+            WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SUSA" "DisplayVersion" "${PRODUCT_VERSION}"
+            WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SUSA" "Publisher" "${PRODUCT_PUBLISHER}"
+            WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SUSA" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
+            
+            DetailPrint "Adding SUSA to PATH..."
+            EnVar::SetHKLM
+            EnVar::AddValue "PATH" "$INSTDIR"
+            
+          SectionEnd
+          
+          Section "Desktop Shortcut" SEC02
+            CreateShortCut "$DESKTOP\SUSA.lnk" "$INSTDIR\susa.exe"
+            CreateDirectory "$SMPROGRAMS\SUSA"
+            CreateShortCut "$SMPROGRAMS\SUSA\SUSA.lnk" "$INSTDIR\susa.exe"
+            CreateShortCut "$SMPROGRAMS\SUSA\Uninstall.lnk" "$INSTDIR\uninstall.exe"
+          SectionEnd
+          
+          !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
+            !insertmacro MUI_DESCRIPTION_TEXT ${SEC01} "SUSA compiler and runtime"
+            !insertmacro MUI_DESCRIPTION_TEXT ${SEC02} "Create desktop shortcuts"
+          !insertmacro MUI_FUNCTION_DESCRIPTION_END
+          
+          Section Uninstall
+            DetailPrint "Stopping SUSA processes..."
+            nsExec::ExecToLog 'taskkill /F /IM susa.exe /T'
+            Sleep 2000
+            
+            DetailPrint "Removing from PATH..."
+            EnVar::SetHKLM
+            EnVar::DeleteValue "PATH" "$INSTDIR"
+            
+            Delete "$INSTDIR\susa.exe"
+            Delete "$INSTDIR\LICENSE.txt"
+            Delete "$INSTDIR\README.txt"
+            Delete "$INSTDIR\uninstall.exe"
+            RMDir "$INSTDIR"
+            
+            Delete "$DESKTOP\SUSA.lnk"
+            Delete "$SMPROGRAMS\SUSA\*.*"
+            RMDir "$SMPROGRAMS\SUSA"
+            
+            DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SUSA"
+          SectionEnd
+          '@
+          $nsiContent | Out-File -FilePath "installer.nsi" -Encoding ASCII
+      
+      - name: Build NSIS Installer
+        uses: joncloud/makensis-action@v4
+        with:
+          script-file: installer.nsi
+          additional-plugin-paths: ${{ github.workspace }}/nsis-plugins
+      
+      - name: Upload Windows Installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-installer
+          path: SUSA-Complete-Setup-${{ env.SUSA_VERSION }}.exe
+
+  build-macos:
+    name: Build macOS Installer
+    runs-on: macos-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Install dependencies
+        run: |
+          brew install cmake
+      
+      - name: Build SUSA Compiler
+        run: |
+          cd cpp-core
+          mkdir -p build
+          cd build
+          cmake ..
+          make
+          cp susa ../
+      
+      - name: Create package structure
+        run: |
+          mkdir -p package/usr/local/bin
+          mkdir -p package/usr/local/share/susa
+          cp cpp-core/susa package/usr/local/bin/
+          chmod +x package/usr/local/bin/susa
+      
+      - name: Create postinstall script
+        run: |
+          mkdir -p scripts
+          cat > scripts/postinstall << 'EOF'
+          #!/bin/bash
+          
+          # Add SUSA to PATH in shell profiles
+          SUSA_PATH="/usr/local/bin"
+          
+          # Add to bash profile
+          if [ -f "$HOME/.bash_profile" ]; then
+            if ! grep -q "SUSA" "$HOME/.bash_profile"; then
+              echo 'export PATH="$PATH:/usr/local/bin"' >> "$HOME/.bash_profile"
+            fi
+          fi
+          
+          # Add to zsh profile
+          if [ -f "$HOME/.zshrc" ]; then
+            if ! grep -q "SUSA" "$HOME/.zshrc"; then
+              echo 'export PATH="$PATH:/usr/local/bin"' >> "$HOME/.zshrc"
+            fi
+          fi
+          
+          echo "SUSA installed successfully!"
+          echo "Run 'susa --version' to verify installation"
+          
+          exit 0
+          EOF
+          chmod +x scripts/postinstall
+      
+      - name: Create preinstall script
+        run: |
+          cat > scripts/preinstall << 'EOF'
+          #!/bin/bash
+          
+          # Kill any running SUSA processes
+          pkill -9 susa 2>/dev/null || true
+          sleep 1
+          
+          exit 0
+          EOF
+          chmod +x scripts/preinstall
+      
+      - name: Create Distribution XML
+        run: |
+          cat > distribution.xml << 'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <installer-gui-script minSpecVersion="1">
+              <title>SUSA Programming Language</title>
+              <organization>com.susa</organization>
+              <domains enable_localSystem="true"/>
+              <options customize="never" require-scripts="true" rootVolumeOnly="true" />
+              
+              <welcome file="welcome.html" mime-type="text/html" />
+              <license file="LICENSE.txt" mime-type="text/plain" />
+              <conclusion file="conclusion.html" mime-type="text/html" />
+              
+              <pkg-ref id="com.susa.pkg">
+                  <bundle-version/>
+              </pkg-ref>
+              
+              <options customize="never" require-scripts="false"/>
+              <choices-outline>
+                  <line choice="default">
+                      <line choice="com.susa.pkg"/>
+                  </line>
+              </choices-outline>
+              
+              <choice id="default"/>
+              <choice id="com.susa.pkg" visible="false">
+                  <pkg-ref id="com.susa.pkg"/>
+              </choice>
+              
+              <pkg-ref id="com.susa.pkg" version="${{ env.SUSA_VERSION }}" onConclusion="none">susa.pkg</pkg-ref>
+          </installer-gui-script>
+          EOF
+      
+      - name: Create Welcome HTML
+        run: |
+          cat > welcome.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+              <meta charset="UTF-8">
+              <style>
+                  body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; padding: 20px; }
+                  h1 { color: #007AFF; }
+                  .logo { text-align: center; font-size: 48px; margin: 20px 0; }
+              </style>
+          </head>
+          <body>
+              <div class="logo">🚀 SUSA</div>
+              <h1>Welcome to SUSA Programming Language</h1>
+              <p>The first AI-made programming language.</p>
+              <p>This installer will install SUSA v${{ env.SUSA_VERSION }} on your Mac.</p>
+              <h3>What will be installed:</h3>
+              <ul>
+                  <li>SUSA compiler and runtime</li>
+                  <li>Command-line tools</li>
+                  <li>PATH environment configuration</li>
+              </ul>
+              <p>Click Continue to proceed with the installation.</p>
+          </body>
+          </html>
+          EOF
+      
+      - name: Create Conclusion HTML
+        run: |
+          cat > conclusion.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+              <meta charset="UTF-8">
+              <style>
+                  body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; padding: 20px; }
+                  h1 { color: #34C759; }
+                  code { background: #f5f5f5; padding: 2px 6px; border-radius: 3px; }
+              </style>
+          </head>
+          <body>
+              <h1>✅ Installation Complete!</h1>
+              <p>SUSA has been successfully installed on your Mac.</p>
+              <h3>Getting Started:</h3>
+              <ol>
+                  <li>Open Terminal</li>
+                  <li>Type <code>susa --version</code> to verify installation</li>
+                  <li>Create a file <code>hello.susa</code> with your code</li>
+                  <li>Run <code>susa hello.susa</code> to execute</li>
+              </ol>
+              <p>Visit <a href="https://susastudio.online">susastudio.online</a> for documentation and examples.</p>
+          </body>
+          </html>
+          EOF
+      
+      - name: Create LICENSE.txt
+        run: |
+          cat > LICENSE.txt << 'EOF'
+          MIT License
+          
+          Copyright (c) 2026 SUSA Team
+          
+          Permission is hereby granted, free of charge, to any person obtaining a copy
+          of this software and associated documentation files (the "Software"), to deal
+          in the Software without restriction, including without limitation the rights
+          to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+          copies of the Software, and to permit persons to whom the Software is
+          furnished to do so, subject to the following conditions:
+          
+          The above copyright notice and this permission notice shall be included in all
+          copies or substantial portions of the Software.
+          
+          THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+          IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+          FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+          AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+          LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+          OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+          SOFTWARE.
+          EOF
+      
+      - name: Build PKG
+        run: |
+          pkgbuild --root package \
+                   --identifier com.susa.pkg \
+                   --version ${{ env.SUSA_VERSION }} \
+                   --scripts scripts \
+                   --install-location / \
+                   susa.pkg
+          
+          productbuild --distribution distribution.xml \
+                       --resources . \
+                       --package-path . \
+                       SUSA-Complete-${{ env.SUSA_VERSION }}.pkg
+      
+      - name: Upload macOS Installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-installer
+          path: SUSA-Complete-${{ env.SUSA_VERSION }}.pkg
+
+  build-linux-universal:
+    name: Build Universal Linux Installer (AppImage)
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake g++ build-essential wget fuse libfuse2
+      
+      - name: Build SUSA Compiler
+        run: |
+          cd cpp-core
+          mkdir -p build
+          cd build
+          cmake ..
+          make
+          cp susa ../
+      
+      - name: Download AppImage tools
+        run: |
+          wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
+          chmod +x appimagetool-x86_64.AppImage
+      
+      - name: Create AppImage structure
+        run: |
+          mkdir -p SUSA.AppDir/usr/bin
+          mkdir -p SUSA.AppDir/usr/share/applications
+          mkdir -p SUSA.AppDir/usr/share/icons/hicolor/256x256/apps
+          
+          cp cpp-core/susa SUSA.AppDir/usr/bin/
+          chmod +x SUSA.AppDir/usr/bin/susa
+      
+      - name: Create AppRun script
+        run: |
+          cat > SUSA.AppDir/AppRun << 'EOF'
+          #!/bin/bash
+          APPDIR="$(dirname "$(readlink -f "$0")")"
+          export PATH="$APPDIR/usr/bin:$PATH"
+          exec "$APPDIR/usr/bin/susa" "$@"
+          EOF
+          chmod +x SUSA.AppDir/AppRun
+      
+      - name: Create desktop file
+        run: |
+          cat > SUSA.AppDir/susa.desktop << EOF
+          [Desktop Entry]
+          Name=SUSA
+          Exec=susa
+          Icon=susa
+          Type=Application
+          Categories=Development;
+          Comment=SUSA Programming Language
+          Terminal=true
+          EOF
+      
+      - name: Create icon
+        run: |
+          cat > SUSA.AppDir/susa.svg << 'EOF'
+          <svg width="256" height="256" xmlns="http://www.w3.org/2000/svg">
+            <rect width="256" height="256" fill="#007AFF"/>
+            <text x="128" y="160" font-size="120" fill="white" text-anchor="middle" font-family="Arial" font-weight="bold">S</text>
+          </svg>
+          EOF
+          cp SUSA.AppDir/susa.svg SUSA.AppDir/usr/share/icons/hicolor/256x256/apps/susa.png
+      
+      - name: Build AppImage
+        run: |
+          ./appimagetool-x86_64.AppImage SUSA.AppDir SUSA-${{ env.SUSA_VERSION }}-x86_64.AppImage
+          chmod +x SUSA-${{ env.SUSA_VERSION }}-x86_64.AppImage
+      
+      - name: Upload AppImage
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-appimage-universal
+          path: SUSA-${{ env.SUSA_VERSION }}-x86_64.AppImage
+
+  build-linux-deb:
+    name: Build Linux DEB (Debian/Ubuntu)
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake g++ build-essential
+      
+      - name: Build SUSA Compiler
+        run: |
+          cd cpp-core
+          mkdir -p build
+          cd build
+          cmake ..
+          make
+          cp susa ../
+      
+      - name: Create DEB package
+        run: |
+          mkdir -p susa-deb/DEBIAN
+          mkdir -p susa-deb/usr/local/bin
+          cp cpp-core/susa susa-deb/usr/local/bin/
+          chmod +x susa-deb/usr/local/bin/susa
+          
+          cat > susa-deb/DEBIAN/control << EOF
+          Package: susa
+          Version: ${{ env.SUSA_VERSION }}
+          Section: devel
+          Priority: optional
+          Architecture: amd64
+          Maintainer: SUSA Team <team@susastudio.online>
+          Description: SUSA Programming Language
+           The first AI-made programming language
+          Homepage: https://susastudio.online
+          EOF
+          
+          cat > susa-deb/DEBIAN/postinst << 'EOF'
+          #!/bin/bash
+          echo 'export PATH="$PATH:/usr/local/bin"' > /etc/profile.d/susa.sh
+          ln -sf /usr/local/bin/susa /usr/bin/susa 2>/dev/null || true
+          echo "SUSA installed! Run 'susa --version'"
+          EOF
+          chmod +x susa-deb/DEBIAN/postinst
+          
+          dpkg-deb --build susa-deb
+          mv susa-deb.deb susa-complete_${{ env.SUSA_VERSION }}_amd64.deb
+      
+      - name: Upload DEB
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-deb-installer
+          path: susa-complete_${{ env.SUSA_VERSION }}_amd64.deb
+
+  build-linux-rpm:
+    name: Build Linux RPM (RedHat/Fedora/CentOS)
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake g++ build-essential rpm
+      
+      - name: Build SUSA Compiler
+        run: |
+          cd cpp-core
+          mkdir -p build
+          cd build
+          cmake ..
+          make
+          cp susa ../
+      
+      - name: Create RPM package
+        run: |
+          mkdir -p ~/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
+          mkdir -p susa-${{ env.SUSA_VERSION }}
+          cp cpp-core/susa susa-${{ env.SUSA_VERSION }}/
+          tar czf ~/rpmbuild/SOURCES/susa-${{ env.SUSA_VERSION }}.tar.gz susa-${{ env.SUSA_VERSION }}
+          
+          cat > ~/rpmbuild/SPECS/susa.spec << 'EOF'
+          Name:           susa
+          Version:        ${{ env.SUSA_VERSION }}
+          Release:        1%{?dist}
+          Summary:        SUSA Programming Language
+          License:        MIT
+          URL:            https://susastudio.online
+          Source0:        susa-${{ env.SUSA_VERSION }}.tar.gz
+          
+          %description
+          The first AI-made programming language
+          
+          %prep
+          %setup -q
+          
+          %install
+          mkdir -p %{buildroot}/usr/local/bin
+          install -m 0755 susa %{buildroot}/usr/local/bin/susa
+          
+          %post
+          echo 'export PATH="$PATH:/usr/local/bin"' > /etc/profile.d/susa.sh
+          ln -sf /usr/local/bin/susa /usr/bin/susa 2>/dev/null || true
+          
+          %files
+          /usr/local/bin/susa
+          
+          %changelog
+          * Fri Feb 28 2026 SUSA Team - ${{ env.SUSA_VERSION }}-1
+          - Initial release
+          EOF
+          
+          rpmbuild -ba ~/rpmbuild/SPECS/susa.spec
+          cp ~/rpmbuild/RPMS/x86_64/susa-${{ env.SUSA_VERSION }}-1.*.rpm ./susa-complete-${{ env.SUSA_VERSION }}-1.x86_64.rpm
+      
+      - name: Upload RPM
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-rpm-installer
+          path: susa-complete-${{ env.SUSA_VERSION }}-1.x86_64.rpm
+
+  create-release:
+    name: Create Release
+    needs: [build-windows, build-macos, build-linux-universal, build-linux-deb, build-linux-rpm]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            windows-installer/*.exe
+            macos-installer/*.pkg
+            linux-appimage-universal/*.AppImage
+            linux-deb-installer/*.deb
+            linux-rpm-installer/*.rpm
+          body: |
+            ## SUSA Programming Language v${{ env.SUSA_VERSION }}
+            
+            The first AI-made programming language.
+            
+            ### 📥 Downloads
+            
+            **Windows**
+            - `SUSA-Complete-Setup-${{ env.SUSA_VERSION }}.exe`
+            
+            **macOS**
+            - `SUSA-Complete-${{ env.SUSA_VERSION }}.pkg`
+            
+            **Linux (Choose one)**
+            - ⭐ **Universal (All Distros)**: `SUSA-${{ env.SUSA_VERSION }}-x86_64.AppImage` - Recommended!
+            - **Debian/Ubuntu**: `susa-complete_${{ env.SUSA_VERSION }}_amd64.deb`
+            - **RedHat/Fedora/CentOS**: `susa-complete-${{ env.SUSA_VERSION }}-1.x86_64.rpm`
+            
+            ### 🚀 Installation
+            
+            **Windows**: Run the `.exe` installer
+            
+            **macOS**: Run the `.pkg` installer
+            
+            **Linux AppImage (Universal)**:
+            ```bash
+            chmod +x SUSA-${{ env.SUSA_VERSION }}-x86_64.AppImage
+            ./SUSA-${{ env.SUSA_VERSION }}-x86_64.AppImage --version
+            ```
+            No installation required! Works on Ubuntu, Fedora, Arch, Manjaro, etc.
+            
+            **Linux DEB (Debian/Ubuntu)**:
+            ```bash
+            sudo dpkg -i susa-complete_${{ env.SUSA_VERSION }}_amd64.deb
+            ```
+            
+            **Linux RPM (RedHat/Fedora/CentOS)**:
+            ```bash
+            sudo rpm -i susa-complete-${{ env.SUSA_VERSION }}-1.x86_64.rpm
+            ```
+            
+            ### ✨ Features
+            
+            - ✅ Automatic PATH configuration
+            - ✅ Desktop shortcuts (Windows)
+            - ✅ Proper uninstall wizard
+            - ✅ Kills running processes before install/uninstall
+            - ✅ MIT License
+            - ✅ Universal Linux support (AppImage)
+            
+            Visit [susastudio.online](https://susastudio.online) for documentation.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
