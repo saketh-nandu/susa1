@@ -61,6 +61,7 @@ jobs:
           # Copy SUSA branding files
           Copy-Item "susa logo.ico" "cli-electron-app/icon.ico"
           Copy-Item "LICENSE" "cli-electron-app/LICENSE.txt"
+          Copy-Item "cli-installer.nsh" "cli-electron-app/installer.nsh"
           
           Write-Host "✅ Sidebar BMP created: $(Get-Item 'cli-electron-app/sidebar.bmp' | Select-Object -ExpandProperty Length) bytes"
           
@@ -88,7 +89,8 @@ jobs:
                 "installerIcon": "icon.ico",
                 "uninstallerIcon": "icon.ico",
                 "installerSidebar": "sidebar.bmp",
-                "license": "LICENSE.txt"
+                "license": "LICENSE.txt",
+                "include": "installer.nsh"
               },
               "files": [
                 "**/*"
@@ -212,10 +214,14 @@ jobs:
         run: |
           cd susa-ide/remix-of-susa-studio-ide-main
           
-          # Copy CLI binary and resources to IDE
-          Copy-Item "../../cpp-core/susa.exe" "public/"
-          Copy-Item -Recurse "../../examples" "public/" -Force
-          Copy-Item -Recurse "../../modules" "public/" -Force
+          # Copy CLI binary and resources to IDE public folder (will be in app.asar)
+          New-Item -ItemType Directory -Force -Path "public/cli"
+          Copy-Item "../../cpp-core/susa.exe" "public/cli/susa.exe"
+          Copy-Item -Recurse "../../examples" "public/cli/" -Force
+          Copy-Item -Recurse "../../modules" "public/cli/" -Force
+          
+          # Also copy to resources folder (outside app.asar for PATH access)
+          # This will be handled by extraResources in package.json
           
           # Ensure branding files are present (BMP format for sidebar)
           if (-not (Test-Path "public/susa-icon.ico")) {
@@ -224,6 +230,40 @@ jobs:
           if (-not (Test-Path "public/susa-sidebar.bmp")) {
             Copy-Item "../../susa-sidebar.bmp" "public/susa-sidebar.bmp"
           }
+          
+          # Copy complete installer NSIS script
+          Copy-Item "../../complete-installer.nsh" "installer.nsh" -Force
+          
+          # Update package.json to include CLI in extraResources
+          $pkg = Get-Content "package.json" -Raw | ConvertFrom-Json
+          
+          # Add extraResources for CLI
+          if (-not $pkg.build.extraResources) {
+            $pkg.build | Add-Member -MemberType NoteProperty -Name "extraResources" -Value @()
+          }
+          
+          $pkg.build.extraResources = @(
+            @{
+              "from" = "../../cpp-core/susa.exe"
+              "to" = "susa.exe"
+            },
+            @{
+              "from" = "../../examples"
+              "to" = "examples"
+            },
+            @{
+              "from" = "../../modules"
+              "to" = "modules"
+            }
+          )
+          
+          # Update product name for Complete edition
+          $pkg.build.productName = "SUSA Complete"
+          
+          # Save updated package.json
+          $pkg | ConvertTo-Json -Depth 10 | Set-Content "package.json"
+          
+          Write-Host "✅ Complete installer configured with CLI embedded"
           
           # Build IDE with embedded CLI
           npm install
