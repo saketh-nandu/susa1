@@ -1,0 +1,9 @@
+let name = "John"
+let age = 25
+PRINT rt"Name: {name}, Age: {age}"
+
+int score = 100
+string message = "Hello"
+bool ready = true
+
+PRINT rt"Score: {score}, Message: {message}, Ready: {ready}"

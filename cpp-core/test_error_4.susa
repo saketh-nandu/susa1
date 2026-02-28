@@ -1,0 +1,5 @@
+// Test 4: IndexError on assignment
+PRINT "Test 4: IndexError (array assignment)"
+let arr = [1, 2, 3]
+arr[10] = 99
+PRINT arr

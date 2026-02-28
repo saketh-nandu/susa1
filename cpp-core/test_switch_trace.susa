@@ -1,0 +1,14 @@
+# Trace Switch Test
+
+let x = 2
+
+SWITCH x: START:
+CASE 1:
+    PRINT "ONE"
+CASE 2:
+    PRINT "TWO"
+CASE 3:
+    PRINT "THREE"
+END:
+
+PRINT "After"

@@ -1,0 +1,11 @@
+# Debug Switch Test
+
+let day = 3
+PRINT "Before switch"
+
+SWITCH day: START:
+CASE 3:
+    PRINT "ONLY THIS SHOULD PRINT"
+END:
+
+PRINT "After switch"

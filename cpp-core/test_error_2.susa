@@ -1,0 +1,4 @@
+// Test 2: ZeroDivisionError
+PRINT "Test 2: ZeroDivisionError"
+let result = 10 / 0
+PRINT result

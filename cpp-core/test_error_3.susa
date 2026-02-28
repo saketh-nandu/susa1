@@ -1,0 +1,4 @@
+// Test 3: IndexError
+PRINT "Test 3: IndexError (array out of bounds)"
+let arr = [1, 2, 3]
+PRINT arr[10]

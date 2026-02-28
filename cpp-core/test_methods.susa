@@ -1,0 +1,108 @@
+# Test String, List, and Dict Methods
+
+PRINT "=== Testing New Methods ==="
+PRINT ""
+
+# ============================================
+# LIST METHODS
+# ============================================
+PRINT "1. LIST METHODS"
+PRINT "---"
+
+let nums = [5, 2, 8, 1, 9]
+PRINT "Original: " + STR(nums)
+
+# insert
+nums.insert(2, 99)
+PRINT "After insert(2, 99): " + STR(nums)
+
+# indexOf
+let idx = nums.indexOf(8)
+PRINT "indexOf(8): " + STR(idx)
+
+# sort
+nums.sort()
+PRINT "After sort(): " + STR(nums)
+
+# reverse
+nums.reverse()
+PRINT "After reverse(): " + STR(nums)
+
+# remove
+nums.remove(99)
+PRINT "After remove(99): " + STR(nums)
+
+# clear
+let temp = [1, 2, 3]
+temp.clear()
+PRINT "After clear(): " + STR(temp)
+
+PRINT ""
+
+# ============================================
+# STRING METHODS
+# ============================================
+PRINT "2. STRING METHODS"
+PRINT "---"
+
+let text = "Hello,World,SUSA"
+PRINT "Original: " + text
+
+# split
+let parts = text.split(",")
+PRINT "split(','): " + STR(parts)
+
+# replace
+let replaced = text.replace("World", "Universe")
+PRINT "replace('World', 'Universe'): " + replaced
+
+# trim
+let spaced = "  hello  "
+let trimmed = spaced.trim()
+PRINT "trim('  hello  '): '" + trimmed + "'"
+
+# startsWith
+let starts = text.startsWith("Hello")
+PRINT "startsWith('Hello'): " + STR(starts)
+
+# endsWith
+let ends = text.endsWith("SUSA")
+PRINT "endsWith('SUSA'): " + STR(ends)
+
+# indexOf
+let pos = text.indexOf("World")
+PRINT "indexOf('World'): " + STR(pos)
+
+PRINT ""
+
+# ============================================
+# DICT METHODS
+# ============================================
+PRINT "3. DICT METHODS"
+PRINT "---"
+
+let person = {"name": "Alice", "age": 25, "city": "NYC"}
+PRINT "Original: " + STR(person)
+
+# keys
+let key_list = person.keys()
+PRINT "keys(): " + STR(key_list)
+
+# values
+let val_list = person.values()
+PRINT "values(): " + STR(val_list)
+
+# has_key
+let has_name = person.has_key("name")
+PRINT "has_key('name'): " + STR(has_name)
+
+let has_country = person.has_key("country")
+PRINT "has_key('country'): " + STR(has_country)
+
+# clear
+let temp_dict = {"a": 1, "b": 2}
+temp_dict.clear()
+PRINT "After clear(): " + STR(temp_dict)
+
+PRINT ""
+PRINT "=== All Methods Tested Successfully! ==="

@@ -1,0 +1,87 @@
+# Test Batch 4 Features
+# Features: FUNC, RETURN, Try-Catch, Dict Literals, List Methods
+
+PRINT "=== Testing Batch 4 Features ==="
+PRINT ""
+
+# 1. Functions with RETURN
+PRINT "1. Function Declarations:"
+FUNC sum_nums(a, b): START:
+    RETURN a + b
+END:
+
+PRINT "sum_nums(5, 3) = " + STR(sum_nums(5, 3))
+PRINT "sum_nums(10, 20) = " + STR(sum_nums(10, 20))
+
+FUNC square(x): START:
+    RETURN x * x
+END:
+
+PRINT "square(7) = " + STR(square(7))
+PRINT ""
+
+# 2. Recursive Functions
+PRINT "2. Recursive Functions:"
+FUNC factorial(n): START:
+    IF n <= 1: START:
+        RETURN 1
+    END:
+    RETURN n * factorial(n - 1)
+END:
+
+PRINT "factorial(5) = " + STR(factorial(5))
+PRINT "factorial(3) = " + STR(factorial(3))
+PRINT ""
+
+# 3. Dictionary Literals
+PRINT "3. Dictionary Literals:"
+let person = {"name": "Alice", "age": 30, "city": "NYC"}
+PRINT "Person: " + STR(person)
+PRINT "Name: " + person["name"]
+PRINT "Age: " + STR(person["age"])
+
+let config = {"host": "localhost", "port": 8080}
+PRINT "Config: " + STR(config)
+PRINT ""
+
+# 4. List Methods
+PRINT "4. List Methods:"
+let nums = [1, 2, 3]
+PRINT "Initial: " + STR(nums)
+
+nums.push(4)
+PRINT "After push(4): " + STR(nums)
+
+nums.push(5)
+PRINT "After push(5): " + STR(nums)
+
+let last = nums.pop()
+PRINT "Popped: " + STR(last)
+PRINT "After pop: " + STR(nums)
+
+nums.append(6)
+PRINT "After append(6): " + STR(nums)
+PRINT ""
+
+# 5. Try-Catch Error Handling
+PRINT "5. Try-Catch:"
+TRY: START:
+    PRINT "Attempting division by zero..."
+    let x = 10 / 0
+    PRINT "This should not print"
+END:
+CATCH error: START:
+    PRINT "Caught error: " + error
+END:
+
+TRY: START:
+    PRINT "Normal operation..."
+    let y = 10 / 2
+    PRINT "Result: " + STR(y)
+END:
+CATCH error: START:
+    PRINT "This should not execute"
+END:
+
+PRINT ""
+PRINT "=== All Batch 4 Features Tested ==="

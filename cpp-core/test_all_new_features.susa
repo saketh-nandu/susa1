@@ -1,0 +1,225 @@
+# SUSA Language - Complete Feature Demonstration
+# Tests: Default Parameters, Variable Arguments, Multiple Returns, Destructuring, List Comprehensions
+
+PRINT "========================================="
+PRINT "SUSA Language - New Features Demo"
+PRINT "========================================="
+PRINT ""
+
+# ============================================
+# 1. DEFAULT PARAMETERS
+# ============================================
+PRINT "1. DEFAULT PARAMETERS"
+PRINT "---------------------"
+
+FUNC make_greeting(name = "Friend", greeting = "Hello"): START:
+    RETURN greeting + ", " + name + "!"
+END:
+
+PRINT make_greeting()                          # Uses both defaults
+PRINT make_greeting("Alice")                   # Uses greeting default
+PRINT make_greeting("Bob", "Hi")              # No defaults
+
+FUNC calculate_price(base, tax = 0.1, discount = 0): START:
+    let total = base + (base * tax) - discount
+    RETURN total
+END:
+
+PRINT "Price: $" + str(calculate_price(100))              # $110
+PRINT "Price: $" + str(calculate_price(100, 0.15))        # $115
+PRINT "Price: $" + str(calculate_price(100, 0.15, 10))    # $105
+
+PRINT ""
+
+# ============================================
+# 2. VARIABLE ARGUMENTS (*args)
+# ============================================
+PRINT "2. VARIABLE ARGUMENTS"
+PRINT "---------------------"
+
+FUNC multiply_all(*numbers): START:
+    let result = 1
+    FOR num IN numbers: START:
+        result = result * num
+    END:
+    RETURN result
+END:
+
+PRINT "2 * 3 * 4 = " + str(multiply_all(2, 3, 4))
+PRINT "5 * 10 * 2 * 3 = " + str(multiply_all(5, 10, 2, 3))
+
+FUNC format_list(title, *items): START:
+    PRINT title + ":"
+    FOR item IN items: START:
+        PRINT "  * " + str(item)
+    END:
+END:
+
+format_list("My Favorite Languages", "SUSA", "Python", "JavaScript")
+format_list("Numbers", 1, 2, 3, 4, 5)
+
+PRINT ""
+
+# ============================================
+# 3. MULTIPLE RETURN VALUES
+# ============================================
+PRINT "3. MULTIPLE RETURN VALUES"
+PRINT "-------------------------"
+
+FUNC divide_with_remainder(a, b): START:
+    let quotient = a / b
+    let remainder = a % b
+    RETURN [quotient, remainder]
+END:
+
+let q, r = divide_with_remainder(17, 5)
+PRINT "17 / 5 = " + str(q) + " remainder " + str(r)
+
+FUNC get_user_info(): START:
+    RETURN ["Alice", 25, "Engineer"]
+END:
+
+let username, user_age, job = get_user_info()
+PRINT "User: " + username + ", Age: " + str(user_age) + ", Job: " + job
+
+PRINT ""
+
+# ============================================
+# 4. DESTRUCTURING
+# ============================================
+PRINT "4. DESTRUCTURING"
+PRINT "----------------"
+
+# Basic destructuring
+let [first, second, third] = [10, 20, 30]
+PRINT "Values: " + str(first) + ", " + str(second) + ", " + str(third)
+
+# Destructuring with function
+FUNC get_rgb_color(): START:
+    RETURN [255, 128, 0]
+END:
+
+let [r, g, b] = get_rgb_color()
+PRINT "RGB Color: (" + str(r) + ", " + str(g) + ", " + str(b) + ")"
+
+# More variables than values (extras become null)
+let [a, b, c, d, e] = [1, 2, 3]
+PRINT "a=" + str(a) + ", b=" + str(b) + ", c=" + str(c) + ", d=" + str(d) + ", e=" + str(e)
+
+PRINT ""
+
+# ============================================
+# 5. LIST COMPREHENSIONS
+# ============================================
+PRINT "5. LIST COMPREHENSIONS"
+PRINT "----------------------"
+
+# Basic comprehension
+let squares = [x * x FOR x IN [1, 2, 3, 4, 5]]
+PRINT "Squares: " + str(squares)
+
+# With NUMBERS
+let cubes = [x * x * x FOR x IN NUMBERS(1, 6)]
+PRINT "Cubes: " + str(cubes)
+
+# With condition
+let evens = [x FOR x IN NUMBERS(1, 21) IF x % 2 == 0]
+PRINT "Even numbers 1-20: " + str(evens)
+
+# Complex expression
+let doubled_odds = [x * 2 FOR x IN NUMBERS(1, 11) IF x % 2 == 1]
+PRINT "Doubled odd numbers: " + str(doubled_odds)
+
+# With string operations
+let words = ["hello", "world", "susa"]
+let upper_words = [upper(word) FOR word IN words]
+PRINT "Uppercase: " + str(upper_words)
+
+let word_lengths = [len(word) FOR word IN words]
+PRINT "Word lengths: " + str(word_lengths)
+
+PRINT ""
+
+# ============================================
+# 6. COMBINED FEATURES
+# ============================================
+PRINT "6. COMBINED FEATURES"
+PRINT "--------------------"
+
+# Function with defaults, varargs, and comprehension
+FUNC process_numbers(multiplier = 2, *numbers): START:
+    let result = [n * multiplier FOR n IN numbers]
+    RETURN result
+END:
+
+let processed = process_numbers(3, 1, 2, 3, 4, 5)
+PRINT "Processed: " + str(processed)
+
+# Destructuring with comprehension
+FUNC get_point_list(): START:
+    RETURN [[1, 2], [3, 4], [5, 6]]
+END:
+
+let points = get_point_list()
+let x_coords = [point[0] FOR point IN points]
+let y_coords = [point[1] FOR point IN points]
+PRINT "X coordinates: " + str(x_coords)
+PRINT "Y coordinates: " + str(y_coords)
+
+# Complex example: Fibonacci with comprehension
+FUNC fibonacci(n): START:
+    let fib = [0, 1]
+    let i = 0
+    LOOP WHILE i < n - 2: START:
+        let next = fib[len(fib) - 1] + fib[len(fib) - 2]
+        fib.push(next)
+        i = i + 1
+    END:
+    RETURN fib
+END:
+
+let fib_numbers = fibonacci(10)
+PRINT "Fibonacci: " + str(fib_numbers)
+
+# Filter fibonacci numbers > 10
+let big_fibs = [x FOR x IN fib_numbers IF x > 10]
+PRINT "Fibonacci > 10: " + str(big_fibs)
+
+PRINT ""
+
+# ============================================
+# 7. PRACTICAL EXAMPLES
+# ============================================
+PRINT "7. PRACTICAL EXAMPLES"
+PRINT "---------------------"
+
+# Data processing with all features
+FUNC analyze_scores(passing_score = 60, *scores): START:
+    let passed = [s FOR s IN scores IF s >= passing_score]
+    let failed = [s FOR s IN scores IF s < passing_score]
+    let total = 0
+    FOR s IN scores: START:
+        total = total + s
+    END:
+    let average = total / len(scores)
+    RETURN [passed, failed, average]
+END:
+
+let [passed_list, failed_list, avg] = analyze_scores(70, 85, 92, 65, 45, 78, 88, 55, 90, 72)
+PRINT "Passed: " + str(passed_list)
+PRINT "Failed: " + str(failed_list)
+PRINT "Average: " + str(avg)
+
+# String processing
+FUNC format_names(*names): START:
+    let formatted = [upper(name) FOR name IN names]
+    RETURN formatted
+END:
+
+let names = format_names("alice", "bob", "charlie")
+PRINT "Formatted names: " + str(names)
+
+PRINT ""
+PRINT "========================================="
+PRINT "All New Features Working Perfectly!"
+PRINT "========================================="

@@ -1,0 +1,24 @@
+# Test existing features
+PRINT "Testing existing features..."
+
+# Test type declarations
+int x = 10
+PRINT "int x = " + x
+
+# Test string interpolation  
+let name = "SUSA"
+PRINT rt"Hello {name}"
+
+# Test ternary
+let result = x > 5 ? "big" : "small"
+PRINT "Ternary: " + result
+
+# Test compound assignment
+x += 5
+PRINT "After x += 5: " + x
+
+# Test increment
+x++
+PRINT "After x++: " + x
+
+PRINT "All tests passed!"

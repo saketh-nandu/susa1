@@ -1,0 +1,78 @@
+# Test Next 5 Features (Batch 3)
+# Features: Lambda, Const, Static, Enum, Spread
+
+PRINT "=== Testing Next 5 Features ==="
+PRINT ""
+
+# 1. Lambda Functions
+PRINT "1. Lambda Functions:"
+let sum = LAMBDA x, y: x + y
+PRINT "Lambda sum(5, 3) = " + STR(sum(5, 3))
+
+let square = LAMBDA x: x * x
+PRINT "Lambda square(4) = " + STR(square(4))
+
+let greet = LAMBDA name: "Hello, " + name
+PRINT greet("SUSA")
+PRINT ""
+
+# 2. Const Variables
+PRINT "2. Const Variables:"
+CONST PI = 3.14159
+PRINT "PI = " + PI
+
+CONST MAX_SIZE = 100
+PRINT "MAX_SIZE = " + MAX_SIZE
+
+# Try to modify const (should error)
+# PI = 3.14  # This should throw error
+PRINT ""
+
+# 3. Static Variables
+PRINT "3. Static Variables:"
+STATIC count = 0
+count = count + 1
+PRINT "First access: " + STR(count)
+count = count + 1
+PRINT "Second access: " + STR(count)
+count = count + 1
+PRINT "Third access: " + STR(count)
+PRINT ""
+
+# 4. Enum Support
+PRINT "4. Enum Support:"
+ENUM Color: START:
+    RED = 1
+    GREEN = 2
+    BLUE = 3
+END:
+
+PRINT "Color.RED = " + Color.RED
+PRINT "Color.GREEN = " + Color.GREEN
+PRINT "Color.BLUE = " + Color.BLUE
+
+ENUM Status: START:
+    PENDING
+    ACTIVE
+    COMPLETED
+END:
+
+PRINT "Status.PENDING = " + Status.PENDING
+PRINT "Status.ACTIVE = " + Status.ACTIVE
+PRINT ""
+
+# 5. Spread Operator
+PRINT "5. Spread Operator:"
+let arr1 = [1, 2, 3]
+let arr2 = [4, 5, 6]
+let combined = [...arr1, ...arr2]
+PRINT "Combined array: " + STR(combined)
+
+# Dictionary spread not yet implemented (requires dict literal syntax)
+# let obj1 = {"a": 1, "b": 2}
+# let obj2 = {"c": 3, "d": 4}
+# let merged = {...obj1, ...obj2}
+# PRINT "Merged object: " + merged
+
+PRINT ""
+PRINT "=== All Next 5 Features Tested ==="

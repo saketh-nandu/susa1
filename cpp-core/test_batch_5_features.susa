@@ -1,0 +1,104 @@
+# Test Batch 5 Features: Default Parameters, Variable Arguments, Multiple Return Values, Destructuring
+
+PRINT "=== Testing Default Parameters ==="
+
+# Function with default parameter
+FUNC greet(name = "Guest"): START:
+    PRINT "Hello, " + name + "!"
+END:
+
+greet()              # Should print "Hello, Guest!"
+greet("Alice")       # Should print "Hello, Alice!"
+
+# Function with multiple default parameters
+FUNC create_user(name = "Anonymous", age = 0, active = true): START:
+    PRINT "User: " + name + ", Age: " + str(age) + ", Active: " + str(active)
+END:
+
+create_user()                           # All defaults
+create_user("Bob")                      # Name provided
+create_user("Charlie", 25)              # Name and age provided
+create_user("Diana", 30, false)         # All provided
+
+PRINT ""
+PRINT "=== Testing Variable Arguments (*args) ==="
+
+# Function with varargs
+FUNC sum_all(*numbers): START:
+    let total = 0
+    FOR num IN numbers: START:
+        total = total + num
+    END:
+    RETURN total
+END:
+
+PRINT "Sum of 1,2,3: " + str(sum_all(1, 2, 3))
+PRINT "Sum of 10,20,30,40,50: " + str(sum_all(10, 20, 30, 40, 50))
+PRINT "Sum of no args: " + str(sum_all())
+
+# Function with regular params and varargs
+FUNC print_list(title, *items): START:
+    PRINT title + ":"
+    FOR item IN items: START:
+        PRINT "  - " + str(item)
+    END:
+END:
+
+print_list("Shopping List", "Apples", "Bananas", "Oranges")
+print_list("Numbers", 1, 2, 3, 4, 5)
+
+PRINT ""
+PRINT "=== Testing Multiple Return Values ==="
+
+# Function returning multiple values
+FUNC get_coords(): START:
+    RETURN [10, 20]
+END:
+
+let x, y = get_coords()
+PRINT "Coordinates: x=" + str(x) + ", y=" + str(y)
+
+# Function returning name and age
+FUNC get_person(): START:
+    RETURN ["Alice", 25]
+END:
+
+let name, age = get_person()
+PRINT "Person: " + name + ", Age: " + str(age)
+
+PRINT ""
+PRINT "=== Testing Destructuring ==="
+
+# Array destructuring
+let [a, b, c] = [1, 2, 3]
+PRINT "a=" + str(a) + ", b=" + str(b) + ", c=" + str(c)
+
+# Destructuring with more variables than values
+let [d, e, f, g] = [10, 20]
+PRINT "d=" + str(d) + ", e=" + str(e) + ", f=" + str(f) + ", g=" + str(g)
+
+# Destructuring from function
+FUNC get_rgb(): START:
+    RETURN [255, 128, 64]
+END:
+
+let [red, green, blue] = get_rgb()
+PRINT "RGB: " + str(red) + ", " + str(green) + ", " + str(blue)
+
+PRINT ""
+PRINT "=== Combined Test ==="
+
+# Function with defaults and varargs
+FUNC log_message(level = "INFO", *messages): START:
+    PRINT "[" + level + "]"
+    FOR msg IN messages: START:
+        PRINT "  " + str(msg)
+    END:
+END:
+
+log_message("ERROR", "Connection failed", "Retrying...")
+log_message("DEBUG", "Variable x =", 42)
+log_message()  # Default level, no messages
+
+PRINT ""
+PRINT "=== All Batch 5 Features Tested Successfully! ==="

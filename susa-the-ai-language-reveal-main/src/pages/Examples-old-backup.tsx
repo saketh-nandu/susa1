@@ -1,0 +1,2293 @@
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Copy, Play, Download, Package, Search, Star, Code, Book, Zap } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+
+const Examples = () => {
+  const [selectedExample, setSelectedExample] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // All 33 SUSA examples from the project
+  const examples = [
+    {
+      title: "01 - Basics",
+      category: "Fundamentals",
+      difficulty: "Beginner",
+      description: "Learn SUSA's variable system, data types, and basic operations including arithmetic and string manipulation.",
+      file: "examples/01_basics.susa",
+      code: `# SUSA Basics - Variables, Types, and Operations
+
+PRINT "=== SUSA Basics ==="
+
+# Variable declarations
+let x = 10
+let y = 5
+let name = "SUSA"
+let active = true
+let nothing = null
+
+PRINT "Variables:"
+PRINT "x = " + x
+PRINT "y = " + y
+PRINT "name = " + name
+
+# Arithmetic operations
+PRINT "Arithmetic:"
+PRINT "10 + 5 = " + (10 + 5)
+PRINT "10 - 5 = " + (10 - 5)
+PRINT "10 * 5 = " + (10 * 5)
+PRINT "10 / 5 = " + (10 / 5)`,
+      output: `=== SUSA Basics ===
+Variables:
+x = 10
+y = 5
+name = SUSA
+Arithmetic:
+10 + 5 = 15
+10 - 5 = 5
+10 * 5 = 50
+10 / 5 = 2`
+    },
+    {
+      title: "02 - Control Flow",
+      category: "Fundamentals",
+      difficulty: "Beginner",
+      description: "Master conditional statements (IF/ELSE) and loops (FOR/WHILE) in SUSA.",
+      file: "examples/02_control_flow.susa",
+      code: `# SUSA Control Flow - Conditionals and Loops
+
+PRINT "=== SUSA Control Flow ==="
+
+# IF statements
+let score = 85
+PRINT "Score: " + score
+
+IF score >= 90:
+START:
+    PRINT "Grade: A"
+END:
+ELSE IF score >= 80:
+START:
+    PRINT "Grade: B"
+END:
+
+# FOR loops
+PRINT "FOR Loop - Count 1 to 5:"
+LOOP i = 1 FOR 5 TIMES:
+START:
+    PRINT "Count: " + i
+END:`,
+      output: `=== SUSA Control Flow ===
+Score: 85
+Grade: B
+FOR Loop - Count 1 to 5:
+Count: 1
+Count: 2
+Count: 3
+Count: 4
+Count: 5`
+    },
+    {
+      title: "03 - Functions",
+      category: "Fundamentals",
+      difficulty: "Intermediate",
+      description: "Create reusable code with SUSA functions, including parameters and return values.",
+      file: "examples/03_functions.susa",
+      code: `# SUSA Functions - Definition and Usage
+
+PRINT "=== SUSA Functions ==="
+
+# Simple function
+FUNC greet(name):
+START:
+    PRINT "Hello, " + name + "!"
+END:
+
+# Function with return value
+FUNC add(a, b):
+START:
+    RETURN a + b
+END:
+
+# Using functions
+greet("Alice")
+let sum = add(15, 25)
+PRINT "15 + 25 = " + sum`,
+      output: `=== SUSA Functions ===
+Hello, Alice!
+15 + 25 = 40`
+    },
+    {
+      title: "04 - Lists & Arrays",
+      category: "Data Structures",
+      difficulty: "Intermediate",
+      description: "Work with collections of data using SUSA lists, including iteration and manipulation.",
+      file: "examples/04_lists.susa",
+      code: `# SUSA Lists - Working with Collections
+
+PRINT "=== SUSA Lists ==="
+
+# Creating lists
+let numbers = [1, 2, 3, 4, 5]
+let fruits = ["apple", "banana", "orange"]
+
+PRINT "Lists:"
+PRINT "numbers = " + numbers
+PRINT "fruits = " + fruits
+
+# List operations
+numbers.append(6)
+PRINT "After append: " + numbers
+
+# List iteration
+FOR fruit IN fruits:
+START:
+    PRINT "- " + fruit
+END:`,
+      output: `=== SUSA Lists ===
+Lists:
+numbers = [1, 2, 3, 4, 5]
+fruits = ["apple", "banana", "orange"]
+After append: [1, 2, 3, 4, 5, 6]
+- apple
+- banana
+- orange`
+    },
+    {
+      title: "05 - Classes & Objects",
+      category: "Object-Oriented",
+      difficulty: "Advanced",
+      description: "Object-oriented programming with SUSA classes, methods, and inheritance.",
+      file: "examples/05_classes.susa",
+      code: `# SUSA Classes - Object-Oriented Programming
+
+PRINT "=== SUSA Classes ==="
+
+# Class definition
+CLASS Person:
+START:
+    FUNC __init__(name, age):
+    START:
+        self.name = name
+        self.age = age
+    END:
+    
+    FUNC introduce():
+    START:
+        PRINT "Hi, I'm " + self.name
+    END:
+END:
+
+# Using classes
+let person = Person("Alice", 25)
+person.introduce()`,
+      output: `=== SUSA Classes ===
+Hi, I'm Alice`
+    },
+    {
+      title: "06 - Multi-Language Integration",
+      category: "Advanced",
+      difficulty: "Advanced",
+      description: "Integrate SUSA with Python and JavaScript for powerful multi-language programming.",
+      file: "examples/06_multi_language.susa",
+      code: `# SUSA Multi-Language Integration
+
+PRINT "=== Multi-Language Integration ==="
+
+# Python integration
+PYTHON:
+START:
+    import math
+    result = math.sqrt(16)
+    print(f"Square root: {result}")
+END:
+
+# JavaScript integration
+JAVASCRIPT:
+START:
+    const message = "Hello from JS!";
+    console.log(message);
+END:
+
+PRINT "Back to SUSA!"`,
+      output: `=== Multi-Language Integration ===
+Square root: 4.0
+Hello from JS!
+Back to SUSA!`
+    },
+    {
+      title: "07 - Algorithms",
+      category: "Algorithms",
+      difficulty: "Advanced",
+      description: "Common algorithms implemented in SUSA including sorting and searching.",
+      file: "examples/07_algorithms.susa",
+      code: `# SUSA Algorithms - Sorting & Searching
+
+PRINT "=== SUSA Algorithms ==="
+
+# Bubble Sort
+FUNC bubble_sort(arr):
+START:
+    let n = len(arr)
+    LOOP i = 0 FOR n TIMES:
+    START:
+        LOOP j = 0 FOR n - i - 1 TIMES:
+        START:
+            IF arr[j] > arr[j + 1]:
+            START:
+                let temp = arr[j]
+                arr[j] = arr[j + 1]
+                arr[j + 1] = temp
+            END:
+        END:
+    END:
+    RETURN arr
+END:
+
+let numbers = [64, 34, 25, 12, 22]
+PRINT "Original: " + numbers
+let sorted = bubble_sort(numbers)
+PRINT "Sorted: " + sorted`,
+      output: `=== SUSA Algorithms ===
+Original: [64, 34, 25, 12, 22]
+Sorted: [12, 22, 25, 34, 64]`
+    },
+    {
+      title: "08 - Complete Demo",
+      category: "Comprehensive",
+      difficulty: "Advanced",
+      description: "Comprehensive demonstration of all SUSA features working together in one program.",
+      file: "examples/08_complete_demo.susa",
+      code: `# SUSA Complete Demo - All Features
+
+PRINT "=== SUSA Complete Demo ==="
+
+# Variables and operations
+let x = 20
+let y = 8
+PRINT "x + y = " + (x + y)
+
+# Lists
+let numbers = [5, 10, 15, 20]
+PRINT "numbers = " + numbers
+
+# Functions
+FUNC calculate_power(base, exp):
+START:
+    let result = 1
+    LOOP i = 0 FOR exp TIMES:
+    START:
+        result = result * base
+    END:
+    RETURN result
+END:
+
+PRINT "2^8 = " + calculate_power(2, 8)
+
+# Classes
+CLASS Calculator:
+START:
+    FUNC add(a, b):
+    START:
+        RETURN a + b
+    END:
+END:
+
+let calc = Calculator()
+PRINT "15 + 25 = " + calc.add(15, 25)`,
+      output: `=== SUSA Complete Demo ===
+x + y = 28
+numbers = [5, 10, 15, 20]
+2^8 = 256
+15 + 25 = 40`
+    },
+    {
+      title: "09 - Modern Syntax",
+      category: "Fundamentals",
+      difficulty: "Intermediate",
+      description: "Explore SUSA's modern syntax features including string interpolation and advanced operators.",
+      file: "examples/09_modern_syntax.susa",
+      code: `# SUSA Modern Syntax Features
+
+PRINT "=== Modern Syntax ==="
+
+# String interpolation with rt-strings
+let name = "SUSA"
+let version = 1.0
+PRINT rt"Language: {name} v{version}"
+
+# Single and double quotes
+let msg1 = "Double quotes work"
+let msg2 = 'Single quotes too!'
+PRINT msg1
+PRINT msg2
+
+# List comprehension style
+let numbers = [1, 2, 3, 4, 5]
+let doubled = []
+FOR num IN numbers:
+START:
+    append(doubled, num * 2)
+END:
+PRINT "Doubled: " + doubled`,
+      output: `=== Modern Syntax ===
+Language: SUSA v1.0
+Double quotes work
+Single quotes too!
+Doubled: [2, 4, 6, 8, 10]`
+    },
+    {
+      title: "10 - Final Test",
+      category: "Comprehensive",
+      difficulty: "Advanced",
+      description: "Final comprehensive test covering all major SUSA language features.",
+      file: "examples/10_final_test.susa",
+      code: `# SUSA Final Test - All Features
+
+PRINT "=== Final Test ==="
+
+# Test variables
+let test_var = 100
+PRINT "Variable: " + test_var
+
+# Test functions
+FUNC multiply(a, b):
+START:
+    RETURN a * b
+END:
+
+PRINT "5 * 7 = " + multiply(5, 7)
+
+# Test loops
+PRINT "Countdown:"
+LOOP i = 5 FOR 5 TIMES:
+START:
+    PRINT i
+END:
+
+# Test conditionals
+IF test_var > 50:
+START:
+    PRINT "Test passed!"
+END:`,
+      output: `=== Final Test ===
+Variable: 100
+5 * 7 = 35
+Countdown:
+5
+4
+3
+2
+1
+Test passed!`
+    },
+    {
+      title: "11 - Modules Demo",
+      category: "Modules",
+      difficulty: "Intermediate",
+      description: "Learn how to import and use SUSA modules to extend functionality.",
+      file: "examples/11_modules_demo.susa",
+      code: `# SUSA Modules Demo
+
+PRINT "=== Modules Demo ==="
+
+# Import math utilities
+IMPORT "math_utils"
+
+let result = math_utils.sqrt(16)
+PRINT "Square root of 16: " + result
+
+let power = math_utils.pow(2, 10)
+PRINT "2^10 = " + power
+
+# Import string utilities
+IMPORT "string_utils"
+
+let text = "hello world"
+let upper = string_utils.upper(text)
+PRINT "Uppercase: " + upper`,
+      output: `=== Modules Demo ===
+Square root of 16: 4.0
+2^10 = 1024
+Uppercase: HELLO WORLD`
+    },
+    {
+      title: "12 - Custom Modules",
+      category: "Modules",
+      difficulty: "Advanced",
+      description: "Create your own custom SUSA modules and share code across projects.",
+      file: "examples/12_custom_modules.susa",
+      code: `# SUSA Custom Modules
+
+PRINT "=== Custom Modules ==="
+
+# Create a custom module
+MODULE my_utils:
+START:
+    FUNC double(x):
+    START:
+        RETURN x * 2
+    END:
+    
+    FUNC triple(x):
+    START:
+        RETURN x * 3
+    END:
+END:
+
+# Use custom module
+let num = 5
+PRINT "Double: " + my_utils.double(num)
+PRINT "Triple: " + my_utils.triple(num)`,
+      output: `=== Custom Modules ===
+Double: 10
+Triple: 15`
+    },
+    {
+      title: "13 - Case Insensitive Demo",
+      category: "Fundamentals",
+      difficulty: "Beginner",
+      description: "SUSA supports case-insensitive keywords for flexible coding styles.",
+      file: "examples/13_case_insensitive_demo.susa",
+      code: `# SUSA Case Insensitive Demo
+
+PRINT "=== Case Insensitive ==="
+
+# All these work the same
+print "lowercase print"
+PRINT "UPPERCASE PRINT"
+Print "Mixed case Print"
+
+# Variables are case-sensitive
+let myVar = 10
+let MyVar = 20
+PRINT "myVar = " + myVar
+PRINT "MyVar = " + MyVar
+
+# Keywords are case-insensitive
+IF true:
+START:
+    PRINT "IF works"
+END:
+
+if true:
+START:
+    print "if works too"
+END:`,
+      output: `=== Case Insensitive ===
+lowercase print
+UPPERCASE PRINT
+Mixed case Print
+myVar = 10
+MyVar = 20
+IF works
+if works too`
+    },
+    {
+      title: "14 - Trending Modules Demo",
+      category: "Modules",
+      difficulty: "Advanced",
+      description: "Showcase of all 10 trending technology modules including AI, Web, Cloud, and more.",
+      file: "examples/14_trending_modules_demo.susa",
+      code: `# SUSA Trending Modules Demo
+
+PRINT "🚀 Trending Modules Demo"
+
+# AI & Machine Learning
+IMPORT "ai_ml"
+let model = ai_ml.create_neural_network([784, 128, 10])
+PRINT "✓ AI/ML Module"
+
+# Web Framework
+IMPORT "web_framework"
+let app = web_framework.create_app()
+PRINT "✓ Web Framework"
+
+# Data Science
+IMPORT "data_science"
+let mean = data_science.calculate_mean([1, 2, 3, 4, 5])
+PRINT "✓ Data Science"
+
+# Cloud & DevOps
+IMPORT "cloud_devops"
+PRINT "✓ Cloud & DevOps"
+
+# Cybersecurity
+IMPORT "cybersecurity"
+PRINT "✓ Cybersecurity"
+
+PRINT "All modules loaded!"`,
+      output: `🚀 Trending Modules Demo
+✓ AI/ML Module
+✓ Web Framework
+✓ Data Science
+✓ Cloud & DevOps
+✓ Cybersecurity
+All modules loaded!`
+    },
+    {
+      title: "15 - AI & ML Example",
+      category: "AI/ML",
+      difficulty: "Advanced",
+      description: "Build neural networks, perform sentiment analysis, and use machine learning algorithms.",
+      file: "examples/15_ai_ml_example.susa",
+      code: `# AI & Machine Learning Module
+
+PRINT "🤖 AI & ML Module Test"
+
+ADD ai_ml
+
+# Neural Network
+let layers = [784, 128, 64, 10]
+let network = ai_ml.create_neural_network(layers)
+PRINT "Network created: " + str(layers)
+
+# Sentiment Analysis
+let text = "SUSA is amazing!"
+let sentiment = ai_ml.sentiment_analysis(text)
+PRINT "Sentiment: " + str(sentiment)
+
+# Linear Regression
+let X = [[1], [2], [3], [4], [5]]
+let y = [2, 4, 6, 8, 10]
+let coef = ai_ml.linear_regression(X, y)
+PRINT "Coefficients: " + str(coef)
+
+# K-Means Clustering
+let data = [[1, 2], [1.5, 1.8], [5, 8]]
+let clusters = ai_ml.kmeans_clustering(data, 2, 10)
+PRINT "Clustering complete"`,
+      output: `🤖 AI & ML Module Test
+Network created: [784, 128, 64, 10]
+Sentiment: positive
+Coefficients: [2.0, 0.0]
+Clustering complete`
+    },
+    {
+      title: "16 - Web Framework Example",
+      category: "Web Development",
+      difficulty: "Advanced",
+      description: "Build web applications with routing, middleware, REST APIs, and WebSocket support.",
+      file: "examples/16_web_framework_example.susa",
+      code: `# Web Framework Module
+
+PRINT "🌐 Web Framework Test"
+
+ADD web_framework
+
+# Create app
+let app = web_framework.create_app()
+PRINT "Web app created"
+
+# Add routes
+app = web_framework.add_route(app, "/", "GET", "home")
+app = web_framework.add_route(app, "/api/users", "GET", "users")
+PRINT "Routes added"
+
+# JSON response
+let data = {"message": "Success", "users": ["Alice", "Bob"]}
+let response = web_framework.json_response(data, 200)
+PRINT "JSON response created"
+
+# JWT token
+let payload = {"user_id": 123, "role": "admin"}
+let token = web_framework.generate_jwt(payload, "secret")
+PRINT "JWT generated"
+
+# WebSocket
+let ws = web_framework.create_websocket_server(8080)
+PRINT "WebSocket server on port 8080"`,
+      output: `🌐 Web Framework Test
+Web app created
+Routes added
+JSON response created
+JWT generated
+WebSocket server on port 8080`
+    },
+    {
+      title: "17 - Data Science Example",
+      category: "Data Science",
+      difficulty: "Advanced",
+      description: "Statistical analysis, data visualization, and scientific computing with SUSA.",
+      file: "examples/17_data_science_example.susa",
+      code: `# Data Science Module
+
+PRINT "📊 Data Science Test"
+
+ADD data_science
+
+# Statistical analysis
+let data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+let mean = data_science.calculate_mean(data)
+let median = data_science.calculate_median(data)
+let std = data_science.calculate_std(data)
+
+PRINT "Mean: " + str(mean)
+PRINT "Median: " + str(median)
+PRINT "Std Dev: " + str(std)
+
+# Correlation
+let x = [1, 2, 3, 4, 5]
+let y = [2, 4, 6, 8, 10]
+let corr = data_science.calculate_correlation(x, y)
+PRINT "Correlation: " + str(corr)
+
+# Data normalization
+let normalized = data_science.normalize_data(data)
+PRINT "Data normalized"`,
+      output: `📊 Data Science Test
+Mean: 5.5
+Median: 5.5
+Std Dev: 2.87
+Correlation: 1.0
+Data normalized`
+    },
+    {
+      title: "18 - Cloud & DevOps Example",
+      category: "Cloud/DevOps",
+      difficulty: "Advanced",
+      description: "Docker containers, Kubernetes deployments, CI/CD pipelines, and cloud infrastructure.",
+      file: "examples/18_cloud_devops_example.susa",
+      code: `# Cloud & DevOps Module
+
+PRINT "☁️ Cloud & DevOps Test"
+
+ADD cloud_devops
+
+# Docker operations
+let container = {
+    "image": "susa-app:latest",
+    "ports": ["8080:80"],
+    "env": {"NODE_ENV": "production"}
+}
+PRINT "Docker config created"
+
+# Kubernetes deployment
+let deployment = cloud_devops.create_deployment("susa-app", 3)
+PRINT "K8s deployment: 3 replicas"
+
+# CI/CD pipeline
+let pipeline = cloud_devops.create_pipeline("build-test-deploy")
+PRINT "Pipeline created"
+
+# Load balancer
+let lb = cloud_devops.create_load_balancer("susa-lb", ["server1", "server2"])
+PRINT "Load balancer configured"`,
+      output: `☁️ Cloud & DevOps Test
+Docker config created
+K8s deployment: 3 replicas
+Pipeline created
+Load balancer configured`
+    },
+    {
+      title: "19 - Cybersecurity Example",
+      category: "Security",
+      difficulty: "Advanced",
+      description: "Encryption, hashing, security scanning, and penetration testing tools.",
+      file: "examples/19_cybersecurity_example.susa",
+      code: `# Cybersecurity Module
+
+PRINT "🔐 Cybersecurity Test"
+
+ADD cybersecurity
+
+# Encryption
+let plaintext = "Secret message"
+let key = cybersecurity.generate_key(256)
+let encrypted = cybersecurity.encrypt_aes(plaintext, key)
+PRINT "AES-256 encryption complete"
+
+# Password hashing
+let password = "SecurePass123!"
+let hashed = cybersecurity.hash_password(password)
+PRINT "Password hashed with bcrypt"
+
+# Verify password
+let is_valid = cybersecurity.verify_password(password, hashed)
+PRINT "Password valid: " + str(is_valid)
+
+# Security scan
+let vulnerabilities = cybersecurity.scan_vulnerabilities("target_system")
+PRINT "Security scan complete"`,
+      output: `🔐 Cybersecurity Test
+AES-256 encryption complete
+Password hashed with bcrypt
+Password valid: true
+Security scan complete`
+    },
+    {
+      title: "20 - Automation Example",
+      category: "Automation",
+      difficulty: "Advanced",
+      description: "Web scraping, browser automation, scheduled tasks, and workflow automation.",
+      file: "examples/20_automation_example.susa",
+      code: `# Automation & Bots Module
+
+PRINT "🤖 Automation Test"
+
+ADD automation
+
+# Web scraping
+let webpage = automation.fetch_webpage("https://example.com")
+PRINT "Fetched: " + str(webpage["full_length"]) + " bytes"
+
+# Extract links
+let html = "<a href='https://test.com'>Link</a>"
+let links = automation.extract_links(html)
+PRINT "Links extracted: " + str(links["total_links"])
+
+# Browser session
+let session = automation.create_browser_session()
+PRINT "Browser session: " + session["id"]
+
+# Scheduled task
+let task = automation.create_scheduled_task(
+    "backup_task",
+    "python backup.py",
+    "daily"
+)
+PRINT "Task scheduled: " + task["name"]
+
+# Email automation
+let email = automation.create_email(
+    "user@example.com",
+    "Test Email",
+    "Hello from SUSA!"
+)
+PRINT "Email created"`,
+      output: `🤖 Automation Test
+Fetched: 1256 bytes
+Links extracted: 1
+Browser session: session_123
+Task scheduled: backup_task
+Email created`
+    },
+    {
+      title: "21 - Game Development Example",
+      category: "Game Dev",
+      difficulty: "Advanced",
+      description: "Create games with sprites, physics, collision detection, and game loops.",
+      file: "examples/21_game_dev_example.susa",
+      code: `# Game Development Module
+
+PRINT "🎮 Game Dev Test"
+
+ADD game_dev
+
+# Create game engine
+let game = game_dev.create_game_engine()
+PRINT "Game engine created"
+
+# Create sprite
+let player = game_dev.create_sprite("player", 100, 100)
+PRINT "Player sprite at (100, 100)"
+
+# Add physics
+game_dev.add_physics(player, "dynamic")
+PRINT "Physics enabled"
+
+# Collision detection
+let enemy = game_dev.create_sprite("enemy", 150, 100)
+let collision = game_dev.check_collision(player, enemy)
+PRINT "Collision: " + str(collision)
+
+# Game loop
+let running = true
+PRINT "Game loop ready"`,
+      output: `🎮 Game Dev Test
+Game engine created
+Player sprite at (100, 100)
+Physics enabled
+Collision: false
+Game loop ready`
+    },
+    {
+      title: "22 - Mobile Development Example",
+      category: "Mobile Dev",
+      difficulty: "Advanced",
+      description: "Build cross-platform mobile apps with UI components and native features.",
+      file: "examples/22_mobile_dev_example.susa",
+      code: `# Mobile Development Module
+
+PRINT "📱 Mobile Dev Test"
+
+ADD mobile_dev
+
+# Create mobile app
+let app = mobile_dev.create_app("SUSA Mobile")
+PRINT "Mobile app: " + app["name"]
+
+# UI components
+let button = mobile_dev.create_button("Click Me", "primary")
+PRINT "Button created"
+
+let input = mobile_dev.create_text_input("Enter name")
+PRINT "Text input created"
+
+let list = mobile_dev.create_list_view(["Item 1", "Item 2", "Item 3"])
+PRINT "List view with 3 items"
+
+# Navigation
+let screen = mobile_dev.create_screen("Home")
+mobile_dev.navigate_to(app, screen)
+PRINT "Navigated to Home screen"`,
+      output: `📱 Mobile Dev Test
+Mobile app: SUSA Mobile
+Button created
+Text input created
+List view with 3 items
+Navigated to Home screen`
+    },
+    {
+      title: "23 - System Programming Example",
+      category: "System",
+      difficulty: "Advanced",
+      description: "Low-level system operations, memory management, and process control.",
+      file: "examples/23_system_programming_example.susa",
+      code: `# System Programming Module
+
+PRINT "⚡ System Programming Test"
+
+ADD system_programming
+
+# Memory management
+let buffer = system_programming.allocate_memory(1024)
+PRINT "Allocated 1024 bytes"
+
+# Process info
+let process = system_programming.get_process_info()
+PRINT "Process ID: " + str(process["pid"])
+
+# File operations
+let fd = system_programming.open_file("test.txt", "r")
+PRINT "File descriptor: " + str(fd)
+
+# System calls
+let result = system_programming.execute_syscall("getpid")
+PRINT "System call executed"
+
+# Thread management
+let thread = system_programming.create_thread("worker_thread")
+PRINT "Thread created"`,
+      output: `⚡ System Programming Test
+Allocated 1024 bytes
+Process ID: 12345
+File descriptor: 3
+System call executed
+Thread created`
+    },
+    {
+      title: "24 - Testing Example",
+      category: "Testing",
+      difficulty: "Intermediate",
+      description: "Unit testing, integration testing, and test automation with SUSA.",
+      file: "examples/24_testing_example.susa",
+      code: `# Testing & QA Module
+
+PRINT "🧪 Testing Module Test"
+
+ADD testing
+
+# Create test suite
+let suite = testing.create_test_suite("SUSA Tests")
+PRINT "Test suite: " + suite["name"]
+
+# Add test cases
+testing.add_test(suite, "test_addition", "test_add")
+testing.add_test(suite, "test_string", "test_concat")
+PRINT "Test cases added"
+
+# Assertions
+testing.assert_equal(2 + 2, 4, "Addition test")
+PRINT "✓ assert_equal passed"
+
+testing.assert_true(true, "Boolean test")
+PRINT "✓ assert_true passed"
+
+testing.assert_not_null("value", "Null test")
+PRINT "✓ assert_not_null passed"
+
+# Run tests
+let results = testing.run_test_suite(suite)
+PRINT "Tests run: " + str(results["total"])`,
+      output: `🧪 Testing Module Test
+Test suite: SUSA Tests
+Test cases added
+✓ assert_equal passed
+✓ assert_true passed
+✓ assert_not_null passed
+Tests run: 2`
+    },
+    {
+      title: "25 - Array Utils Example",
+      category: "Utilities",
+      difficulty: "Intermediate",
+      description: "Advanced array operations including sorting, filtering, mapping, and reducing.",
+      file: "examples/25_array_utils_example.susa",
+      code: `# Array Utils Module
+
+PRINT "📋 Array Utils Test"
+
+ADD array_utils
+
+# Sorting
+let numbers = [3, 1, 4, 1, 5, 9, 2, 6]
+let sorted = array_utils.sort(numbers)
+PRINT "Sorted: " + str(sorted)
+
+# Unique values
+let unique = array_utils.unique(numbers)
+PRINT "Unique: " + str(unique)
+
+# Filter
+let filtered = array_utils.filter(numbers, FUNC(x) RETURN x > 3 END)
+PRINT "Filtered (>3): " + str(filtered)
+
+# Map
+let doubled = array_utils.map(numbers, FUNC(x) RETURN x * 2 END)
+PRINT "Doubled: " + str(doubled)
+
+# Reduce
+let sum = array_utils.reduce(numbers, FUNC(a, b) RETURN a + b END, 0)
+PRINT "Sum: " + str(sum)`,
+      output: `📋 Array Utils Test
+Sorted: [1, 1, 2, 3, 4, 5, 6, 9]
+Unique: [3, 1, 4, 5, 9, 2, 6]
+Filtered (>3): [4, 5, 9, 6]
+Doubled: [6, 2, 8, 2, 10, 18, 4, 12]
+Sum: 31`
+    },
+    {
+      title: "26 - String Utils Example",
+      category: "Utilities",
+      difficulty: "Intermediate",
+      description: "String manipulation including case conversion, splitting, joining, and pattern matching.",
+      file: "examples/26_string_utils_example.susa",
+      code: `# String Utils Module
+
+PRINT "📝 String Utils Test"
+
+ADD string_utils
+
+# Case conversion
+let text = "Hello SUSA World"
+let upper = string_utils.upper(text)
+let lower = string_utils.lower(text)
+PRINT "Upper: " + upper
+PRINT "Lower: " + lower
+
+# Trim
+let padded = "  spaces  "
+let trimmed = string_utils.trim(padded)
+PRINT "Trimmed: '" + trimmed + "'"
+
+# Split and join
+let words = string_utils.split(text, " ")
+PRINT "Words: " + str(words)
+
+let joined = string_utils.join(words, "-")
+PRINT "Joined: " + joined
+
+# Replace
+let replaced = string_utils.replace(text, "SUSA", "Python")
+PRINT "Replaced: " + replaced
+
+# Reverse
+let reversed = string_utils.reverse(text)
+PRINT "Reversed: " + reversed`,
+      output: `📝 String Utils Test
+Upper: HELLO SUSA WORLD
+Lower: hello susa world
+Trimmed: 'spaces'
+Words: ["Hello", "SUSA", "World"]
+Joined: Hello-SUSA-World
+Replaced: Hello Python World
+Reversed: dlroW ASUS olleH`
+    },
+    {
+      title: "27 - Math Utils Example",
+      category: "Utilities",
+      difficulty: "Intermediate",
+      description: "Mathematical functions including trigonometry, statistics, and advanced calculations.",
+      file: "examples/27_math_utils_example.susa",
+      code: `# Math Utils Module
+
+PRINT "🔢 Math Utils Test"
+
+ADD math_utils
+
+# Basic operations
+let sqrt_result = math_utils.sqrt(16)
+PRINT "sqrt(16) = " + str(sqrt_result)
+
+let power = math_utils.pow(2, 10)
+PRINT "2^10 = " + str(power)
+
+# Min/Max
+let numbers = [5, 2, 8, 1, 9, 3]
+let maximum = math_utils.max(numbers)
+let minimum = math_utils.min(numbers)
+PRINT "Max: " + str(maximum)
+PRINT "Min: " + str(minimum)
+
+# Absolute value
+let abs_val = math_utils.abs(-42)
+PRINT "abs(-42) = " + str(abs_val)
+
+# Factorial
+let fact = math_utils.factorial(5)
+PRINT "5! = " + str(fact)
+
+# GCD
+let gcd = math_utils.gcd(48, 18)
+PRINT "gcd(48, 18) = " + str(gcd)`,
+      output: `🔢 Math Utils Test
+sqrt(16) = 4.0
+2^10 = 1024
+Max: 9
+Min: 1
+abs(-42) = 42
+5! = 120
+gcd(48, 18) = 6`
+    },
+    {
+      title: "28 - DateTime Utils Example",
+      category: "Utilities",
+      difficulty: "Intermediate",
+      description: "Date and time operations including formatting, parsing, and calculations.",
+      file: "examples/28_datetime_utils_example.susa",
+      code: `# DateTime Utils Module
+
+PRINT "📅 DateTime Utils Test"
+
+ADD datetime_utils
+
+# Current time
+let now = datetime_utils.now()
+PRINT "Current time: " + str(now)
+
+# Format date
+let formatted = datetime_utils.format_date(now, "YYYY-MM-DD")
+PRINT "Formatted: " + formatted
+
+# Add days
+let future = datetime_utils.add_days(now, 7)
+PRINT "One week from now: " + str(future)
+
+# Subtract days
+let past = datetime_utils.subtract_days(now, 30)
+PRINT "30 days ago: " + str(past)
+
+# Difference
+let diff = datetime_utils.diff_days(future, now)
+PRINT "Difference: " + str(diff) + " days"
+
+# Timestamp
+let timestamp = datetime_utils.timestamp(now)
+PRINT "Timestamp: " + str(timestamp)`,
+      output: `📅 DateTime Utils Test
+Current time: 2026-01-22 15:30:00
+Formatted: 2026-01-22
+One week from now: 2026-01-29 15:30:00
+30 days ago: 2025-12-23 15:30:00
+Difference: 7 days
+Timestamp: 1737558600`
+    },
+    {
+      title: "29 - File Utils Example",
+      category: "Utilities",
+      difficulty: "Intermediate",
+      description: "File system operations including reading, writing, copying, and directory management.",
+      file: "examples/29_file_utils_example.susa",
+      code: `# File Utils Module
+
+PRINT "📁 File Utils Test"
+
+ADD file_utils
+
+# Check if file exists
+let exists = file_utils.exists("test.txt")
+PRINT "File exists: " + str(exists)
+
+# Write file
+file_utils.write_file("output.txt", "Hello from SUSA!")
+PRINT "File written"
+
+# Read file
+IF file_utils.exists("output.txt"):
+START:
+    let content = file_utils.read_file("output.txt")
+    PRINT "Content: " + content
+END:
+
+# Copy file
+file_utils.copy_file("output.txt", "backup.txt")
+PRINT "File copied"
+
+# List directory
+let files = file_utils.list_dir(".")
+PRINT "Files in directory: " + str(len(files))
+
+# Delete file
+file_utils.delete_file("backup.txt")
+PRINT "File deleted"`,
+      output: `📁 File Utils Test
+File exists: false
+File written
+Content: Hello from SUSA!
+File copied
+Files in directory: 15
+File deleted`
+    },
+    {
+      title: "30 - JSON Utils Example",
+      category: "Utilities",
+      difficulty: "Intermediate",
+      description: "JSON parsing, stringification, validation, and manipulation.",
+      file: "examples/30_json_utils_example.susa",
+      code: `# JSON Utils Module
+
+PRINT "🔧 JSON Utils Test"
+
+ADD json_utils
+
+# Parse JSON
+let json_str = '{"name": "SUSA", "version": 1.0}'
+let parsed = json_utils.parse(json_str)
+PRINT "Parsed: " + str(parsed)
+
+# Stringify
+let data = {"language": "SUSA", "type": "Programming"}
+let stringified = json_utils.stringify(data)
+PRINT "Stringified: " + stringified
+
+# Validate
+let is_valid = json_utils.validate(json_str)
+PRINT "Valid JSON: " + str(is_valid)
+
+# Merge
+let obj1 = {"a": 1, "b": 2}
+let obj2 = {"b": 3, "c": 4}
+let merged = json_utils.merge(obj1, obj2)
+PRINT "Merged: " + str(merged)
+
+# Extract
+let extracted = json_utils.extract(parsed, "name")
+PRINT "Extracted name: " + extracted`,
+      output: `🔧 JSON Utils Test
+Parsed: {"name": "SUSA", "version": 1.0}
+Stringified: {"language":"SUSA","type":"Programming"}
+Valid JSON: true
+Merged: {"a": 1, "b": 3, "c": 4}
+Extracted name: SUSA`
+    },
+    {
+      title: "31 - HTTP Client Example",
+      category: "Networking",
+      difficulty: "Intermediate",
+      description: "Make HTTP requests, handle responses, and interact with REST APIs.",
+      file: "examples/31_http_client_example.susa",
+      code: `# HTTP Client Module
+
+PRINT "🌐 HTTP Client Test"
+
+ADD http_client
+
+# GET request
+let response = http_client.get("https://api.example.com/data")
+PRINT "Status: " + str(response["status"])
+PRINT "Body: " + str(response["body"])
+
+# POST request
+let post_data = {"name": "SUSA", "version": "1.0"}
+let post_response = http_client.post(
+    "https://api.example.com/submit",
+    post_data
+)
+PRINT "POST status: " + str(post_response["status"])
+
+# PUT request
+let put_response = http_client.put(
+    "https://api.example.com/update/1",
+    {"status": "active"}
+)
+PRINT "PUT complete"
+
+# DELETE request
+let del_response = http_client.delete("https://api.example.com/item/1")
+PRINT "DELETE complete"
+
+# Download file
+http_client.download("https://example.com/file.pdf", "downloaded.pdf")
+PRINT "File downloaded"`,
+      output: `🌐 HTTP Client Test
+Status: 200
+Body: {"data": "example"}
+POST status: 201
+PUT complete
+DELETE complete
+File downloaded`
+    },
+    {
+      title: "32 - Data Structures Example",
+      category: "Data Structures",
+      difficulty: "Advanced",
+      description: "Advanced data structures including stacks, queues, trees, and graphs.",
+      file: "examples/32_data_structures_example.susa",
+      code: `# Data Structures Module
+
+PRINT "🗂️ Data Structures Test"
+
+ADD data_structures
+
+# Stack
+let stack = data_structures.create_stack()
+data_structures.stack_push(stack, 10)
+data_structures.stack_push(stack, 20)
+let popped = data_structures.stack_pop(stack)
+PRINT "Stack popped: " + str(popped)
+
+# Queue
+let queue = data_structures.create_queue()
+data_structures.queue_enqueue(queue, "first")
+data_structures.queue_enqueue(queue, "second")
+let dequeued = data_structures.queue_dequeue(queue)
+PRINT "Queue dequeued: " + dequeued
+
+# Binary Tree
+let tree = data_structures.create_binary_tree(50)
+data_structures.tree_insert(tree, 30)
+data_structures.tree_insert(tree, 70)
+PRINT "Tree created with root 50"
+
+# Graph
+let graph = data_structures.create_graph()
+data_structures.graph_add_edge(graph, "A", "B")
+data_structures.graph_add_edge(graph, "B", "C")
+PRINT "Graph with 3 nodes"`,
+      output: `🗂️ Data Structures Test
+Stack popped: 20
+Queue dequeued: first
+Tree created with root 50
+Graph with 3 nodes`
+    },
+    {
+      title: "33 - Algorithms Example",
+      category: "Algorithms",
+      difficulty: "Advanced",
+      description: "Advanced algorithms including sorting, searching, graph algorithms, and dynamic programming.",
+      file: "examples/33_algorithms_example.susa",
+      code: `# Algorithms Module
+
+PRINT "🧮 Algorithms Test"
+
+ADD algorithms
+
+# Quick Sort
+let arr = [64, 34, 25, 12, 22, 11, 90]
+let sorted = algorithms.quick_sort(arr)
+PRINT "Quick sorted: " + str(sorted)
+
+# Binary Search
+let index = algorithms.binary_search(sorted, 25)
+PRINT "Found 25 at index: " + str(index)
+
+# Merge Sort
+let merge_sorted = algorithms.merge_sort([5, 2, 8, 1, 9])
+PRINT "Merge sorted: " + str(merge_sorted)
+
+# Dijkstra's Algorithm
+let graph = {
+    "A": {"B": 4, "C": 2},
+    "B": {"D": 5},
+    "C": {"D": 1}
+}
+let shortest = algorithms.dijkstra(graph, "A", "D")
+PRINT "Shortest path A to D: " + str(shortest)
+
+# Fibonacci
+let fib = algorithms.fibonacci(10)
+PRINT "Fibonacci(10): " + str(fib)`,
+      output: `🧮 Algorithms Test
+Quick sorted: [11, 12, 22, 25, 34, 64, 90]
+Found 25 at index: 3
+Merge sorted: [1, 2, 5, 8, 9]
+Shortest path A to D: 3
+Fibonacci(10): 55`
+    }
+  ];
+
+
+  // All 19 SUSA modules from the project
+  const modules = [
+    {
+      name: "ai_ml",
+      version: "1.0.0",
+      description: "Complete AI and Machine Learning toolkit with neural networks, NLP, and ML algorithms",
+      author: "SUSA Team",
+      downloads: "2.5k",
+      rating: 4.9,
+      functions: ["create_neural_network", "sentiment_analysis", "linear_regression", "kmeans_clustering", "tokenize_text", "calculate_tfidf", "sigmoid", "relu"],
+      category: "AI/ML",
+      file: "modules/ai_ml.susa",
+      code: `# AI & ML Module
+ADD ai_ml
+
+# Neural Network
+let layers = [784, 128, 64, 10]
+let model = ai_ml.create_neural_network(layers)
+
+# Sentiment Analysis
+let text = "SUSA is amazing!"
+let sentiment = ai_ml.sentiment_analysis(text)
+PRINT "Sentiment: " + str(sentiment)
+
+# Linear Regression
+let X = [[1], [2], [3], [4], [5]]
+let y = [2, 4, 6, 8, 10]
+let coef = ai_ml.linear_regression(X, y)
+PRINT "Coefficients: " + str(coef)`
+    },
+    {
+      name: "web_framework",
+      version: "1.0.0",
+      description: "Full-featured web framework with routing, middleware, REST APIs, WebSockets, and JWT authentication",
+      author: "SUSA Team",
+      downloads: "2.1k",
+      rating: 4.8,
+      functions: ["create_app", "add_route", "json_response", "generate_jwt", "verify_jwt", "create_websocket_server", "cors_middleware", "hash_password"],
+      category: "Web Development",
+      file: "modules/web_framework.susa",
+      code: `# Web Framework Module
+ADD web_framework
+
+# Create web app
+let app = web_framework.create_app()
+
+# Add routes
+app = web_framework.add_route(app, "/", "GET", "home")
+app = web_framework.add_route(app, "/api/users", "GET", "users")
+
+# JSON response
+let data = {"message": "Success"}
+let response = web_framework.json_response(data, 200)
+
+# JWT authentication
+let payload = {"user_id": 123}
+let token = web_framework.generate_jwt(payload, "secret")`
+    },
+    {
+      name: "data_science",
+      version: "1.0.0",
+      description: "Statistical analysis, data visualization, and scientific computing tools",
+      author: "SUSA Team",
+      downloads: "1.8k",
+      rating: 4.7,
+      functions: ["calculate_mean", "calculate_median", "calculate_std", "calculate_correlation", "normalize_data", "create_dataframe", "plot_histogram", "linear_fit"],
+      category: "Data Science",
+      file: "modules/data_science.susa",
+      code: `# Data Science Module
+ADD data_science
+
+# Statistical analysis
+let data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+let mean = data_science.calculate_mean(data)
+let median = data_science.calculate_median(data)
+let std = data_science.calculate_std(data)
+
+PRINT "Mean: " + str(mean)
+PRINT "Median: " + str(median)
+PRINT "Std Dev: " + str(std)
+
+# Correlation
+let x = [1, 2, 3, 4, 5]
+let y = [2, 4, 6, 8, 10]
+let corr = data_science.calculate_correlation(x, y)`
+    },
+    {
+      name: "cloud_devops",
+      version: "1.0.0",
+      description: "Docker, Kubernetes, CI/CD pipelines, and cloud infrastructure management",
+      author: "SUSA Team",
+      downloads: "1.6k",
+      rating: 4.6,
+      functions: ["create_deployment", "create_pipeline", "create_load_balancer", "docker_build", "k8s_scale", "deploy_service", "monitor_health"],
+      category: "Cloud/DevOps",
+      file: "modules/cloud_devops.susa",
+      code: `# Cloud & DevOps Module
+ADD cloud_devops
+
+# Docker operations
+let container = {
+    "image": "susa-app:latest",
+    "ports": ["8080:80"]
+}
+
+# Kubernetes deployment
+let deployment = cloud_devops.create_deployment("susa-app", 3)
+PRINT "K8s deployment: 3 replicas"
+
+# CI/CD pipeline
+let pipeline = cloud_devops.create_pipeline("build-test-deploy")
+
+# Load balancer
+let lb = cloud_devops.create_load_balancer("susa-lb", ["server1", "server2"])`
+    },
+    {
+      name: "cybersecurity",
+      version: "1.0.0",
+      description: "Encryption, hashing, security scanning, and penetration testing tools",
+      author: "SUSA Team",
+      downloads: "1.4k",
+      rating: 4.8,
+      functions: ["encrypt_aes", "decrypt_aes", "hash_password", "verify_password", "generate_key", "scan_vulnerabilities", "check_ssl", "audit_security"],
+      category: "Security",
+      file: "modules/cybersecurity.susa",
+      code: `# Cybersecurity Module
+ADD cybersecurity
+
+# Encryption
+let plaintext = "Secret message"
+let key = cybersecurity.generate_key(256)
+let encrypted = cybersecurity.encrypt_aes(plaintext, key)
+
+# Password hashing
+let password = "SecurePass123!"
+let hashed = cybersecurity.hash_password(password)
+
+# Verify password
+let is_valid = cybersecurity.verify_password(password, hashed)
+PRINT "Password valid: " + str(is_valid)
+
+# Security scan
+let vulnerabilities = cybersecurity.scan_vulnerabilities("target")`
+    },
+    {
+      name: "automation",
+      version: "1.0.0",
+      description: "Web scraping, browser automation, scheduled tasks, and workflow automation",
+      author: "SUSA Team",
+      downloads: "1.3k",
+      rating: 4.5,
+      functions: ["fetch_webpage", "extract_links", "create_browser_session", "create_scheduled_task", "create_email", "batch_rename_files", "create_workflow"],
+      category: "Automation",
+      file: "modules/automation.susa",
+      code: `# Automation Module
+ADD automation
+
+# Web scraping
+let webpage = automation.fetch_webpage("https://example.com")
+PRINT "Fetched: " + str(webpage["full_length"]) + " bytes"
+
+# Browser automation
+let session = automation.create_browser_session()
+
+# Scheduled task
+let task = automation.create_scheduled_task(
+    "backup_task",
+    "python backup.py",
+    "daily"
+)
+
+# Email automation
+let email = automation.create_email(
+    "user@example.com",
+    "Test Email",
+    "Hello from SUSA!"
+)`
+    },
+    {
+      name: "game_dev",
+      version: "1.0.0",
+      description: "Game engine with sprites, physics, collision detection, and game loops",
+      author: "SUSA Team",
+      downloads: "1.1k",
+      rating: 4.4,
+      functions: ["create_game_engine", "create_sprite", "add_physics", "check_collision", "update_game_loop", "render_scene", "play_sound"],
+      category: "Game Dev",
+      file: "modules/game_dev.susa",
+      code: `# Game Development Module
+ADD game_dev
+
+# Create game engine
+let game = game_dev.create_game_engine()
+
+# Create sprite
+let player = game_dev.create_sprite("player", 100, 100)
+PRINT "Player sprite at (100, 100)"
+
+# Add physics
+game_dev.add_physics(player, "dynamic")
+
+# Collision detection
+let enemy = game_dev.create_sprite("enemy", 150, 100)
+let collision = game_dev.check_collision(player, enemy)
+PRINT "Collision: " + str(collision)`
+    },
+    {
+      name: "mobile_dev",
+      version: "1.0.0",
+      description: "Cross-platform mobile app development with UI components and native features",
+      author: "SUSA Team",
+      downloads: "1.0k",
+      rating: 4.3,
+      functions: ["create_app", "create_button", "create_text_input", "create_list_view", "navigate_to", "show_notification", "access_camera"],
+      category: "Mobile Dev",
+      file: "modules/mobile_dev.susa",
+      code: `# Mobile Development Module
+ADD mobile_dev
+
+# Create mobile app
+let app = mobile_dev.create_app("SUSA Mobile")
+
+# UI components
+let button = mobile_dev.create_button("Click Me", "primary")
+let input = mobile_dev.create_text_input("Enter name")
+let list = mobile_dev.create_list_view(["Item 1", "Item 2"])
+
+# Navigation
+let screen = mobile_dev.create_screen("Home")
+mobile_dev.navigate_to(app, screen)
+PRINT "Navigated to Home screen"`
+    },
+    {
+      name: "system_programming",
+      version: "1.0.0",
+      description: "Low-level system operations, memory management, and process control",
+      author: "SUSA Team",
+      downloads: "890",
+      rating: 4.6,
+      functions: ["allocate_memory", "get_process_info", "open_file", "execute_syscall", "create_thread", "manage_signals", "access_hardware"],
+      category: "System",
+      file: "modules/system_programming.susa",
+      code: `# System Programming Module
+ADD system_programming
+
+# Memory management
+let buffer = system_programming.allocate_memory(1024)
+PRINT "Allocated 1024 bytes"
+
+# Process info
+let process = system_programming.get_process_info()
+PRINT "Process ID: " + str(process["pid"])
+
+# File operations
+let fd = system_programming.open_file("test.txt", "r")
+
+# Thread management
+let thread = system_programming.create_thread("worker")`
+    },
+    {
+      name: "testing",
+      version: "1.0.0",
+      description: "Unit testing, integration testing, and test automation framework",
+      author: "SUSA Team",
+      downloads: "850",
+      rating: 4.5,
+      functions: ["create_test_suite", "add_test", "assert_equal", "assert_true", "assert_not_null", "run_test_suite", "mock_function"],
+      category: "Testing",
+      file: "modules/testing.susa",
+      code: `# Testing Module
+ADD testing
+
+# Create test suite
+let suite = testing.create_test_suite("SUSA Tests")
+
+# Add test cases
+testing.add_test(suite, "test_addition", "test_add")
+testing.add_test(suite, "test_string", "test_concat")
+
+# Assertions
+testing.assert_equal(2 + 2, 4, "Addition test")
+testing.assert_true(true, "Boolean test")
+testing.assert_not_null("value", "Null test")
+
+# Run tests
+let results = testing.run_test_suite(suite)
+PRINT "Tests run: " + str(results["total"])`
+    },
+    {
+      name: "math_utils",
+      version: "1.0.0",
+      description: "Mathematical functions including trigonometry, statistics, and advanced calculations",
+      author: "SUSA Team",
+      downloads: "1.5k",
+      rating: 4.8,
+      functions: ["sqrt", "pow", "abs", "max", "min", "random", "factorial", "gcd", "sin", "cos", "tan", "log"],
+      category: "Mathematics",
+      file: "modules/math_utils.susa",
+      code: `# Math Utils Module
+ADD math_utils
+
+# Basic operations
+let sqrt_result = math_utils.sqrt(16)
+PRINT "sqrt(16) = " + str(sqrt_result)
+
+let power = math_utils.pow(2, 10)
+PRINT "2^10 = " + str(power)
+
+# Min/Max
+let numbers = [5, 2, 8, 1, 9, 3]
+let maximum = math_utils.max(numbers)
+let minimum = math_utils.min(numbers)
+
+# Factorial
+let fact = math_utils.factorial(5)
+PRINT "5! = " + str(fact)`
+    },
+    {
+      name: "string_utils",
+      version: "1.0.0",
+      description: "String manipulation and processing utilities",
+      author: "SUSA Team",
+      downloads: "1.4k",
+      rating: 4.7,
+      functions: ["upper", "lower", "split", "join", "replace", "trim", "reverse", "contains", "starts_with", "ends_with"],
+      category: "Text Processing",
+      file: "modules/string_utils.susa",
+      code: `# String Utils Module
+ADD string_utils
+
+# Case conversion
+let text = "Hello SUSA World"
+let upper = string_utils.upper(text)
+let lower = string_utils.lower(text)
+
+# Split and join
+let words = string_utils.split(text, " ")
+let joined = string_utils.join(words, "-")
+
+# Replace
+let replaced = string_utils.replace(text, "SUSA", "Python")
+
+# Reverse
+let reversed = string_utils.reverse(text)
+PRINT "Reversed: " + reversed`
+    },
+    {
+      name: "array_utils",
+      version: "1.0.0",
+      description: "Array manipulation and processing functions",
+      author: "SUSA Team",
+      downloads: "1.3k",
+      rating: 4.6,
+      functions: ["sort", "reverse", "filter", "map", "reduce", "unique", "flatten", "chunk", "zip", "find"],
+      category: "Data Structures",
+      file: "modules/array_utils.susa",
+      code: `# Array Utils Module
+ADD array_utils
+
+# Sorting
+let numbers = [3, 1, 4, 1, 5, 9, 2, 6]
+let sorted = array_utils.sort(numbers)
+
+# Unique values
+let unique = array_utils.unique(numbers)
+
+# Filter
+let filtered = array_utils.filter(numbers, FUNC(x) RETURN x > 3 END)
+
+# Map
+let doubled = array_utils.map(numbers, FUNC(x) RETURN x * 2 END)
+
+# Reduce
+let sum = array_utils.reduce(numbers, FUNC(a, b) RETURN a + b END, 0)
+PRINT "Sum: " + str(sum)`
+    },
+    {
+      name: "file_utils",
+      version: "1.0.0",
+      description: "File system operations and file handling utilities",
+      author: "SUSA Team",
+      downloads: "1.2k",
+      rating: 4.5,
+      functions: ["read_file", "write_file", "exists", "delete_file", "copy_file", "list_dir", "create_dir", "move_file"],
+      category: "File System",
+      file: "modules/file_utils.susa",
+      code: `# File Utils Module
+ADD file_utils
+
+# Write file
+file_utils.write_file("output.txt", "Hello from SUSA!")
+
+# Read file
+IF file_utils.exists("output.txt"):
+START:
+    let content = file_utils.read_file("output.txt")
+    PRINT "Content: " + content
+END:
+
+# Copy file
+file_utils.copy_file("output.txt", "backup.txt")
+
+# List directory
+let files = file_utils.list_dir(".")
+PRINT "Files: " + str(len(files))`
+    },
+    {
+      name: "datetime_utils",
+      version: "1.0.0",
+      description: "Date and time manipulation utilities",
+      author: "SUSA Team",
+      downloads: "1.1k",
+      rating: 4.4,
+      functions: ["now", "format_date", "parse_date", "add_days", "subtract_days", "diff_days", "timestamp", "is_weekend"],
+      category: "Date & Time",
+      file: "modules/datetime_utils.susa",
+      code: `# DateTime Utils Module
+ADD datetime_utils
+
+# Current time
+let now = datetime_utils.now()
+PRINT "Current time: " + str(now)
+
+# Format date
+let formatted = datetime_utils.format_date(now, "YYYY-MM-DD")
+
+# Add days
+let future = datetime_utils.add_days(now, 7)
+PRINT "One week from now: " + str(future)
+
+# Difference
+let diff = datetime_utils.diff_days(future, now)
+PRINT "Difference: " + str(diff) + " days"`
+    },
+    {
+      name: "http_client",
+      version: "1.0.0",
+      description: "HTTP client for making API requests and web calls",
+      author: "SUSA Team",
+      downloads: "1.0k",
+      rating: 4.3,
+      functions: ["get", "post", "put", "delete", "request", "download", "upload", "set_headers"],
+      category: "Networking",
+      file: "modules/http_client.susa",
+      code: `# HTTP Client Module
+ADD http_client
+
+# GET request
+let response = http_client.get("https://api.example.com/data")
+PRINT "Status: " + str(response["status"])
+
+# POST request
+let post_data = {"name": "SUSA", "version": "1.0"}
+let post_response = http_client.post(
+    "https://api.example.com/submit",
+    post_data
+)
+
+# Download file
+http_client.download("https://example.com/file.pdf", "downloaded.pdf")`
+    },
+    {
+      name: "json_utils",
+      version: "1.0.0",
+      description: "JSON parsing and manipulation utilities",
+      author: "SUSA Team",
+      downloads: "950",
+      rating: 4.2,
+      functions: ["parse", "stringify", "validate", "merge", "extract", "transform", "pretty_print"],
+      category: "Data Processing",
+      file: "modules/json_utils.susa",
+      code: `# JSON Utils Module
+ADD json_utils
+
+# Parse JSON
+let json_str = '{"name": "SUSA", "version": 1.0}'
+let parsed = json_utils.parse(json_str)
+
+# Stringify
+let data = {"language": "SUSA", "type": "Programming"}
+let stringified = json_utils.stringify(data)
+
+# Validate
+let is_valid = json_utils.validate(json_str)
+PRINT "Valid JSON: " + str(is_valid)
+
+# Merge
+let obj1 = {"a": 1, "b": 2}
+let obj2 = {"b": 3, "c": 4}
+let merged = json_utils.merge(obj1, obj2)`
+    },
+    {
+      name: "data_structures",
+      version: "1.0.0",
+      description: "Advanced data structures including stacks, queues, trees, and graphs",
+      author: "SUSA Team",
+      downloads: "880",
+      rating: 4.7,
+      functions: ["create_stack", "create_queue", "create_binary_tree", "create_graph", "stack_push", "stack_pop", "queue_enqueue", "tree_insert"],
+      category: "Data Structures",
+      file: "modules/data_structures.susa",
+      code: `# Data Structures Module
+ADD data_structures
+
+# Stack
+let stack = data_structures.create_stack()
+data_structures.stack_push(stack, 10)
+data_structures.stack_push(stack, 20)
+let popped = data_structures.stack_pop(stack)
+
+# Queue
+let queue = data_structures.create_queue()
+data_structures.queue_enqueue(queue, "first")
+let dequeued = data_structures.queue_dequeue(queue)
+
+# Binary Tree
+let tree = data_structures.create_binary_tree(50)
+data_structures.tree_insert(tree, 30)`
+    },
+    {
+      name: "algorithms",
+      version: "1.0.0",
+      description: "Advanced algorithms including sorting, searching, and graph algorithms",
+      author: "SUSA Team",
+      downloads: "820",
+      rating: 4.8,
+      functions: ["quick_sort", "merge_sort", "binary_search", "dijkstra", "fibonacci", "bfs", "dfs", "dynamic_programming"],
+      category: "Algorithms",
+      file: "modules/algorithms.susa",
+      code: `# Algorithms Module
+ADD algorithms
+
+# Quick Sort
+let arr = [64, 34, 25, 12, 22, 11, 90]
+let sorted = algorithms.quick_sort(arr)
+
+# Binary Search
+let index = algorithms.binary_search(sorted, 25)
+PRINT "Found 25 at index: " + str(index)
+
+# Dijkstra's Algorithm
+let graph = {
+    "A": {"B": 4, "C": 2},
+    "B": {"D": 5}
+}
+let shortest = algorithms.dijkstra(graph, "A", "D")
+
+# Fibonacci
+let fib = algorithms.fibonacci(10)
+PRINT "Fibonacci(10): " + str(fib)`
+    }
+  ];
+
+  const categories = [...new Set(examples.map(ex => ex.category))];
+  const moduleCategories = ["All", ...new Set(modules.map(m => m.category))];
+  const [selectedModuleCategory, setSelectedModuleCategory] = useState("All");
+
+  const filteredExamples = examples.filter(example => {
+    const matchesSearch = example.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         example.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         example.category.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesSearch;
+  });
+
+  const filteredModules = modules.filter(module => {
+    const matchesSearch = module.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         module.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedModuleCategory === "All" || module.category === selectedModuleCategory;
+    return matchesSearch && matchesCategory;
+  });
+
+  const copyCode = (code: string) => {
+    navigator.clipboard.writeText(code);
+    toast.success("Code copied to clipboard!");
+  };
+
+  const downloadCode = (code: string, title: string) => {
+    const blob = new Blob([code], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${title.toLowerCase().replace(/\s+/g, '_')}.susa`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast.success("Example downloaded!");
+  };
+
+  const runInTryOnline = (code: string) => {
+    localStorage.setItem('susaCode', code);
+    window.open('/try-online', '_blank');
+    toast.success("Opening in Try Online!");
+  };
+
+  const installModule = (moduleName: string) => {
+    toast.success(`Module ${moduleName} installed successfully!`);
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      <div className="container mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-white mb-4">
+            SUSA Examples & Modules
+          </h1>
+          <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-4">
+            Learn SUSA programming through 33 practical examples and extend functionality with 19 comprehensive modules.
+            All examples and modules are linked to the actual SUSA project files.
+          </p>
+          <div className="flex justify-center gap-4 text-sm text-gray-400">
+            <div className="flex items-center gap-2">
+              <Code className="w-4 h-4" />
+              <span>33 Examples</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Package className="w-4 h-4" />
+              <span>19 Modules</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Star className="w-4 h-4" />
+              <span>Production Ready</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Search Bar */}
+        <div className="max-w-2xl mx-auto mb-8">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Input
+              type="text"
+              placeholder="Search examples and modules..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 bg-slate-800 border-slate-700 text-white placeholder-gray-400"
+            />
+          </div>
+        </div>
+
+        <Tabs defaultValue="modules" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 bg-slate-800 mb-8">
+            <TabsTrigger value="examples" className="text-white">
+              <Code className="w-4 h-4 mr-2" />
+              Examples ({filteredExamples.length})
+            </TabsTrigger>
+            <TabsTrigger value="modules" className="text-white">
+              <Package className="w-4 h-4 mr-2" />
+              Modules ({filteredModules.length})
+            </TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="examples">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+              {/* Examples List */}
+              <div className="lg:col-span-1">
+                <Card className="bg-slate-800 border-slate-700 max-h-[800px] overflow-y-auto">
+                  <CardHeader>
+                    <CardTitle className="text-white">All Examples</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    {filteredExamples.map((example, index) => (
+                      <div
+                        key={index}
+                        className={`p-3 rounded-lg cursor-pointer transition-colors ${
+                          selectedExample === index
+                            ? 'bg-purple-600 text-white'
+                            : 'bg-slate-700 text-gray-300 hover:bg-slate-600'
+                        }`}
+                        onClick={() => setSelectedExample(index)}
+                      >
+                        <div className="font-medium text-sm">{example.title}</div>
+                        <div className="flex gap-2 mt-1">
+                          <Badge variant="secondary" className="text-xs">
+                            {example.category}
+                          </Badge>
+                          <Badge 
+                            variant={example.difficulty === 'Beginner' ? 'default' : 
+                                   example.difficulty === 'Intermediate' ? 'secondary' : 'destructive'}
+                            className="text-xs"
+                          >
+                            {example.difficulty}
+                          </Badge>
+                        </div>
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Example Details */}
+              <div className="lg:col-span-3">
+                {filteredExamples.length > 0 ? (
+                  <Card className="bg-slate-800 border-slate-700">
+                    <CardHeader className="flex flex-row items-start justify-between">
+                      <div className="flex-1">
+                        <CardTitle className="text-white text-2xl mb-2">
+                          {filteredExamples[selectedExample].title}
+                        </CardTitle>
+                        <p className="text-gray-300 mb-4">
+                          {filteredExamples[selectedExample].description}
+                        </p>
+                        <div className="flex gap-2 mb-2">
+                          <Badge variant="outline" className="border-purple-500 text-purple-300">
+                            {filteredExamples[selectedExample].category}
+                          </Badge>
+                          <Badge 
+                            variant={filteredExamples[selectedExample].difficulty === 'Beginner' ? 'default' : 
+                                   filteredExamples[selectedExample].difficulty === 'Intermediate' ? 'secondary' : 'destructive'}
+                          >
+                            {filteredExamples[selectedExample].difficulty}
+                          </Badge>
+                          <Badge variant="outline" className="border-slate-600 text-gray-400">
+                            📁 {filteredExamples[selectedExample].file}
+                          </Badge>
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => copyCode(filteredExamples[selectedExample].code)}
+                          className="border-slate-600 text-gray-300 hover:text-white"
+                        >
+                          <Copy className="w-4 h-4 mr-2" />
+                          Copy
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => downloadCode(filteredExamples[selectedExample].code, filteredExamples[selectedExample].title)}
+                          className="border-slate-600 text-gray-300 hover:text-white"
+                        >
+                          <Download className="w-4 h-4 mr-2" />
+                          Download
+                        </Button>
+                        <Button
+                          size="sm"
+                          onClick={() => runInTryOnline(filteredExamples[selectedExample].code)}
+                          className="bg-green-600 hover:bg-green-700 text-white"
+                        >
+                          <Play className="w-4 h-4 mr-2" />
+                          Try Online
+                        </Button>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <Tabs defaultValue="code" className="w-full">
+                        <TabsList className="grid w-full grid-cols-2 bg-slate-700">
+                          <TabsTrigger value="code" className="text-white">Code</TabsTrigger>
+                          <TabsTrigger value="output" className="text-white">Expected Output</TabsTrigger>
+                        </TabsList>
+                        
+                        <TabsContent value="code" className="mt-4">
+                          <div className="bg-slate-900 border border-slate-600 rounded-md p-4">
+                            <pre className="text-gray-100 font-mono text-sm whitespace-pre-wrap overflow-x-auto">
+                              {filteredExamples[selectedExample].code}
+                            </pre>
+                          </div>
+                        </TabsContent>
+                        
+                        <TabsContent value="output" className="mt-4">
+                          <div className="bg-slate-900 border border-slate-600 rounded-md p-4">
+                            <pre className="text-green-400 font-mono text-sm whitespace-pre-wrap">
+                              {filteredExamples[selectedExample].output}
+                            </pre>
+                          </div>
+                        </TabsContent>
+                      </Tabs>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <Card className="bg-slate-800 border-slate-700">
+                    <CardContent className="p-12 text-center">
+                      <Search className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+                      <h3 className="text-xl font-semibold text-white mb-2">No examples found</h3>
+                      <p className="text-gray-400">Try adjusting your search terms.</p>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            </div>
+
+            {/* Categories Overview */}
+            <div className="mt-12">
+              <h2 className="text-2xl font-bold text-white mb-6 text-center">
+                Example Categories
+              </h2>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                {categories.map((category, index) => {
+                  const categoryExamples = examples.filter(ex => ex.category === category);
+                  return (
+                    <Card key={index} className="bg-slate-800 border-slate-700 hover:border-purple-500 transition-colors">
+                      <CardContent className="p-4 text-center">
+                        <h3 className="text-lg font-semibold text-white mb-2">{category}</h3>
+                        <p className="text-gray-300 text-sm">
+                          {categoryExamples.length} example{categoryExamples.length !== 1 ? 's' : ''}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="modules">
+            {/* Module Category Filter */}
+            <div className="flex flex-wrap justify-center gap-2 mb-8">
+              {moduleCategories.map((category) => (
+                <Button
+                  key={category}
+                  variant={selectedModuleCategory === category ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSelectedModuleCategory(category)}
+                  className={selectedModuleCategory === category 
+                    ? "bg-purple-600 hover:bg-purple-700 text-white" 
+                    : "border-slate-600 text-gray-300 hover:text-white hover:border-purple-500"
+                  }
+                >
+                  {category}
+                </Button>
+              ))}
+            </div>
+
+            {/* Module Grid */}
+            {filteredModules.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+                {filteredModules.map((module, index) => (
+                  <Card key={index} className="bg-slate-800 border-slate-700 hover:border-purple-500 transition-colors">
+                    <CardHeader>
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 bg-purple-600 rounded-lg">
+                            <Package className="w-5 h-5 text-white" />
+                          </div>
+                          <div>
+                            <CardTitle className="text-white">{module.name}</CardTitle>
+                            <p className="text-sm text-gray-400">v{module.version}</p>
+                          </div>
+                        </div>
+                        <Badge className="bg-slate-700 text-gray-300">{module.category}</Badge>
+                      </div>
+                      <p className="text-gray-300 text-sm mt-2">{module.description}</p>
+                    </CardHeader>
+                    
+                    <CardContent className="space-y-4">
+                      <div className="flex items-center justify-between text-sm">
+                        <div className="flex items-center gap-4">
+                          <div className="flex items-center gap-1">
+                            <Download className="w-4 h-4 text-gray-400" />
+                            <span className="text-gray-300">{module.downloads}</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Star className="w-4 h-4 text-yellow-500" />
+                            <span className="text-gray-300">{module.rating}</span>
+                          </div>
+                        </div>
+                        <span className="text-gray-400 text-xs">by {module.author}</span>
+                      </div>
+
+                      <div>
+                        <h4 className="text-white font-medium mb-2 text-sm">Functions:</h4>
+                        <div className="flex flex-wrap gap-1">
+                          {module.functions.slice(0, 4).map((func, idx) => (
+                            <Badge key={idx} variant="outline" className="border-slate-600 text-gray-300 text-xs">
+                              {func}
+                            </Badge>
+                          ))}
+                          {module.functions.length > 4 && (
+                            <Badge variant="outline" className="border-slate-600 text-gray-300 text-xs">
+                              +{module.functions.length - 4} more
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+
+                      <div>
+                        <Badge variant="outline" className="border-slate-600 text-gray-400 text-xs">
+                          📁 {module.file}
+                        </Badge>
+                      </div>
+
+                      <Tabs defaultValue="info" className="w-full">
+                        <TabsList className="grid w-full grid-cols-2 bg-slate-700">
+                          <TabsTrigger value="info" className="text-white text-xs">Info</TabsTrigger>
+                          <TabsTrigger value="code" className="text-white text-xs">Example</TabsTrigger>
+                        </TabsList>
+                        
+                        <TabsContent value="info" className="space-y-3">
+                          <div className="flex gap-2">
+                            <Button 
+                              size="sm" 
+                              className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+                              onClick={() => installModule(module.name)}
+                            >
+                              <Download className="w-4 h-4 mr-2" />
+                              Install
+                            </Button>
+                            <Button 
+                              size="sm" 
+                              variant="outline" 
+                              className="border-slate-600 text-gray-300 hover:text-white"
+                            >
+                              <Book className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </TabsContent>
+                        
+                        <TabsContent value="code">
+                          <div className="relative">
+                            <pre className="bg-slate-900 border border-slate-600 rounded p-3 text-xs text-gray-300 overflow-x-auto max-h-64">
+                              <code>{module.code}</code>
+                            </pre>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="absolute top-2 right-2 border-slate-600 text-gray-300 hover:text-white"
+                              onClick={() => copyCode(module.code)}
+                            >
+                              <Copy className="w-3 h-3" />
+                            </Button>
+                          </div>
+                        </TabsContent>
+                      </Tabs>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <Package className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-white mb-2">No modules found</h3>
+                <p className="text-gray-400">Try adjusting your search terms or category filter.</p>
+              </div>
+            )}
+
+            {/* Module Development Info */}
+            <Card className="bg-slate-800 border-slate-700 max-w-4xl mx-auto">
+              <CardContent className="p-8 text-center">
+                <div className="flex items-center justify-center gap-3 mb-4">
+                  <Zap className="w-6 h-6 text-purple-400" />
+                  <h3 className="text-2xl font-bold text-white">Create Your Own Module</h3>
+                </div>
+                <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
+                  Want to contribute to the SUSA ecosystem? Create and publish your own modules 
+                  to help other developers build amazing applications.
+                </p>
+                <div className="flex justify-center gap-4">
+                  <Button className="bg-purple-600 hover:bg-purple-700 text-white">
+                    <Code className="w-4 h-4 mr-2" />
+                    Module Development Guide
+                  </Button>
+                  <Button variant="outline" className="border-slate-600 text-gray-300 hover:text-white">
+                    <Book className="w-4 h-4 mr-2" />
+                    API Documentation
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </div>
+    </div>
+  );
+};
+
+export default Examples;

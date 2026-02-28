@@ -1,0 +1,58 @@
+// SUSA Error Handling Test Suite
+// This file tests all error types
+
+PRINT "=== SUSA Error Handling Tests ==="
+PRINT ""
+
+// Test 1: NameError - Undefined variable
+PRINT "Test 1: NameError (undefined variable)"
+PRINT undefined_var
+
+// Test 2: ZeroDivisionError - Division by zero
+PRINT "Test 2: ZeroDivisionError"
+let result = 10 / 0
+
+// Test 3: ZeroDivisionError - Modulo by zero
+PRINT "Test 3: ZeroDivisionError (modulo)"
+let mod_result = 10 % 0
+
+// Test 4: IndexError - Array out of bounds
+PRINT "Test 4: IndexError (array access)"
+let arr = [1, 2, 3]
+PRINT arr[10]
+
+// Test 5: IndexError - Negative index
+PRINT "Test 5: IndexError (negative index)"
+PRINT arr[-1]
+
+// Test 6: IndexError - Array assignment out of bounds
+PRINT "Test 6: IndexError (array assignment)"
+arr[10] = 99
+
+// Test 7: TypeError - Cannot subtract strings
+PRINT "Test 7: TypeError (string subtraction)"
+let bad_math = "hello" - "world"
+
+// Test 8: TypeError - Cannot index non-list
+PRINT "Test 8: TypeError (indexing non-list)"
+let num = 42
+PRINT num[0]
+
+// Test 9: ArgumentError - Wrong number of arguments
+PRINT "Test 9: ArgumentError (sqrt)"
+let bad_sqrt = sqrt(1, 2, 3)
+
+// Test 10: ArgumentError - Missing argument
+PRINT "Test 10: ArgumentError (pow)"
+let bad_pow = pow(2)
+
+// Test 11: TypeError - len() on wrong type
+PRINT "Test 11: TypeError (len on number)"
+let bad_len = len(42)
+
+// Test 12: ImportError - Module not found
+PRINT "Test 12: ImportError"
+ADD nonexistent_module
+
+PRINT ""
+PRINT "=== All tests completed ==="

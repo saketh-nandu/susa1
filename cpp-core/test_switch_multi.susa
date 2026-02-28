@@ -1,0 +1,17 @@
+# Multi-Case Switch Test
+
+let day = 3
+PRINT rt"Testing day = {day}"
+
+SWITCH day: START:
+CASE 1:
+    PRINT "Monday"
+CASE 2:
+    PRINT "Tuesday"
+CASE 3:
+    PRINT "Wednesday"
+CASE 4:
+    PRINT "Thursday"
+END:
+
+PRINT "Done"

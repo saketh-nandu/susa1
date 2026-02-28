@@ -1,0 +1,4 @@
+// Test 5: ArgumentError
+PRINT "Test 5: ArgumentError (wrong number of args)"
+let result = sqrt(1, 2, 3)
+PRINT result

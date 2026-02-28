@@ -1,0 +1,56 @@
+# Test Switch/Case Statement
+
+PRINT "=== Switch/Case Test ==="
+PRINT ""
+
+# Test 1: Simple switch with single match
+PRINT "Test 1: value = 2"
+let value = 2
+SWITCH value: START:
+    CASE 1: START:
+        PRINT "  Result: One"
+    END:
+    CASE 2: START:
+        PRINT "  Result: Two"
+    END:
+    CASE 3: START:
+        PRINT "  Result: Three"
+    END:
+    DEFAULT: START:
+        PRINT "  Result: Other"
+    END:
+END:
+
+PRINT ""
+
+# Test 2: Switch with default
+PRINT "Test 2: value = 99"
+let value2 = 99
+SWITCH value2: START:
+    CASE 1: START:
+        PRINT "  Result: One"
+    END:
+    CASE 2: START:
+        PRINT "  Result: Two"
+    END:
+    DEFAULT: START:
+        PRINT "  Result: Default case"
+    END:
+END:
+
+PRINT ""
+
+# Test 3: Switch with first case
+PRINT "Test 3: value = 1"
+let value3 = 1
+SWITCH value3: START:
+    CASE 1: START:
+        PRINT "  Result: First case"
+    END:
+    CASE 2: START:
+        PRINT "  Result: Second case"
+    END:
+END:
+
+PRINT ""
+PRINT "=== Switch/Case Tests Complete ==="

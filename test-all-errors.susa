@@ -1,0 +1,31 @@
+# Test all error types in SUSA C++ interpreter
+
+PRINT "=== Testing Error Handling ==="
+PRINT ""
+
+# Test 1: NameError - Undefined variable
+PRINT "Test 1: NameError"
+# PRINT undefined_variable  # Uncomment to test
+
+# Test 2: ZeroDivisionError - Division by zero
+PRINT "Test 2: ZeroDivisionError"
+# let x = 10 / 0  # Uncomment to test
+
+# Test 3: ZeroDivisionError - Modulo by zero
+PRINT "Test 3: Modulo by zero"
+# let y = 10 % 0  # Uncomment to test
+
+# Test 4: SyntaxError - Missing colon
+PRINT "Test 4: SyntaxError"
+# IF true START:  # Missing colon after IF
+
+# Test 5: ImportError - Module not found
+PRINT "Test 5: ImportError"
+# ADD nonexistent_module  # Uncomment to test
+
+# Test 6: SyntaxError - Missing module name
+PRINT "Test 6: Missing module name"
+# ADD  # Uncomment to test
+
+PRINT ""
+PRINT "All error tests defined (uncomment to test each)"

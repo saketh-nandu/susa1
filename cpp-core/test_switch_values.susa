@@ -1,0 +1,14 @@
+# Test with clear different values
+
+let x = 10
+
+SWITCH x: START:
+CASE 5:
+    PRINT "FIVE"
+CASE 10:
+    PRINT "TEN"
+CASE 15:
+    PRINT "FIFTEEN"
+END:
+
+PRINT "Done"

@@ -1,0 +1,39 @@
+# Test Bitwise Operators
+
+PRINT "=== Bitwise Operators Test ==="
+PRINT ""
+
+# Test data
+let a = 12  # 1100 in binary
+let b = 10  # 1010 in binary
+
+PRINT "a = " + STR(a) + " (binary: 1100)"
+PRINT "b = " + STR(b) + " (binary: 1010)"
+PRINT ""
+
+# Bitwise AND
+let and_result = a & b
+PRINT "a & b = " + STR(and_result) + " (expected: 8, binary: 1000)"
+
+# Bitwise OR
+let or_result = a | b
+PRINT "a | b = " + STR(or_result) + " (expected: 14, binary: 1110)"
+
+# Bitwise XOR
+let xor_result = a ^ b
+PRINT "a ^ b = " + STR(xor_result) + " (expected: 6, binary: 0110)"
+
+# Bitwise NOT
+let not_result = ~a
+PRINT "~a = " + STR(not_result) + " (expected: -13)"
+
+# Left Shift
+let left_shift = a << 1
+PRINT "a << 1 = " + STR(left_shift) + " (expected: 24, binary: 11000)"
+
+# Right Shift
+let right_shift = a >> 1
+PRINT "a >> 1 = " + STR(right_shift) + " (expected: 6, binary: 110)"
+
+PRINT ""
+PRINT "=== All Bitwise Tests Complete ==="

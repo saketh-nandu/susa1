@@ -1,0 +1,26 @@
+# Welcome to SUSA IDE - C++ Core Edition
+
+PRINT "Hello from SUSA C++ Core!"
+
+# Variables (use 'let' for all types in C++ version)
+let age = 25
+let name = "SUSA Developer"
+let isReady = true
+
+# Output variables
+PRINT "Name: SUSA Developer"
+PRINT "Age: 25"
+PRINT "Ready: true"
+
+# Control flow
+IF age > 18: START:
+    PRINT "You are an adult!"
+END:
+
+# Loops
+LOOP i = 1 FOR 3 TIMES: START:
+    PRINT "Loop iteration"
+END:
+
+PRINT "Welcome to SUSA programming!"
+PRINT "Using C++ Core for maximum performance!"

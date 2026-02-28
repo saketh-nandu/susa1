@@ -1,0 +1,10 @@
+# Single case that should match
+
+let x = 2
+
+SWITCH x: START:
+CASE 2:
+    PRINT "MATCHED CASE 2"
+END:
+
+PRINT "Done"

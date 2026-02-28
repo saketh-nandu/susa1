@@ -1,0 +1,3 @@
+PRINT "Hello from SUSA - No compiler needed!"
+let x = 10
+PRINT "x = " + STR(x)

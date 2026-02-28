@@ -1,0 +1,79 @@
+# Test all SUSA modules with C++ interpreter
+
+PRINT "=== Testing Array Utils Module ==="
+ADD array_utils
+
+let arr = [1, 2, 3, 4, 5]
+PRINT rt"Original array: {arr}"
+
+let doubled = map_array(arr, lambda x: x * 2)
+PRINT rt"Doubled: {doubled}"
+
+let evens = filter_array(arr, lambda x: x % 2 == 0)
+PRINT rt"Even numbers: {evens}"
+
+PRINT ""
+PRINT "=== Testing String Utils Module ==="
+ADD string_utils
+
+let text = "hello world"
+PRINT rt"Original: {text}"
+PRINT rt"Capitalized: {capitalize(text)}"
+PRINT rt"Upper: {to_upper(text)}"
+
+PRINT ""
+PRINT "=== Testing Math Utils Module ==="
+ADD math_utils
+
+PRINT rt"PI: {PI}"
+PRINT rt"E: {E}"
+PRINT rt"sqrt(16): {sqrt(16)}"
+PRINT rt"factorial(5): {factorial(5)}"
+
+PRINT ""
+PRINT "=== Testing DateTime Utils Module ==="
+ADD datetime_utils
+
+let current = now()
+PRINT rt"Current time: {current}"
+
+PRINT ""
+PRINT "=== Testing File Utils Module ==="
+ADD file_utils
+
+PRINT "File utils loaded"
+
+PRINT ""
+PRINT "=== Testing JSON Utils Module ==="
+ADD json_utils
+
+let data = {"name": "John", "age": 25}
+let json_str = stringify(data, 2)
+PRINT rt"JSON: {json_str}"
+
+PRINT ""
+PRINT "=== Testing HTTP Client Module ==="
+ADD http_client
+
+PRINT "HTTP client loaded"
+
+PRINT ""
+PRINT "=== Testing Data Structures Module ==="
+ADD data_structures
+
+let stack = Stack()
+stack.push(1)
+stack.push(2)
+stack.push(3)
+PRINT rt"Stack top: {stack.peek()}"
+
+PRINT ""
+PRINT "=== Testing Algorithms Module ==="
+ADD algorithms
+
+let unsorted = [5, 2, 8, 1, 9]
+let sorted = quick_sort(unsorted)
+PRINT rt"Sorted: {sorted}"
+
+PRINT ""
+PRINT "=== All Module Tests Complete ==="

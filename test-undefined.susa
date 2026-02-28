@@ -1,0 +1,7 @@
+let x = 10
+PRINT x
+
+# Try to access undefined variable
+PRINT undefined_var
+
+PRINT "Done"

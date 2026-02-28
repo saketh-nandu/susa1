@@ -1,0 +1,8 @@
+int age = 25
+PRINT age
+
+string name = "John"
+PRINT name
+
+bool ready = true
+PRINT ready

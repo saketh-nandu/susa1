@@ -1,0 +1,108 @@
+{
+  "name": "susa-installer",
+  "private": true,
+  "version": "1.0.0",
+  "description": "SUSA Language Installer - Install SUSA compiler, IDE, and development tools",
+  "author": "Saketh Nandu",
+  "type": "module",
+  "main": "public/electron-main.cjs",
+  "homepage": "./",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "electron": "electron .",
+    "electron:dev": "concurrently \"npm run dev\" \"wait-on http://localhost:5173 && electron .\"",
+    "electron:build": "npm run build && electron-builder",
+    "electron:dist": "npm run build && electron-builder --publish=never"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^3.10.0",
+    "@radix-ui/react-dialog": "^1.1.14",
+    "@radix-ui/react-progress": "^1.1.7",
+    "@radix-ui/react-slot": "^1.2.3",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.462.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.61.1",
+    "react-router-dom": "^6.30.1",
+    "tailwind-merge": "^2.6.0",
+    "tailwindcss-animate": "^1.0.7",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.32.0",
+    "@types/node": "^22.16.5",
+    "@types/react": "^18.3.23",
+    "@types/react-dom": "^18.3.7",
+    "@vitejs/plugin-react-swc": "^3.11.0",
+    "autoprefixer": "^10.4.21",
+    "concurrently": "^8.2.2",
+    "electron": "^28.2.0",
+    "electron-builder": "^24.9.1",
+    "eslint": "^9.32.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "globals": "^15.15.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.38.0",
+    "vite": "^5.4.19",
+    "wait-on": "^7.2.0"
+  },
+  "build": {
+    "appId": "com.susa-lang.installer",
+    "productName": "SUSA Installer",
+    "directories": {
+      "output": "dist-electron"
+    },
+    "files": [
+      "dist/**/*",
+      "public/electron-main.cjs",
+      "public/electron-preload.cjs",
+      "public/susa-logo.ico",
+      "public/susa-logo.png"
+    ],
+    "extraResources": [
+      {
+        "from": "../",
+        "to": "susa-source",
+        "filter": [
+          "*.py",
+          "*.bat",
+          "*.ps1",
+          "runtime/**/*",
+          "stdlib/**/*",
+          "modules/**/*",
+          "compiler/**/*",
+          "examples/**/*",
+          "susa logo.ico",
+          "susa logo.png",
+          "LICENSE",
+          "README.md"
+        ]
+      },
+      {
+        "from": "../susa-ide/remix-of-susa-studio-ide-main/dist-electron/SUSA-IDE-Portable-1.0.0.exe",
+        "to": "susa-ide/SUSA-IDE-Portable-1.0.0.exe"
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "public/susa-logo.ico",
+      "requestedExecutionLevel": "requireAdministrator"
+    },
+    "portable": {
+      "artifactName": "SUSA-Installer-${version}.exe"
+    }
+  }
+}

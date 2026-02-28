@@ -1,0 +1,7 @@
+let x = 10
+PRINT x
+
+# This will cause an error - undefined variable
+PRINT y
+
+let z = 20

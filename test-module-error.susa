@@ -1,0 +1,7 @@
+let x = 10
+PRINT x
+
+# Module not found error
+ADD nonexistent_module
+
+let z = 20

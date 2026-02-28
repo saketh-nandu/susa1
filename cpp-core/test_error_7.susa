@@ -1,0 +1,4 @@
+// Test 7: TypeError
+PRINT "Test 7: TypeError (string subtraction)"
+let result = "hello" - "world"
+PRINT result

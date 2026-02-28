@@ -1,0 +1,9 @@
+# Test CONST enforcement
+PRINT "Testing CONST..."
+
+CONST PI = 3.14159
+PRINT "PI = " + PI
+
+# Try to modify (should error)
+PI = 3.14
+PRINT "Modified PI = " + PI

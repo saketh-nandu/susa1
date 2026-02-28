@@ -1,0 +1,26 @@
+# Welcome to SUSA IDE!
+# This is your SUSA workspace directory.
+
+let message = "Hello from SUSA!"
+PRINT message
+
+# Example: Variables
+let age = 25
+let name = "SUSA Developer"
+let isReady = true
+
+PRINT "Name: SUSA Developer, Age: 25, Ready: true"
+
+# Example: Control flow
+IF age > 18: START:
+    PRINT "You are an adult!"
+END:
+
+# Example: Loop
+LOOP i = 1 FOR 3 TIMES: START:
+    PRINT "Count: 1"
+    PRINT "Count: 2"
+    PRINT "Count: 3"
+END:
+
+PRINT "Welcome to SUSA programming!"

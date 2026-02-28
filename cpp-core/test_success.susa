@@ -1,0 +1,25 @@
+// Test successful array operations
+PRINT "=== Array Operations Test ==="
+
+let numbers = [10, 20, 30, 40, 50]
+PRINT "Array: " + str(numbers)
+
+PRINT "First element: " + str(numbers[0])
+PRINT "Third element: " + str(numbers[2])
+PRINT "Last element: " + str(numbers[4])
+
+// Array assignment
+numbers[2] = 99
+PRINT "After numbers[2] = 99: " + str(numbers)
+
+// String interpolation
+let name = "SUSA"
+let version = 2
+PRINT rt"Welcome to {name} version {version}!"
+
+// Module test
+ADD math_utils
+PRINT "Square root of 16: " + str(math_utils.sqrt(16))
+PRINT "PI constant: " + str(PI)
+
+PRINT "=== All tests passed! ==="

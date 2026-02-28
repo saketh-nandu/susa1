@@ -1,0 +1,6 @@
+# Simple Lambda Test
+PRINT "Testing Lambda..."
+
+# Try basic lambda
+let add = LAMBDA x, y: x + y
+PRINT "Done"

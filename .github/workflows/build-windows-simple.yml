@@ -140,8 +140,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: susa-ide/remix-of-susa-studio-ide-main/package-lock.json
       
       - name: Build IDE with Electron Builder
         run: |
@@ -187,8 +185,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: susa-ide/remix-of-susa-studio-ide-main/package-lock.json
       
       - name: Build SUSA Compiler
         shell: msys2 {0}

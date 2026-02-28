@@ -1,0 +1,50 @@
+# Test List Comprehensions
+
+PRINT "=== Testing Basic List Comprehensions ==="
+
+# Simple comprehension
+let squares = [x * x FOR x IN [1, 2, 3, 4, 5]]
+PRINT "Squares: " + str(squares)
+
+# Comprehension with NUMBERS
+let cubes = [x * x * x FOR x IN NUMBERS(1, 6)]
+PRINT "Cubes: " + str(cubes)
+
+# Comprehension with string transformation
+let names = ["alice", "bob", "charlie"]
+let upper_names = [upper(name) FOR name IN names]
+PRINT "Upper names: " + str(upper_names)
+
+PRINT ""
+PRINT "=== Testing Comprehensions with IF Condition ==="
+
+# Filter even numbers
+let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+let evens = [x FOR x IN numbers IF x % 2 == 0]
+PRINT "Even numbers: " + str(evens)
+
+# Filter and transform
+let squares_of_evens = [x * x FOR x IN numbers IF x % 2 == 0]
+PRINT "Squares of evens: " + str(squares_of_evens)
+
+# Filter with condition
+let big_numbers = [x FOR x IN NUMBERS(1, 21) IF x > 10]
+PRINT "Numbers > 10: " + str(big_numbers)
+
+PRINT ""
+PRINT "=== Testing Complex Comprehensions ==="
+
+# Multiple operations
+let doubled = [x * 2 FOR x IN [1, 2, 3, 4, 5]]
+PRINT "Doubled: " + str(doubled)
+
+# With function calls
+let lengths = [len(word) FOR word IN ["hello", "world", "susa"]]
+PRINT "Word lengths: " + str(lengths)
+
+# Nested expressions
+let complex = [(x + 1) * 2 FOR x IN [0, 1, 2, 3, 4]]
+PRINT "Complex: " + str(complex)
+
+PRINT ""
+PRINT "=== All List Comprehension Tests Passed! ==="

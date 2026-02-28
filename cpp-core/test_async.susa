@@ -1,0 +1,57 @@
+# Test Async/Await (Simplified Implementation)
+
+PRINT "=== Testing Async/Await ==="
+
+# Simple async function
+ASYNC FUNC fetch_data(): START:
+    PRINT "Fetching data..."
+    RETURN "Data loaded!"
+END:
+
+let result = fetch_data()
+PRINT "Result: " + result
+
+PRINT ""
+
+# Async function with AWAIT
+ASYNC FUNC get_user(id): START:
+    PRINT "Getting user " + str(id) + "..."
+    RETURN "User_" + str(id)
+END:
+
+ASYNC FUNC get_user_details(): START:
+    let user = AWAIT get_user(123)
+    PRINT "Got user: " + user
+    RETURN user + "_details"
+END:
+
+let details = get_user_details()
+PRINT "Details: " + details
+
+PRINT ""
+
+# Multiple async calls
+ASYNC FUNC task1(): START:
+    PRINT "Task 1 executing"
+    RETURN "Task 1 complete"
+END:
+
+ASYNC FUNC task2(): START:
+    PRINT "Task 2 executing"
+    RETURN "Task 2 complete"
+END:
+
+ASYNC FUNC run_tasks(): START:
+    let r1 = AWAIT task1()
+    let r2 = AWAIT task2()
+    PRINT r1
+    PRINT r2
+    RETURN "All tasks complete"
+END:
+
+let final = run_tasks()
+PRINT final
+
+PRINT ""
+PRINT "=== Async/Await Tests Complete! ==="
+PRINT "(Note: This is a simplified synchronous implementation)"

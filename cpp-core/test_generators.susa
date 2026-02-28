@@ -1,0 +1,57 @@
+# Test Generators with YIELD
+
+PRINT "=== Testing Generators ==="
+
+# Simple generator
+FUNC count_to_five(): START:
+    YIELD 1
+    YIELD 2
+    YIELD 3
+    YIELD 4
+    YIELD 5
+END:
+
+PRINT "Generator values:"
+let gen = count_to_five()
+FOR num IN gen: START:
+    PRINT "  " + str(num)
+END:
+
+PRINT ""
+
+# Generator with computation
+FUNC squares(n): START:
+    let i = 1
+    LOOP WHILE i <= n: START:
+        YIELD i * i
+        i = i + 1
+    END:
+END:
+
+PRINT "Squares of 1-5:"
+let sq_gen = squares(5)
+FOR sq IN sq_gen: START:
+    PRINT "  " + str(sq)
+END:
+
+PRINT ""
+
+# Generator with conditional yields
+FUNC even_numbers(max): START:
+    let i = 0
+    LOOP WHILE i <= max: START:
+        IF i % 2 == 0: START:
+            YIELD i
+        END:
+        i = i + 1
+    END:
+END:
+
+PRINT "Even numbers 0-10:"
+let even_gen = even_numbers(10)
+FOR num IN even_gen: START:
+    PRINT "  " + str(num)
+END:
+
+PRINT ""
+PRINT "=== Generator Tests Complete! ==="

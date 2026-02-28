@@ -1,0 +1,11 @@
+# robots.txt for SUSA Programming Language
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+
+# Sitemap
+Sitemap: https://www.susastudio.online/sitemap.xml
+
+# Crawl-delay
+Crawl-delay: 1

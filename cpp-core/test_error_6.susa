@@ -1,0 +1,4 @@
+// Test 6: ArgumentError
+PRINT "Test 6: ArgumentError (pow with wrong args)"
+let result = pow(2)
+PRINT result

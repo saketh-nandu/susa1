@@ -1,0 +1,87 @@
+# Test Missing Features in SUSA
+
+# Test 1: Type Declarations (SHOULD WORK)
+PRINT "Test 1: Type Declarations"
+int age = 25
+string name = "John"
+bool flag = true
+float pi = 3.14
+PRINT age
+PRINT name
+PRINT flag
+PRINT pi
+
+# Test 2: String Interpolation (SHOULD WORK)
+PRINT "\nTest 2: String Interpolation"
+let x = 10
+let y = 20
+PRINT rt"x = {x}, y = {y}, sum = {x + y}"
+
+# Test 3: Compound Assignment (MISSING)
+PRINT "\nTest 3: Compound Assignment"
+let counter = 0
+# counter += 1  # This will fail
+# counter++     # This will fail
+counter = counter + 1  # Workaround
+PRINT counter
+
+# Test 4: Range Function (MISSING)
+PRINT "\nTest 4: Range Function"
+# FOR i IN RANGE(0, 5): START:  # This will fail
+#     PRINT i
+# END:
+# Workaround: manual list
+FOR i IN [0, 1, 2, 3, 4]: START:
+    PRINT i
+END:
+
+# Test 5: Switch/Case (MISSING)
+PRINT "\nTest 5: Switch/Case"
+let value = 2
+# SWITCH value: START:  # This will fail
+#     CASE 1: PRINT "One"
+#     CASE 2: PRINT "Two"
+#     DEFAULT: PRINT "Other"
+# END:
+# Workaround: if/elif
+IF value == 1: START:
+    PRINT "One"
+ELIF value == 2: START:
+    PRINT "Two"
+ELSE: START:
+    PRINT "Other"
+END:
+
+# Test 6: Ternary Operator (MISSING)
+PRINT "\nTest 6: Ternary Operator"
+let condition = true
+# let result = condition ? "yes" : "no"  # This will fail
+# Workaround: if/else
+let result = ""
+IF condition: START:
+    result = "yes"
+ELSE: START:
+    result = "no"
+END:
+PRINT result
+
+# Test 7: Lambda Functions (MISSING)
+PRINT "\nTest 7: Lambda Functions"
+# let square = LAMBDA x: x * x  # This will fail
+# Workaround: regular function
+FUNC square(x): START:
+    RETURN x * x
+END:
+PRINT square(5)
+
+# Test 8: Multi-line Strings (MISSING)
+PRINT "\nTest 8: Multi-line Strings"
+# let text = """  # This will fail
+# Line 1
+# Line 2
+# """
+# Workaround: escape sequences
+let text = "Line 1\nLine 2"
+PRINT text
+
+PRINT "\n=== All Tests Complete ==="

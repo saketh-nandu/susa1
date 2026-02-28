@@ -1,0 +1,53 @@
+# Test Do-While Loop (New Syntax: DO LOOP: ... WHILE(condition):)
+
+PRINT "=== Do-While Loop Test (New Syntax) ==="
+PRINT ""
+
+# Test 1: Execute at least once
+PRINT "Test 1: Execute at least once (condition false from start)"
+let count1 = 5
+DO LOOP: START:
+    PRINT "  Count: " + STR(count1)
+    count1 = count1 + 1
+END: WHILE(count1 < 5):
+
+PRINT ""
+
+# Test 2: Execute multiple times
+PRINT "Test 2: Execute multiple times"
+let count2 = 0
+DO LOOP: START:
+    PRINT "  Count: " + STR(count2)
+    count2 = count2 + 1
+END: WHILE(count2 < 3):
+
+PRINT ""
+
+# Test 3: With break
+PRINT "Test 3: With break statement"
+let count3 = 0
+DO LOOP: START:
+    PRINT "  Count: " + STR(count3)
+    count3 = count3 + 1
+    IF count3 == 2: START:
+        BREAK
+    END:
+END: WHILE(count3 < 10):
+
+PRINT ""
+
+# Test 4: Complex condition
+PRINT "Test 4: Complex condition with AND"
+let x = 1
+let y = 1
+DO LOOP: START:
+    PRINT "  x=" + STR(x) + ", y=" + STR(y)
+    x = x + 1
+    y = y + 2
+END: WHILE(x < 5 AND y < 10):
+
+PRINT ""
+PRINT "=== Do-While Tests Complete ==="
+PRINT ""
+PRINT "New Syntax: DO LOOP: START: ... END: WHILE(condition):"
+PRINT "More English-like and intuitive!"

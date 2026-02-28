@@ -1,0 +1,12 @@
+# Test non-matching case
+
+let x = 2
+
+SWITCH x: START:
+CASE 1:
+    PRINT "SHOULD NOT PRINT"
+CASE 2:
+    PRINT "SHOULD PRINT"
+END:
+
+PRINT "Done"

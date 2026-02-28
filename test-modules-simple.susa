@@ -1,0 +1,64 @@
+# Test SUSA modules - Simple version
+
+PRINT "=== Testing Basic Features ==="
+let name = "SUSA"
+int age = 25
+string message = "Hello"
+bool ready = true
+
+PRINT rt"Name: {name}, Age: {age}"
+PRINT rt"Message: {message}, Ready: {ready}"
+
+PRINT ""
+PRINT "=== Testing Math Utils ==="
+ADD math_utils
+
+PRINT "Constants:"
+PRINT PI
+PRINT E
+
+let sqrt_result = sqrt(16)
+PRINT rt"sqrt(16): {sqrt_result}"
+
+let fact_result = factorial(5)
+PRINT rt"factorial(5): {fact_result}"
+
+let nums = [1, 2, 3, 4, 5]
+let avg_result = average(nums)
+PRINT rt"average([1,2,3,4,5]): {avg_result}"
+
+PRINT ""
+PRINT "=== Testing String Utils ==="
+ADD string_utils
+
+let text = "hello world"
+let cap = capitalize(text)
+PRINT rt"capitalize('hello world'): {cap}"
+
+let upper_text = upper(text)
+PRINT rt"upper: {upper_text}"
+
+let lower_text = lower("HELLO")
+PRINT rt"lower('HELLO'): {lower_text}"
+
+PRINT ""
+PRINT "=== Testing Array Utils ==="
+ADD array_utils
+
+let arr = [1, 2, 3, 4, 5]
+let unique_arr = unique(arr)
+PRINT rt"unique: {unique_arr}"
+
+PRINT ""
+PRINT "=== Testing Algorithms ==="
+ADD algorithms
+
+let unsorted = [5, 2, 8, 1, 9]
+let sorted = quick_sort(unsorted)
+PRINT rt"quick_sort([5,2,8,1,9]): {sorted}"
+
+let search_result = binary_search(sorted, 8)
+PRINT rt"binary_search for 8: {search_result}"
+
+PRINT ""
+PRINT "=== All Tests Complete ==="

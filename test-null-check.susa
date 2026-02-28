@@ -1,0 +1,19 @@
+# Test for null values
+
+let message = "Hello from SUSA!"
+PRINT message
+
+# Variables
+let age = 25
+let name = "SUSA Developer"  
+let isReady = true
+
+# This should NOT print null
+PRINT rt"Name: {name}, Age: {age}, Ready: {isReady}"
+
+# Control flow
+IF age > 18: START:
+    PRINT "You are an adult!"
+END:
+
+PRINT "Welcome to SUSA programming!"

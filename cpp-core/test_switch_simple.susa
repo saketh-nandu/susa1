@@ -1,0 +1,11 @@
+# Simple Switch Test
+
+let day = 3
+PRINT rt"Testing day = {day}"
+
+SWITCH day: START:
+CASE 3:
+    PRINT "It's Wednesday!"
+END:
+
+PRINT "Done"

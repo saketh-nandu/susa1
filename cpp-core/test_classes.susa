@@ -1,0 +1,94 @@
+# Test Classes (OOP)
+
+PRINT "=== Testing Basic Class ==="
+
+CLASS Person: START:
+    FUNC __init__(self, name, age): START:
+        self.name = name
+        self.age = age
+    END:
+    
+    FUNC greet(self): START:
+        PRINT "Hello, I'm " + self.name + " and I'm " + str(self.age) + " years old"
+    END:
+    
+    FUNC birthday(self): START:
+        self.age = self.age + 1
+        PRINT self.name + " is now " + str(self.age) + " years old!"
+    END:
+END:
+
+let person1 = Person("Alice", 25)
+person1.greet()
+person1.birthday()
+person1.greet()
+
+PRINT ""
+
+let person2 = Person("Bob", 30)
+person2.greet()
+
+PRINT ""
+PRINT "=== Testing Class with Methods ==="
+
+CLASS Calculator: START:
+    FUNC __init__(self): START:
+        self.result = 0
+    END:
+    
+    FUNC add(self, x): START:
+        self.result = self.result + x
+        RETURN self.result
+    END:
+    
+    FUNC multiply(self, x): START:
+        self.result = self.result * x
+        RETURN self.result
+    END:
+    
+    FUNC get_result(self): START:
+        RETURN self.result
+    END:
+    
+    FUNC reset(self): START:
+        self.result = 0
+    END:
+END:
+
+let calc = Calculator()
+PRINT "Initial: " + str(calc.get_result())
+calc.add(10)
+PRINT "After add(10): " + str(calc.get_result())
+calc.add(5)
+PRINT "After add(5): " + str(calc.get_result())
+calc.multiply(2)
+PRINT "After multiply(2): " + str(calc.get_result())
+calc.reset()
+PRINT "After reset: " + str(calc.get_result())
+
+PRINT ""
+PRINT "=== Testing Class with Default Parameters ==="
+
+CLASS Rectangle: START:
+    FUNC __init__(self, width = 10, height = 5): START:
+        self.width = width
+        self.height = height
+    END:
+    
+    FUNC area(self): START:
+        RETURN self.width * self.height
+    END:
+    
+    FUNC perimeter(self): START:
+        RETURN 2 * (self.width + self.height)
+    END:
+END:
+
+let rect1 = Rectangle()
+PRINT "Default rectangle - Area: " + str(rect1.area()) + ", Perimeter: " + str(rect1.perimeter())
+
+let rect2 = Rectangle(20, 15)
+PRINT "Custom rectangle - Area: " + str(rect2.area()) + ", Perimeter: " + str(rect2.perimeter())
+
+PRINT ""
+PRINT "=== All Class Tests Passed! ==="

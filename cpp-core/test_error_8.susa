@@ -1,0 +1,4 @@
+// Test 8: ImportError
+PRINT "Test 8: ImportError"
+ADD nonexistent_module
+PRINT "This should not print"

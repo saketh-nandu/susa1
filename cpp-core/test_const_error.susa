@@ -1,0 +1,7 @@
+# Test CONST enforcement
+CONST PI = 3.14159
+PRINT "PI = " + STR(PI)
+
+# Try to reassign (should error)
+PI = 3.14
+PRINT "This should not print"

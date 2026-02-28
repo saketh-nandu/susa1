@@ -1,0 +1,6 @@
+ADD math_utils
+
+PRINT "Testing constants:"
+PRINT PI
+PRINT E
+PRINT GOLDEN_RATIO

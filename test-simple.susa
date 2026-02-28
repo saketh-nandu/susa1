@@ -1,0 +1,5 @@
+let name = "John"
+PRINT name
+
+let age = 25
+PRINT age

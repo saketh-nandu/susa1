@@ -1,0 +1,204 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 220 20% 4%;
+    --foreground: 220 10% 92%;
+
+    --card: 220 18% 8%;
+    --card-foreground: 220 10% 92%;
+
+    --popover: 220 18% 8%;
+    --popover-foreground: 220 10% 92%;
+
+    --primary: 190 90% 50%;
+    --primary-foreground: 220 20% 4%;
+
+    --secondary: 220 15% 15%;
+    --secondary-foreground: 220 10% 85%;
+
+    --muted: 220 15% 12%;
+    --muted-foreground: 220 10% 55%;
+
+    --accent: 190 80% 45%;
+    --accent-foreground: 220 20% 4%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 220 15% 18%;
+    --input: 220 15% 18%;
+    --ring: 190 90% 50%;
+
+    --radius: 0.5rem;
+
+    /* Custom SUSA design tokens */
+    --susa-glow: 190 90% 50%;
+    --susa-glow-subtle: 190 60% 30%;
+    --susa-text-primary: 220 10% 95%;
+    --susa-text-secondary: 220 10% 60%;
+    --susa-surface: 220 18% 6%;
+    --susa-surface-elevated: 220 16% 10%;
+
+    /* Gradients */
+    --gradient-glow: linear-gradient(135deg, hsl(190 90% 50% / 0.2), hsl(220 80% 60% / 0.1));
+    --gradient-text: linear-gradient(135deg, hsl(190 90% 60%), hsl(220 80% 70%));
+    --gradient-dark: linear-gradient(180deg, hsl(220 20% 6%), hsl(220 20% 2%));
+
+    /* Shadows */
+    --shadow-glow: 0 0 60px hsl(190 90% 50% / 0.15);
+    --shadow-glow-intense: 0 0 100px hsl(190 90% 50% / 0.3);
+    --shadow-letter: 0 0 80px hsl(190 90% 50% / 0.4);
+  }
+
+  .dark {
+    --background: 220 20% 4%;
+    --foreground: 220 10% 92%;
+    --card: 220 18% 8%;
+    --card-foreground: 220 10% 92%;
+    --popover: 220 18% 8%;
+    --popover-foreground: 220 10% 92%;
+    --primary: 190 90% 50%;
+    --primary-foreground: 220 20% 4%;
+    --secondary: 220 15% 15%;
+    --secondary-foreground: 220 10% 85%;
+    --muted: 220 15% 12%;
+    --muted-foreground: 220 10% 55%;
+    --accent: 190 80% 45%;
+    --accent-foreground: 220 20% 4%;
+    --border: 220 15% 18%;
+    --input: 220 15% 18%;
+    --ring: 190 90% 50%;
+    --susa-glow: 190 90% 50%;
+    --susa-surface: 220 18% 6%;
+    --susa-surface-elevated: 220 16% 10%;
+  }
+
+  .light {
+    --background: 220 20% 97%;
+    --foreground: 220 20% 4%;
+
+    --card: 220 20% 94%;
+    --card-foreground: 220 20% 4%;
+
+    --primary: 190 100% 40%;
+    --primary-foreground: 220 20% 98%;
+
+    --secondary: 220 15% 90%;
+    --secondary-foreground: 220 15% 10%;
+
+    --muted: 220 15% 90%;
+    --muted-foreground: 220 15% 40%;
+
+    --border: 220 15% 85%;
+    --input: 220 15% 85%;
+
+    --susa-text-primary: 220 20% 10%;
+    --susa-text-secondary: 220 20% 40%;
+    --susa-surface: 220 20% 96%;
+    --susa-surface-elevated: 220 20% 90%;
+
+    --shadow-glow: 0 0 40px hsl(190 90% 20% / 0.05);
+    --shadow-letter: 0 0 40px hsl(190 90% 20% / 0.1);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  /* Root element locked to full viewport — no scroll ever bleeds here */
+  #root {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-feature-settings: "rlig" 1, "calt" 1;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background: hsl(var(--primary) / 0.3);
+    color: hsl(var(--foreground));
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    background: var(--gradient-text);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .glow {
+    box-shadow: var(--shadow-glow);
+  }
+
+  .glow-intense {
+    box-shadow: var(--shadow-glow-intense);
+  }
+
+  .letter-glow {
+    text-shadow: var(--shadow-letter);
+  }
+
+  .surface-elevated {
+    background: hsl(var(--susa-surface-elevated));
+  }
+
+  /* Force canvas fullscreen */
+  canvas {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    display: block !important;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--background));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground));
+}

@@ -1,0 +1,393 @@
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
+import { Copy, Search, Package, ArrowLeft, Star, Code, Zap, CheckCircle } from "lucide-react";
+import { toast } from "sonner";
+
+const Modules = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
+
+  const modules = [
+    {
+      name: "math_utils",
+      version: "1.0.0",
+      description: "Advanced mathematical functions and operations",
+      functions: 40,
+      category: "Core",
+      performance: "100x faster",
+      funcs: ["sqrt", "factorial", "is_prime", "gcd", "lcm", "sin", "cos", "tan"],
+      code: `# Math Utils Module
+LET result = math_utils.sqrt(144)
+PRINT "Square root: " + result
+
+LET fact = math_utils.factorial(5)
+PRINT "Factorial of 5: " + fact
+
+LET is_prime = math_utils.is_prime(17)
+PRINT "Is 17 prime? " + is_prime`
+    },
+    {
+      name: "string_utils",
+      version: "1.0.0", 
+      description: "String manipulation and processing functions",
+      functions: 30,
+      category: "Core",
+      performance: "30x faster",
+      funcs: ["upper", "lower", "split", "join", "reverse", "contains", "trim"],
+      code: `# String Utils Module
+LET upper = string_utils.upper("hello")
+PRINT "Uppercase: " + upper
+
+LET reversed = string_utils.reverse("SUSA")
+PRINT "Reversed: " + reversed
+
+LET parts = string_utils.split("a,b,c", ",")
+PRINT "Split: " + parts`
+    },
+    {
+      name: "array_utils",
+      version: "1.0.0",
+      description: "Comprehensive array manipulation functions",
+      functions: 50,
+      category: "Core",
+      performance: "50x faster",
+      funcs: ["sort", "reverse", "sum", "average", "max", "min", "unique"],
+      code: `# Array Utils Module
+LET arr = [5, 2, 8, 1, 9]
+LET sum = array_utils.sum(arr)
+PRINT "Sum: " + sum
+
+LET max = array_utils.max(arr)
+PRINT "Max: " + max
+
+LET sorted = array_utils.sort(arr)
+PRINT "Sorted: " + sorted`
+    },
+    {
+      name: "datetime_utils",
+      version: "1.0.0",
+      description: "Date and time manipulation functions",
+      functions: 35,
+      category: "Core",
+      performance: "40x faster",
+      funcs: ["now", "today", "get_year", "get_month", "format_date", "is_leap_year"],
+      code: `# DateTime Utils Module
+LET now = datetime_utils.now()
+PRINT "Current time: " + now
+
+LET today = datetime_utils.today()
+PRINT "Today: " + today
+
+LET year = datetime_utils.get_year()
+PRINT "Year: " + year`
+    },
+    {
+      name: "file_utils",
+      version: "1.0.0",
+      description: "File system operations and utilities",
+      functions: 30,
+      category: "System",
+      performance: "60x faster",
+      funcs: ["read_file", "write_file", "exists", "delete_file", "copy_file", "list_dir"],
+      code: `# File Utils Module
+LET success = file_utils.write_file("test.txt", "Hello!")
+PRINT "File written: " + success
+
+LET exists = file_utils.exists("test.txt")
+PRINT "File exists: " + exists
+
+LET content = file_utils.read_file("test.txt")
+PRINT "Content: " + content`
+    },
+    {
+      name: "json_utils",
+      version: "1.0.0",
+      description: "JSON parsing and manipulation functions",
+      functions: 25,
+      category: "Data",
+      performance: "80x faster",
+      funcs: ["stringify", "parse", "is_array", "is_object", "validate", "get_keys"],
+      code: `# JSON Utils Module
+LET arr = [1, 2, 3, 4, 5]
+LET json_str = json_utils.stringify(arr)
+PRINT "JSON: " + json_str
+
+LET is_arr = json_utils.is_array(arr)
+PRINT "Is array: " + is_arr`
+    },
+    {
+      name: "http_client",
+      version: "1.0.0",
+      description: "HTTP requests and web API functions",
+      functions: 25,
+      category: "Network",
+      performance: "Educational",
+      funcs: ["get", "post", "put", "delete", "get_status", "encode_url"],
+      code: `# HTTP Client Module
+LET response = http_client.get("https://api.example.com")
+LET status = http_client.get_status()
+PRINT "Status: " + status
+
+LET encoded = http_client.encode_url("hello world")
+PRINT "Encoded: " + encoded`
+    },
+    {
+      name: "data_structures",
+      version: "1.0.0",
+      description: "Advanced data structures (Stack, Queue, Tree, Graph)",
+      functions: 20,
+      category: "Advanced",
+      performance: "70x faster",
+      funcs: ["stack_create", "stack_push", "stack_pop", "queue_create", "queue_enqueue"],
+      code: `# Data Structures Module
+LET stack = data_structures.stack_create()
+LET stack = data_structures.stack_push(stack, 10)
+LET stack = data_structures.stack_push(stack, 20)
+
+LET size = data_structures.stack_size(stack)
+PRINT "Stack size: " + size`
+    },
+    {
+      name: "algorithms",
+      version: "1.0.0",
+      description: "Common algorithms and sorting functions",
+      functions: 35,
+      category: "Advanced",
+      performance: "90x faster",
+      funcs: ["quick_sort", "binary_search", "is_sorted", "median", "is_palindrome"],
+      code: `# Algorithms Module
+LET arr = [5, 2, 8, 1, 9]
+LET sorted = algorithms.quick_sort(arr)
+PRINT "Sorted: " + sorted
+
+LET is_palindrome = algorithms.is_palindrome("racecar")
+PRINT "Is palindrome: " + is_palindrome`
+    }
+  ];
+
+  const categories = ["All", "Core", "System", "Data", "Network", "Advanced"];
+
+  const filteredModules = modules.filter(module => {
+    const matchesSearch = module.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         module.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === "All" || module.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
+
+  const copyCode = (code: string) => {
+    navigator.clipboard.writeText(code);
+    toast.success("Code copied to clipboard!");
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-[hsl(220,20%,4%)] via-[hsl(220,18%,8%)] to-[hsl(220,20%,2%)]">
+      {/* Header */}
+      <header className="border-b border-[hsl(190,90%,50%,0.2)] bg-black/50 backdrop-blur-sm sticky top-0 z-50">
+        <div className="container mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <Link to="/" state={{ fromPage: 'modules' }} className="flex items-center gap-2 text-[hsl(190,90%,50%)] hover:text-[hsl(190,90%,60%)] transition-colors">
+              <ArrowLeft className="w-5 h-5" />
+              <span className="font-semibold">Back to Home</span>
+            </Link>
+            <div className="flex items-center gap-2">
+              <Package className="w-6 h-6 text-[hsl(190,90%,50%)]" />
+              <h1 className="text-2xl font-bold text-white">SUSA Modules</h1>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div className="container mx-auto px-6 py-8">
+        {/* Hero Section */}
+        <div className="text-center mb-12">
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+            290 Functions Across 9 Modules
+          </h2>
+          <p className="text-xl text-gray-400 max-w-3xl mx-auto mb-8">
+            All built into the C++ core for maximum performance. Zero external dependencies.
+          </p>
+          
+          {/* Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mb-8">
+            {[
+              { label: "Modules", value: "9" },
+              { label: "Functions", value: "290" },
+              { label: "Performance", value: "10-100x" },
+              { label: "Dependencies", value: "0" }
+            ].map((stat, index) => (
+              <div key={index} className="bg-[hsl(220,18%,8%,0.5)] backdrop-blur-sm border border-[hsl(190,90%,50%,0.2)] rounded-lg p-4 hover:border-[hsl(190,90%,50%,0.5)] transition-all hover:shadow-[0_0_30px_hsl(190,90%,50%,0.15)]">
+                <div className="text-3xl font-bold text-[hsl(190,90%,50%)]">{stat.value}</div>
+                <div className="text-sm text-[hsl(220,10%,60%)]">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Search and Filter */}
+          <div className="max-w-2xl mx-auto">
+            <div className="relative mb-4">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[hsl(220,10%,60%)] w-5 h-5" />
+              <Input
+                type="text"
+                placeholder="Search modules..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 bg-[hsl(220,18%,8%,0.5)] border-[hsl(190,90%,50%,0.2)] text-white placeholder-[hsl(220,10%,60%)] focus:border-[hsl(190,90%,50%)]"
+              />
+            </div>
+            
+            <div className="flex flex-wrap justify-center gap-2">
+              {categories.map((category) => (
+                <Button
+                  key={category}
+                  variant={selectedCategory === category ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSelectedCategory(category)}
+                  className={selectedCategory === category 
+                    ? "bg-[hsl(190,90%,50%)] hover:bg-[hsl(190,90%,60%)] text-black font-semibold" 
+                    : "border-[hsl(190,90%,50%,0.3)] text-[hsl(220,10%,70%)] hover:text-white hover:bg-[hsl(190,90%,50%,0.2)]"
+                  }
+                >
+                  {category}
+                </Button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Module Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+          {filteredModules.map((module, index) => (
+            <Card key={index} className="bg-[hsl(220,18%,8%,0.5)] backdrop-blur-sm border-[hsl(190,90%,50%,0.2)] hover:border-[hsl(190,90%,50%)] transition-all hover:shadow-[0_0_40px_hsl(190,90%,50%,0.2)] hover:scale-105 duration-300">
+              <CardHeader>
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-[hsl(190,90%,50%)] rounded-lg">
+                      <Package className="w-5 h-5 text-black" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-white">{module.name}</CardTitle>
+                      <p className="text-sm text-[hsl(220,10%,60%)]">v{module.version}</p>
+                    </div>
+                  </div>
+                  <Badge className="bg-[hsl(190,90%,50%,0.2)] text-[hsl(190,90%,50%)] border-[hsl(190,90%,50%,0.3)]">{module.category}</Badge>
+                </div>
+                <p className="text-[hsl(220,10%,70%)] text-sm">{module.description}</p>
+              </CardHeader>
+              
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-1">
+                      <Code className="w-4 h-4 text-[hsl(190,90%,50%)]" />
+                      <span className="text-[hsl(220,10%,70%)]">{module.functions} functions</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Zap className="w-4 h-4 text-yellow-400" />
+                      <span className="text-[hsl(220,10%,70%)]">{module.performance}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="text-white font-medium mb-2 text-sm">Available Functions:</h4>
+                  <div className="flex flex-wrap gap-1">
+                    {module.funcs.slice(0, 4).map((func, idx) => (
+                      <Badge key={idx} variant="outline" className="border-[hsl(190,90%,50%,0.3)] text-[hsl(220,10%,70%)] text-xs">
+                        {func}
+                      </Badge>
+                    ))}
+                    {module.funcs.length > 4 && (
+                      <Badge variant="outline" className="border-[hsl(190,90%,50%,0.3)] text-[hsl(220,10%,70%)] text-xs">
+                        +{module.funcs.length - 4} more
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+
+                <Tabs defaultValue="info" className="w-full">
+                  <TabsList className="grid w-full grid-cols-2 bg-[hsl(220,18%,8%,0.5)]">
+                    <TabsTrigger value="info" className="text-white text-xs data-[state=active]:bg-[hsl(190,90%,50%)] data-[state=active]:text-black">Info</TabsTrigger>
+                    <TabsTrigger value="code" className="text-white text-xs data-[state=active]:bg-[hsl(190,90%,50%)] data-[state=active]:text-black">Example</TabsTrigger>
+                  </TabsList>
+                  
+                  <TabsContent value="info" className="space-y-3">
+                    <div className="bg-[hsl(190,90%,50%,0.1)] border border-[hsl(190,90%,50%,0.3)] rounded-lg p-3">
+                      <div className="flex items-center gap-2 text-sm text-[hsl(190,90%,60%)]">
+                        <CheckCircle className="w-4 h-4" />
+                        <span>Built into C++ core</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-[hsl(190,90%,60%)] mt-1">
+                        <CheckCircle className="w-4 h-4" />
+                        <span>No installation required</span>
+                      </div>
+                    </div>
+                  </TabsContent>
+                  
+                  <TabsContent value="code">
+                    <div className="relative">
+                      <pre className="bg-black/50 border border-[hsl(190,90%,50%,0.3)] rounded p-3 text-xs text-[hsl(190,90%,60%)] overflow-x-auto max-h-48">
+                        <code>{module.code}</code>
+                      </pre>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="absolute top-2 right-2 border-[hsl(190,90%,50%,0.3)] text-[hsl(220,10%,70%)] hover:text-white hover:bg-[hsl(190,90%,50%,0.2)]"
+                        onClick={() => copyCode(module.code)}
+                      >
+                        <Copy className="w-3 h-3" />
+                      </Button>
+                    </div>
+                  </TabsContent>
+                </Tabs>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* No Results */}
+        {filteredModules.length === 0 && (
+          <div className="text-center py-12">
+            <Package className="w-16 h-16 text-[hsl(220,10%,40%)] mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-white mb-2">No modules found</h3>
+            <p className="text-[hsl(220,10%,60%)]">Try adjusting your search terms or category filter.</p>
+          </div>
+        )}
+
+        {/* Info Card */}
+        <Card className="bg-[hsl(220,18%,8%,0.5)] backdrop-blur-sm border-[hsl(190,90%,50%,0.2)] max-w-4xl mx-auto">
+          <CardContent className="p-8 text-center">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <Star className="w-6 h-6 text-[hsl(190,90%,50%)]" />
+              <h3 className="text-2xl font-bold text-white">All Modules Built-In</h3>
+            </div>
+            <p className="text-[hsl(220,10%,70%)] mb-6 max-w-2xl mx-auto">
+              All 9 modules with 290 functions are built directly into the SUSA C++ core. 
+              No installation, no dependencies, just pure performance.
+            </p>
+            <div className="flex justify-center gap-4">
+              <Link to="/docs">
+                <Button className="bg-[hsl(190,90%,50%)] hover:bg-[hsl(190,90%,60%)] text-black font-semibold">
+                  <Code className="w-4 h-4 mr-2" />
+                  View Documentation
+                </Button>
+              </Link>
+              <Link to="/examples">
+                <Button variant="outline" className="border-[hsl(190,90%,50%,0.3)] text-[hsl(220,10%,70%)] hover:text-white hover:bg-[hsl(190,90%,50%,0.2)]">
+                  <Package className="w-4 h-4 mr-2" />
+                  See Examples
+                </Button>
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+};
+
+export default Modules;

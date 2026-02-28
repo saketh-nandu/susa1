@@ -1,0 +1,34 @@
+# Test WITH Statement
+
+PRINT "=== Testing WITH Statement ==="
+
+# Simple WITH statement
+WITH {"name": "Alice", "age": 25} AS person: START:
+    PRINT "Name: " + person["name"]
+    PRINT "Age: " + str(person["age"])
+END:
+
+PRINT ""
+
+# WITH statement with list
+WITH [1, 2, 3, 4, 5] AS numbers: START:
+    let total = 0
+    FOR num IN numbers: START:
+        total = total + num
+    END:
+    PRINT "Sum: " + str(total)
+END:
+
+PRINT ""
+
+# WITH statement with nested blocks
+WITH "Resource" AS resource: START:
+    PRINT "Using resource: " + resource
+    
+    IF len(resource) > 5: START:
+        PRINT "Resource name is long"
+    END:
+END:
+
+PRINT ""
+PRINT "=== WITH Statement Tests Passed! ==="

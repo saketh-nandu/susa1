@@ -1,0 +1,9 @@
+ADD array_utils
+
+let arr = [1, 2, 2, 3, 3, 3, 4]
+PRINT "Original:"
+PRINT arr
+
+let result = unique(arr)
+PRINT "Unique:"
+PRINT result

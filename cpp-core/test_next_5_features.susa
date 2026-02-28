@@ -1,0 +1,149 @@
+# Test Next 5 Features in SUSA
+
+PRINT "=========================================="
+PRINT "Testing Next 5 Features"
+PRINT "=========================================="
+
+# Feature 1: Type Declarations
+PRINT "\n1. Type Declarations (int, string, bool, float, double)"
+
+int age = 25
+PRINT rt"int age = {age}"
+
+string name = "John Doe"
+PRINT rt"string name = {name}"
+
+bool isActive = true
+PRINT rt"bool isActive = {isActive}"
+
+float pi = 3.14159
+PRINT rt"float pi = {pi}"
+
+double bigNumber = 123456.789
+PRINT rt"double bigNumber = {bigNumber}"
+
+# Feature 2: String Interpolation (rt"...")
+PRINT "\n2. String Interpolation with rt\"...\""
+
+let username = "Alice"
+let score = 95
+let level = 10
+
+PRINT rt"Player: {username}"
+PRINT rt"Score: {score}"
+PRINT rt"Level: {level}"
+PRINT rt"{username} has {score} points at level {level}"
+
+int x = 10
+int y = 20
+int sum = x + y
+PRINT rt"The sum of {x} and {y} is {sum}"
+
+# Feature 3: Switch/Case Statement
+PRINT "\n3. Switch/Case Statement"
+
+let day = 3
+PRINT rt"Day number: {day}"
+
+SWITCH day: START:
+CASE 1:
+    PRINT "Monday"
+CASE 2:
+    PRINT "Tuesday"
+CASE 3:
+    PRINT "Wednesday"
+CASE 4:
+    PRINT "Thursday"
+CASE 5:
+    PRINT "Friday"
+DEFAULT:
+    PRINT "Weekend!"
+END:
+
+let grade = 85
+PRINT rt"\nGrade: {grade}"
+
+SWITCH grade: START:
+CASE 90:
+    PRINT "A - Excellent!"
+CASE 80:
+    PRINT "B - Good!"
+CASE 70:
+    PRINT "C - Average"
+DEFAULT:
+    PRINT "Keep trying!"
+END:
+
+# Feature 4: Do-While Loop
+PRINT "\n4. Do-While Loop (executes at least once)"
+
+int counter = 0
+PRINT "Counting from 0 to 4:"
+
+DO: START:
+    PRINT counter
+    counter++
+END: WHILE counter < 5
+
+PRINT "\nDo-while with false condition (still runs once):"
+int test = 10
+DO: START:
+    PRINT rt"This runs once even though {test} < 5 is false"
+END: WHILE test < 5
+
+# Feature 5: Ternary Operator
+PRINT "\n5. Ternary Operator (condition ? true_val : false_val)"
+
+int num = 15
+let result = num > 10 ? "Greater than 10" : "Less than or equal to 10"
+PRINT rt"{num} is {result}"
+
+int a = 5
+int b = 8
+let max = a > b ? a : b
+PRINT rt"Max of {a} and {b} is {max}"
+
+bool isLoggedIn = true
+let message = isLoggedIn ? "Welcome back!" : "Please log in"
+PRINT message
+
+int temperature = 25
+let weather = temperature > 30 ? "Hot" : temperature > 20 ? "Warm" : "Cold"
+PRINT rt"Temperature {temperature}°C is {weather}"
+
+PRINT "\n=========================================="
+PRINT "All 5 New Features Working Successfully!"
+PRINT "=========================================="
+
+# Bonus: Combining all features
+PRINT "\n6. Combining Multiple Features"
+
+string playerName = "Bob"
+int playerScore = 0
+int round = 1
+
+DO: START:
+    PRINT rt"\n--- Round {round} ---"
+    
+    SWITCH round: START:
+    CASE 1:
+        playerScore += 10
+    CASE 2:
+        playerScore += 20
+    CASE 3:
+        playerScore += 30
+    DEFAULT:
+        playerScore += 5
+    END:
+    
+    let status = playerScore > 50 ? "Winning!" : "Keep going!"
+    PRINT rt"{playerName}: {playerScore} points - {status}"
+    
+    round++
+END: WHILE round <= 3
+
+PRINT rt"\nFinal Score: {playerScore}"
+
+PRINT "\n=========================================="
+PRINT "All Tests Complete! 🎉"
+PRINT "=========================================="

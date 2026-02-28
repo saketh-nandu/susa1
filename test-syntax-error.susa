@@ -1,0 +1,7 @@
+let x = 10
+PRINT x
+
+# Syntax error - missing module name
+ADD
+
+let z = 20

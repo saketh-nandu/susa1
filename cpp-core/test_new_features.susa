@@ -1,0 +1,128 @@
+# Test All 5 New Features in SUSA
+
+PRINT "=========================================="
+PRINT "Testing 5 New Features"
+PRINT "=========================================="
+
+# Feature 1: Compound Assignment Operators
+PRINT "\n1. Compound Assignment Operators (+=, -=, *=, /=, %=, **=)"
+let x = 10
+PRINT rt"Initial x = {x}"
+
+x += 5
+PRINT rt"After x += 5: {x}"
+
+x -= 3
+PRINT rt"After x -= 3: {x}"
+
+x *= 2
+PRINT rt"After x *= 2: {x}"
+
+x /= 4
+PRINT rt"After x /= 4: {x}"
+
+x %= 5
+PRINT rt"After x %= 5: {x}"
+
+let y = 2
+y **= 3
+PRINT rt"2 **= 3 = {y}"
+
+# Feature 2: Increment/Decrement Operators
+PRINT "\n2. Increment/Decrement Operators (++, --)"
+let counter = 0
+PRINT rt"Initial counter = {counter}"
+
+counter++
+PRINT rt"After counter++: {counter}"
+
+counter++
+PRINT rt"After counter++: {counter}"
+
+counter--
+PRINT rt"After counter--: {counter}"
+
+# Feature 3: NUMBERS Function (Range)
+PRINT "\n3. NUMBERS Function - Generate sequences"
+
+PRINT "NUMBERS(5):"
+FOR i IN NUMBERS(5): START:
+    PRINT i
+END:
+
+PRINT "\nNUMBERS(2, 7):"
+FOR i IN NUMBERS(2, 7): START:
+    PRINT i
+END:
+
+PRINT "\nNUMBERS(0, 10, 2) - even numbers:"
+FOR i IN NUMBERS(0, 10, 2): START:
+    PRINT i
+END:
+
+PRINT "\nNUMBERS(10, 0, -2) - countdown:"
+FOR i IN NUMBERS(10, 0, -2): START:
+    PRINT i
+END:
+
+# Feature 4: Multi-line Strings
+PRINT "\n4. Multi-line Strings (triple quotes)"
+let poem = """
+Roses are red,
+Violets are blue,
+SUSA is awesome,
+And so are you!
+"""
+PRINT poem
+
+let code = """
+This is a multi-line
+code block that can span
+multiple lines without
+using \n escapes!
+"""
+PRINT code
+
+# Feature 5: Assert Statement
+PRINT "\n5. Assert Statement - Testing"
+
+ASSERT true, "This should pass"
+PRINT "✓ Assert true passed"
+
+ASSERT 5 > 3, "5 should be greater than 3"
+PRINT "✓ Assert 5 > 3 passed"
+
+let value = 42
+ASSERT value == 42, "Value should be 42"
+PRINT rt"✓ Assert value == 42 passed (value = {value})"
+
+# This would fail:
+# ASSERT false, "This will throw an error"
+# ASSERT 2 > 5, "This will fail"
+
+PRINT "\n=========================================="
+PRINT "All 5 Features Working Successfully!"
+PRINT "=========================================="
+
+# Bonus: Combining features
+PRINT "\n6. Combining Multiple Features"
+let sum = 0
+FOR num IN NUMBERS(1, 11): START:
+    sum += num
+END:
+PRINT rt"Sum of 1 to 10 = {sum}"
+ASSERT sum == 55, "Sum should be 55"
+PRINT "✓ Combined test passed!"
+
+# Using NUMBERS with compound assignment
+let product = 1
+FOR n IN NUMBERS(1, 6): START:
+    product *= n
+END:
+PRINT rt"Factorial of 5 = {product}"
+ASSERT product == 120, "5! should be 120"
+PRINT "✓ Factorial test passed!"
+
+PRINT "\n=========================================="
+PRINT "All Tests Complete! 🎉"
+PRINT "=========================================="
