@@ -1,9 +1,6 @@
 !macro customInstall
-  ; Add SUSA CLI to PATH
-  nsExec::ExecToLog 'setx PATH "$INSTDIR\resources;%PATH%"'
-  
-  ; Also add to current session
-  ${EnvVarUpdate} $0 "PATH" "A" "HKCU" "$INSTDIR\resources"
+  ; Add SUSA CLI to PATH using PowerShell
+  nsExec::ExecToLog 'powershell -Command "$oldPath = [Environment]::GetEnvironmentVariable(''PATH'', ''User''); if ($oldPath -notlike ''*$INSTDIR\resources*'') { [Environment]::SetEnvironmentVariable(''PATH'', ''$INSTDIR\resources;'' + $oldPath, ''User'') }"'
   
   ; Register .susa file association
   WriteRegStr HKCU "Software\Classes\.susa" "" "SUSA.File"
@@ -16,8 +13,8 @@
 !macroend
 
 !macro customUnInstall
-  ; Remove SUSA from PATH
-  ${un.EnvVarUpdate} $0 "PATH" "R" "HKCU" "$INSTDIR\resources"
+  ; Remove SUSA from PATH using PowerShell
+  nsExec::ExecToLog 'powershell -Command "$oldPath = [Environment]::GetEnvironmentVariable(''PATH'', ''User''); $newPath = ($oldPath -split '';'' | Where-Object { $_ -notlike ''*$INSTDIR\resources*'' }) -join '';''; [Environment]::SetEnvironmentVariable(''PATH'', $newPath, ''User'')"'
   
   ; Remove .susa file association
   DeleteRegKey HKCU "Software\Classes\.susa"
