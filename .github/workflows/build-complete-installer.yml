@@ -66,45 +66,53 @@ jobs:
           
           Write-Host "✅ Branding files ready"
           
-          # Read package.json
-          $pkgContent = Get-Content "package.json" -Raw
-          $pkg = $pkgContent | ConvertFrom-Json
-          
-          # Change product name and description
-          $pkg.build.productName = "SUSA Complete"
-          $pkg.name = "susa-complete"
-          $pkg.description = "SUSA Programming Language - Complete Edition (CLI + IDE)"
-          
-          # Ensure extraResources exists and add CLI files
-          if (-not $pkg.build.PSObject.Properties['extraResources']) {
-            $pkg.build | Add-Member -MemberType NoteProperty -Name "extraResources" -Value @()
-          }
-          
-          $pkg.build.extraResources = @(
-            @{
-              "from" = "public/susa.exe"
-              "to" = "cli/susa.exe"
+          # Create electron-builder config for Complete edition
+          @"
+          {
+            "appId": "com.susa.complete",
+            "productName": "SUSA Complete",
+            "directories": {
+              "output": "dist-electron"
             },
-            @{
-              "from" = "public/examples"
-              "to" = "cli/examples"
+            "files": [
+              "dist/**/*",
+              "public/electron.cjs",
+              "public/preload.cjs",
+              "public/susa-interpreter.cjs",
+              "node_modules/**/*"
+            ],
+            "extraResources": [
+              {
+                "from": "public/susa.exe",
+                "to": "cli/susa.exe"
+              },
+              {
+                "from": "public/examples",
+                "to": "cli/examples"
+              },
+              {
+                "from": "public/modules",
+                "to": "cli/modules"
+              }
+            ],
+            "win": {
+              "target": "nsis",
+              "icon": "public/susa-icon.ico"
             },
-            @{
-              "from" = "public/modules"
-              "to" = "cli/modules"
+            "nsis": {
+              "oneClick": false,
+              "allowToChangeInstallationDirectory": true,
+              "createDesktopShortcut": true,
+              "createStartMenuShortcut": true,
+              "installerIcon": "public/susa-icon.ico",
+              "uninstallerIcon": "public/susa-icon.ico",
+              "installerSidebar": "susa-sidebar.bmp",
+              "include": "installer.nsh"
             }
-          )
+          }
+          "@ | Out-File -FilePath "electron-builder-complete.json" -Encoding UTF8
           
-          # Update sidebar path
-          $pkg.build.nsis.installerSidebar = "susa-sidebar.bmp"
-          
-          # Save with proper formatting
-          $jsonOutput = $pkg | ConvertTo-Json -Depth 10
-          [System.IO.File]::WriteAllText("$PWD\package.json", $jsonOutput, [System.Text.Encoding]::UTF8)
-          
-          Write-Host "✅ package.json updated"
-          Write-Host "`npackage.json extraResources:"
-          $pkg.build.extraResources | ConvertTo-Json
+          Write-Host "✅ electron-builder-complete.json created"
           
           # Copy complete installer NSIS script
           Copy-Item "../../complete-installer.nsh" "installer.nsh" -Force
@@ -129,7 +137,9 @@ jobs:
           Get-ChildItem -Path "public" -Recurse -File | Select-Object FullName, @{Name="Size(MB)";Expression={[math]::Round($_.Length/1MB, 2)}} | Format-Table
           
           npm install
-          npm run dist:win
+          
+          # Build using separate config file
+          npx electron-builder --win --config electron-builder-complete.json
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
