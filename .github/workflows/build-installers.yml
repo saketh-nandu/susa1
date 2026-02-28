@@ -35,11 +35,44 @@ jobs:
         shell: msys2 {0}
         run: |
           cd cpp-core
-          mkdir -p build
-          cd build
-          cmake .. -G "MinGW Makefiles"
-          cmake --build . --config Release
-          cp susa.exe ../
+          
+          # Check if we have the necessary files
+          if [ ! -f "main.cpp" ]; then
+            echo "Error: main.cpp not found"
+            exit 1
+          fi
+          
+          # Try different build methods
+          if [ -f "susa.exe" ]; then
+            echo "Using existing susa.exe"
+          elif [ -f "CMakeLists.txt" ]; then
+            echo "Building with CMake..."
+            mkdir -p build
+            cd build
+            cmake .. -G "MinGW Makefiles" -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++
+            cmake --build . --config Release
+            cp susa.exe ../
+          elif [ -f "Makefile" ]; then
+            echo "Building with Makefile..."
+            make
+          else
+            echo "Building directly with g++..."
+            g++ -std=c++17 -O2 -o susa.exe main.cpp
+          fi
+          
+          # Verify the executable was created
+          if [ ! -f "susa.exe" ] && [ ! -f "build/susa.exe" ]; then
+            echo "Error: Failed to build susa.exe"
+            exit 1
+          fi
+          
+          # Copy to root if in build directory
+          if [ -f "build/susa.exe" ]; then
+            cp build/susa.exe ./
+          fi
+          
+          echo "Build successful!"
+          ls -la susa.exe
       
       - name: Create LICENSE.txt
         run: |
