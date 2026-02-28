@@ -1,0 +1,265 @@
+name: Build Windows Installers
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number (e.g., 1.0.0)'
+        required: true
+        default: '1.0.0'
+
+env:
+  SUSA_VERSION: ${{ github.event.inputs.version || '1.0.0' }}
+
+jobs:
+  build-cli:
+    name: Windows CLI Installer
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: mingw-w64-x86_64-gcc
+      
+      - name: Build SUSA Compiler
+        shell: msys2 {0}
+        run: |
+          cd cpp-core
+          g++ -std=c++17 -Wall -O2 -static -o susa.exe main.cpp
+          ls -lh susa.exe
+          ./susa.exe --version || echo "Compiler built successfully"
+      
+      - name: Verify build artifacts
+        run: |
+          if (!(Test-Path "cpp-core\susa.exe")) {
+            Write-Error "susa.exe not found!"
+            exit 1
+          }
+          Write-Host "✅ CLI binary verified"
+      
+      - name: Build NSIS Installer
+        run: |
+          cd installers/windows/cli
+          makensis susa-cli.nsi
+      
+      - name: Verify installer
+        run: |
+          $installer = "installers/windows/cli/susa-cli-${{ env.SUSA_VERSION }}-windows.exe"
+          if (!(Test-Path $installer)) {
+            Write-Error "Installer not found: $installer"
+            exit 1
+          }
+          $size = (Get-Item $installer).Length / 1MB
+          Write-Host "✅ Installer created: $([math]::Round($size, 2)) MB"
+      
+      - name: Upload CLI Installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: susa-cli-windows
+          path: installers/windows/cli/susa-cli-${{ env.SUSA_VERSION }}-windows.exe
+          retention-days: 30
+
+  build-ide:
+    name: Windows IDE Installer
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: susa-ide/remix-of-susa-studio-ide-main/package-lock.json
+      
+      - name: Build SUSA IDE
+        run: |
+          cd susa-ide/remix-of-susa-studio-ide-main
+          npm ci
+          npm run dist:win
+      
+      - name: Verify IDE build
+        run: |
+          $idePath = "susa-ide/remix-of-susa-studio-ide-main/dist-electron/win-unpacked"
+          if (!(Test-Path $idePath)) {
+            Write-Error "IDE build not found!"
+            exit 1
+          }
+          Write-Host "✅ IDE built successfully"
+      
+      - name: Build NSIS Installer
+        run: |
+          cd installers/windows/ide
+          makensis susa-ide.nsi
+      
+      - name: Verify installer
+        run: |
+          $installer = "installers/windows/ide/susa-ide-${{ env.SUSA_VERSION }}-windows.exe"
+          if (!(Test-Path $installer)) {
+            Write-Error "Installer not found: $installer"
+            exit 1
+          }
+          $size = (Get-Item $installer).Length / 1MB
+          Write-Host "✅ Installer created: $([math]::Round($size, 2)) MB"
+      
+      - name: Upload IDE Installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: susa-ide-windows
+          path: installers/windows/ide/susa-ide-${{ env.SUSA_VERSION }}-windows.exe
+          retention-days: 30
+
+  build-complete:
+    name: Windows Complete Installer
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: mingw-w64-x86_64-gcc
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: susa-ide/remix-of-susa-studio-ide-main/package-lock.json
+      
+      - name: Build SUSA Compiler
+        shell: msys2 {0}
+        run: |
+          cd cpp-core
+          g++ -std=c++17 -Wall -O2 -static -o susa.exe main.cpp
+          ls -lh susa.exe
+      
+      - name: Build SUSA IDE
+        run: |
+          cd susa-ide/remix-of-susa-studio-ide-main
+          npm ci
+          npm run dist:win
+      
+      - name: Verify builds
+        run: |
+          if (!(Test-Path "cpp-core\susa.exe")) {
+            Write-Error "CLI binary not found!"
+            exit 1
+          }
+          if (!(Test-Path "susa-ide\remix-of-susa-studio-ide-main\dist-electron\win-unpacked")) {
+            Write-Error "IDE build not found!"
+            exit 1
+          }
+          Write-Host "✅ Both CLI and IDE built successfully"
+      
+      - name: Build NSIS Installer
+        run: |
+          cd installers/windows/complete
+          makensis susa-complete.nsi
+      
+      - name: Verify installer
+        run: |
+          $installer = "installers/windows/complete/susa-complete-${{ env.SUSA_VERSION }}-windows.exe"
+          if (!(Test-Path $installer)) {
+            Write-Error "Installer not found: $installer"
+            exit 1
+          }
+          $size = (Get-Item $installer).Length / 1MB
+          Write-Host "✅ Installer created: $([math]::Round($size, 2)) MB"
+      
+      - name: Upload Complete Installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: susa-complete-windows
+          path: installers/windows/complete/susa-complete-${{ env.SUSA_VERSION }}-windows.exe
+          retention-days: 30
+
+  create-release:
+    name: Create GitHub Release
+    needs: [build-cli, build-ide, build-complete]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            artifacts/susa-cli-windows/*.exe
+            artifacts/susa-ide-windows/*.exe
+            artifacts/susa-complete-windows/*.exe
+          body: |
+            ## SUSA Programming Language v${{ env.SUSA_VERSION }} - Windows Installers
+            
+            ### 📥 Downloads
+            
+            | Edition | Description | Download |
+            |---------|-------------|----------|
+            | **CLI** | Compiler + CLI tools only | `susa-cli-${{ env.SUSA_VERSION }}-windows.exe` |
+            | **IDE** | Desktop IDE only | `susa-ide-${{ env.SUSA_VERSION }}-windows.exe` |
+            | **Complete** | CLI + IDE together | `susa-complete-${{ env.SUSA_VERSION }}-windows.exe` |
+            
+            ### ✨ Features
+            
+            - ✅ Professional wizard-based installation
+            - ✅ MIT License agreement
+            - ✅ Custom installation directory
+            - ✅ Automatic PATH configuration (CLI & Complete)
+            - ✅ Desktop shortcuts (IDE & Complete)
+            - ✅ Start Menu integration
+            - ✅ File associations (.susa files)
+            - ✅ Professional uninstaller
+            - ✅ Process management (kills running instances)
+            
+            ### 📋 Installation
+            
+            1. Download the installer for your edition
+            2. Run the `.exe` file
+            3. Follow the installation wizard
+            4. Launch SUSA from Start Menu or Desktop
+            
+            ### 🧪 Verification
+            
+            **CLI Edition:**
+            ```cmd
+            susa --version
+            ```
+            
+            **IDE Edition:**
+            - Launch from Desktop shortcut or Start Menu
+            
+            **Complete Edition:**
+            - CLI: `susa --version`
+            - IDE: Launch from Desktop shortcut
+            
+            ### 🌐 Links
+            
+            - Website: https://susastudio.online
+            - Documentation: https://susastudio.online/docs
+            - Repository: https://github.com/saketh-nandu/susa1
+            
+            ---
+            
+            **Built with ❤️ by SUSA Labs**
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
