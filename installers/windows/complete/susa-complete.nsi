@@ -130,8 +130,15 @@ Section "SUSA Desktop IDE" SEC02
   SetOutPath "$INSTDIR\IDE"
   SetOverwrite on
   
-  ; Copy IDE files from electron build
-  File /r "..\..\..\susa-ide\remix-of-susa-studio-ide-main\dist-electron\win-unpacked\*.*"
+  ; Run the Electron IDE installer silently to this directory
+  ; Note: This embeds the IDE installer and runs it
+  File "..\..\..\susa-ide-component.exe"
+  
+  ; Execute the IDE installer silently
+  ExecWait '"$INSTDIR\IDE\susa-ide-component.exe" /S /D=$INSTDIR\IDE'
+  
+  ; Clean up the installer
+  Delete "$INSTDIR\IDE\susa-ide-component.exe"
   
   SetOutPath "$INSTDIR"
 SectionEnd

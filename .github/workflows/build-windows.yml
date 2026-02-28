@@ -83,41 +83,47 @@ jobs:
           cache: 'npm'
           cache-dependency-path: susa-ide/remix-of-susa-studio-ide-main/package-lock.json
       
-      - name: Build SUSA IDE
+      - name: Build IDE with Electron Builder (Native NSIS)
         run: |
           cd susa-ide/remix-of-susa-studio-ide-main
           npm ci
           npm run dist:win
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
-      - name: Verify IDE build
+      - name: Find and Rename Electron Installer
         run: |
-          $idePath = "susa-ide/remix-of-susa-studio-ide-main/dist-electron/win-unpacked"
-          if (!(Test-Path $idePath)) {
-            Write-Error "IDE build not found!"
+          $electronInstaller = Get-ChildItem -Path "susa-ide/remix-of-susa-studio-ide-main/dist-electron" -Filter "*.exe" -Recurse | Where-Object { $_.Name -notlike "*blockmap" } | Select-Object -First 1
+          
+          if ($electronInstaller) {
+            Write-Host "✅ Found Electron installer: $($electronInstaller.Name)"
+            Write-Host "Size: $([math]::Round($electronInstaller.Length / 1MB, 2)) MB"
+            Write-Host "Path: $($electronInstaller.FullName)"
+            
+            # Copy and rename to standard format
+            Copy-Item $electronInstaller.FullName -Destination "susa-ide-${{ env.SUSA_VERSION }}-windows.exe"
+            Write-Host "✅ Renamed to: susa-ide-${{ env.SUSA_VERSION }}-windows.exe"
+          } else {
+            Write-Error "No Electron installer found in dist-electron!"
+            Get-ChildItem -Path "susa-ide/remix-of-susa-studio-ide-main/dist-electron" -Recurse
             exit 1
           }
-          Write-Host "✅ IDE built successfully"
       
-      - name: Build NSIS Installer
+      - name: Verify IDE Installer
         run: |
-          cd installers/windows/ide
-          makensis susa-ide.nsi
-      
-      - name: Verify installer
-        run: |
-          $installer = "installers/windows/ide/susa-ide-${{ env.SUSA_VERSION }}-windows.exe"
+          $installer = "susa-ide-${{ env.SUSA_VERSION }}-windows.exe"
           if (!(Test-Path $installer)) {
             Write-Error "Installer not found: $installer"
             exit 1
           }
           $size = (Get-Item $installer).Length / 1MB
-          Write-Host "✅ Installer created: $([math]::Round($size, 2)) MB"
+          Write-Host "✅ IDE installer ready: $([math]::Round($size, 2)) MB"
       
       - name: Upload IDE Installer
         uses: actions/upload-artifact@v4
         with:
           name: susa-ide-windows
-          path: installers/windows/ide/susa-ide-${{ env.SUSA_VERSION }}-windows.exe
+          path: susa-ide-${{ env.SUSA_VERSION }}-windows.exe
           retention-days: 30
 
   build-complete:
@@ -149,11 +155,42 @@ jobs:
           g++ -std=c++17 -Wall -O2 -static -o susa.exe main.cpp
           ls -lh susa.exe
       
-      - name: Build SUSA IDE
+      - name: Build SUSA IDE with Electron Builder
         run: |
           cd susa-ide/remix-of-susa-studio-ide-main
           npm ci
           npm run dist:win
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Find and use Electron IDE installer
+        run: |
+          $electronInstaller = Get-ChildItem -Path "susa-ide/remix-of-susa-studio-ide-main/dist-electron" -Filter "*.exe" -Recurse | Where-Object { $_.Name -notlike "*blockmap" } | Select-Object -First 1
+          if ($electronInstaller) {
+            Write-Host "✅ Found Electron installer: $($electronInstaller.Name)"
+            # Copy the electron installer as the IDE component
+            Copy-Item $electronInstaller.FullName -Destination "susa-ide-component.exe"
+          } else {
+            Write-Error "No Electron installer found!"
+            exit 1
+          }
+      
+      - name: Create Complete Installer Package
+        run: |
+          # Create a staging directory
+          New-Item -ItemType Directory -Force -Path "complete-staging"
+          
+          # Copy CLI binary
+          Copy-Item "cpp-core/susa.exe" "complete-staging/"
+          
+          # Copy examples and modules
+          Copy-Item -Recurse "examples" "complete-staging/"
+          Copy-Item -Recurse "modules" "complete-staging/"
+          
+          # Copy LICENSE
+          Copy-Item "LICENSE" "complete-staging/LICENSE.txt"
+          
+          Write-Host "✅ Complete package staged"
       
       - name: Verify builds
         run: |
