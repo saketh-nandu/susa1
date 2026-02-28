@@ -51,10 +51,38 @@ jobs:
           # Copy CLI binary and resources directly to public folder
           Write-Host "Copying CLI files..."
           Copy-Item "../../cpp-core/susa.exe" "public/susa.exe" -Force
-          Copy-Item -Recurse "../../examples" "public/examples" -Force
-          Copy-Item -Recurse "../../modules" "public/modules" -Force
+          
+          # Check if examples and modules exist
+          if (Test-Path "../../examples") {
+            Copy-Item -Recurse "../../examples" "public/examples" -Force
+            Write-Host "✅ Examples copied"
+          } else {
+            Write-Host "⚠️ Examples folder not found"
+          }
+          
+          if (Test-Path "../../modules") {
+            Copy-Item -Recurse "../../modules" "public/modules" -Force
+            Write-Host "✅ Modules copied"
+          } else {
+            Write-Host "⚠️ Modules folder not found"
+          }
           
           Write-Host "✅ CLI files copied to public/"
+          
+          # Show sizes
+          Write-Host "`nCLI Component Sizes:"
+          if (Test-Path "public/susa.exe") {
+            $exe = Get-Item "public/susa.exe"
+            Write-Host "  susa.exe: $([math]::Round($exe.Length/1MB, 2)) MB"
+          }
+          if (Test-Path "public/examples") {
+            $examples = Get-ChildItem -Path "public/examples" -Recurse -File | Measure-Object -Property Length -Sum
+            Write-Host "  examples: $([math]::Round($examples.Sum/1MB, 2)) MB"
+          }
+          if (Test-Path "public/modules") {
+            $modules = Get-ChildItem -Path "public/modules" -Recurse -File | Measure-Object -Property Length -Sum
+            Write-Host "  modules: $([math]::Round($modules.Sum/1MB, 2)) MB"
+          }
           
           # Copy branding files
           if (-not (Test-Path "public/susa-icon.ico")) {
@@ -152,18 +180,45 @@ jobs:
           
           # Check dist-electron folder
           if (Test-Path "dist-electron") {
-            Write-Host "`nFiles in dist-electron:"
-            Get-ChildItem -Path "dist-electron" -Recurse | Select-Object FullName, @{Name="Size(MB)";Expression={[math]::Round($_.Length/1MB, 2)}}
-          }
-          
-          # Check if resources folder was created
-          $winUnpacked = Get-ChildItem -Path "dist-electron" -Directory -Filter "*win-unpacked" | Select-Object -First 1
-          if ($winUnpacked) {
-            Write-Host "`nChecking unpacked resources:"
-            if (Test-Path "$($winUnpacked.FullName)\resources") {
-              Get-ChildItem -Path "$($winUnpacked.FullName)\resources" -Recurse | Select-Object FullName
+            Write-Host "`nInstaller files:"
+            Get-ChildItem -Path "dist-electron" -Filter "*.exe" | ForEach-Object {
+              Write-Host "  $($_.Name): $([math]::Round($_.Length/1MB, 2)) MB"
             }
           }
+          
+          # Check if resources folder was created in unpacked
+          $winUnpacked = Get-ChildItem -Path "dist-electron" -Directory -Filter "*win-unpacked" | Select-Object -First 1
+          if ($winUnpacked) {
+            Write-Host "`nUnpacked application structure:"
+            Write-Host "  Main exe: $(Test-Path "$($winUnpacked.FullName)\SUSA Complete.exe")"
+            
+            if (Test-Path "$($winUnpacked.FullName)\resources") {
+              Write-Host "`n  Resources folder contents:"
+              Get-ChildItem -Path "$($winUnpacked.FullName)\resources" | ForEach-Object {
+                Write-Host "    - $($_.Name)"
+              }
+              
+              if (Test-Path "$($winUnpacked.FullName)\resources\cli") {
+                Write-Host "`n  CLI folder contents:"
+                Get-ChildItem -Path "$($winUnpacked.FullName)\resources\cli" | ForEach-Object {
+                  if ($_.PSIsContainer) {
+                    $count = (Get-ChildItem -Path $_.FullName -Recurse -File).Count
+                    Write-Host "    - $($_.Name)/ ($count files)"
+                  } else {
+                    Write-Host "    - $($_.Name) ($([math]::Round($_.Length/1KB, 2)) KB)"
+                  }
+                }
+              } else {
+                Write-Host "  ⚠️ CLI folder NOT FOUND in resources!"
+              }
+            } else {
+              Write-Host "  ⚠️ Resources folder NOT FOUND!"
+            }
+          }
+          
+          Write-Host "`n=== Summary ===" -ForegroundColor Cyan
+          Write-Host "IDE: SUSA Complete.exe (main application)"
+          Write-Host "CLI: resources/cli/susa.exe (added to PATH)"
       
       - name: Find and rename installer
         run: |
