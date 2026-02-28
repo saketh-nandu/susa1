@@ -1,9 +1,11 @@
 !macro customInstall
-  ; Add SUSA CLI to PATH using PowerShell
-  nsExec::ExecToLog 'powershell -Command "$oldPath = [Environment]::GetEnvironmentVariable(''PATH'', ''User''); if ($oldPath -notlike ''*$INSTDIR\resources*'') { [Environment]::SetEnvironmentVariable(''PATH'', ''$INSTDIR\resources;'' + $oldPath, ''User'') }"'
+  ; Add SUSA CLI to PATH via registry (simple append)
+  ReadRegStr $0 HKCU "Environment" "PATH"
+  WriteRegExpandStr HKCU "Environment" "PATH" "$INSTDIR\resources;$0"
+  SendMessage ${HWND_BROADCAST} ${WM_WININICHANGE} 0 "STR:Environment" /TIMEOUT=5000
 !macroend
 
 !macro customUnInstall
-  ; Remove SUSA from PATH using PowerShell
-  nsExec::ExecToLog 'powershell -Command "$oldPath = [Environment]::GetEnvironmentVariable(''PATH'', ''User''); $newPath = ($oldPath -split '';'' | Where-Object { $_ -notlike ''*$INSTDIR\resources*'' }) -join '';''; [Environment]::SetEnvironmentVariable(''PATH'', $newPath, ''User'')"'
+  ; Note: PATH cleanup on uninstall is complex, user can manually remove if needed
+  ; Or use Windows Settings > Environment Variables
 !macroend
