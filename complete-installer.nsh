@@ -1,7 +1,7 @@
 !macro customInstall
-  ; Add SUSA CLI to PATH via registry (simple append)
+  ; Add SUSA CLI to PATH via registry (points to cli folder in resources)
   ReadRegStr $0 HKCU "Environment" "PATH"
-  WriteRegExpandStr HKCU "Environment" "PATH" "$INSTDIR\resources;$0"
+  WriteRegExpandStr HKCU "Environment" "PATH" "$INSTDIR\resources\cli;$0"
   SendMessage ${HWND_BROADCAST} ${WM_WININICHANGE} 0 "STR:Environment" /TIMEOUT=5000
   
   ; Register .susa file association

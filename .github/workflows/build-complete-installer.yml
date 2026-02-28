@@ -1,0 +1,171 @@
+name: Build Complete Installer (CLI + IDE)
+
+on:
+  push:
+    tags:
+      - 'complete-v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number (e.g., 1.0.0)'
+        required: true
+        default: '1.0.0'
+
+env:
+  SUSA_VERSION: ${{ github.event.inputs.version || '1.0.0' }}
+
+jobs:
+  build-complete:
+    name: Windows Complete Installer (CLI + IDE)
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: mingw-w64-x86_64-gcc
+      
+      - name: Build SUSA Compiler
+        shell: msys2 {0}
+        run: |
+          cd cpp-core
+          g++ -std=c++17 -Wall -O2 -static -o susa.exe main.cpp
+          ls -lh susa.exe
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Prepare Complete Installer
+        run: |
+          cd susa-ide/remix-of-susa-studio-ide-main
+          
+          Write-Host "=== Preparing Complete Installer ===" -ForegroundColor Cyan
+          
+          # Create resources directory for CLI
+          New-Item -ItemType Directory -Force -Path "resources-cli"
+          
+          # Copy CLI binary and resources
+          Copy-Item "../../cpp-core/susa.exe" "resources-cli/susa.exe"
+          Copy-Item -Recurse "../../examples" "resources-cli/" -Force
+          Copy-Item -Recurse "../../modules" "resources-cli/" -Force
+          
+          Write-Host "✅ CLI files copied to resources-cli/"
+          
+          # Copy branding files
+          if (-not (Test-Path "public/susa-icon.ico")) {
+            Copy-Item "../../susa logo.ico" "public/susa-icon.ico"
+          }
+          
+          # Copy sidebar BMP to root (where electron-builder expects it)
+          Copy-Item "../../susa-sidebar.bmp" "susa-sidebar.bmp" -Force
+          
+          Write-Host "✅ Branding files ready"
+          
+          # Update package.json for Complete edition
+          $pkg = Get-Content "package.json" -Raw | ConvertFrom-Json
+          
+          # Change product name
+          $pkg.build.productName = "SUSA Complete"
+          $pkg.name = "susa-complete"
+          $pkg.description = "SUSA Programming Language - Complete Edition (CLI + IDE)"
+          
+          # Add CLI files as extraResources
+          $pkg.build | Add-Member -MemberType NoteProperty -Name "extraResources" -Value @(
+            @{
+              "from" = "resources-cli"
+              "to" = "cli"
+            }
+          ) -Force
+          
+          # Update NSIS config
+          $pkg.build.nsis.installerSidebar = "susa-sidebar.bmp"
+          
+          # Save updated package.json
+          $pkg | ConvertTo-Json -Depth 10 | Set-Content "package.json"
+          
+          Write-Host "✅ package.json updated for Complete edition"
+          
+          # Copy complete installer NSIS script
+          Copy-Item "../../complete-installer.nsh" "installer.nsh" -Force
+          
+          Write-Host "✅ Complete installer configured"
+      
+      - name: Build Complete Installer
+        run: |
+          cd susa-ide/remix-of-susa-studio-ide-main
+          npm install
+          npm run dist:win
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Find and rename installer
+        run: |
+          Write-Host "=== Listing Complete dist directory ===" -ForegroundColor Cyan
+          Get-ChildItem -Path "susa-ide/remix-of-susa-studio-ide-main/dist-electron" -Recurse -Filter "*.exe" | ForEach-Object {
+            Write-Host "$($_.FullName) - $([math]::Round($_.Length/1MB, 2)) MB"
+          }
+          
+          $installer = Get-ChildItem -Path "susa-ide/remix-of-susa-studio-ide-main/dist-electron" -Filter "*.exe" -Recurse | Where-Object { $_.Name -notlike "*blockmap" -and $_.Name -notlike "*uninstaller*" } | Select-Object -First 1
+          
+          if ($installer) {
+            Copy-Item $installer.FullName -Destination "susa-complete-${{ env.SUSA_VERSION }}-windows.exe"
+            Write-Host "✅ Complete installer created: susa-complete-${{ env.SUSA_VERSION }}-windows.exe" -ForegroundColor Green
+            $final = Get-Item "susa-complete-${{ env.SUSA_VERSION }}-windows.exe"
+            Write-Host "   Final size: $([math]::Round($final.Length/1MB, 2)) MB"
+          } else {
+            Write-Error "Installer not found!"
+            exit 1
+          }
+      
+      - name: Upload Complete Installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: susa-complete-windows
+          path: susa-complete-${{ env.SUSA_VERSION }}-windows.exe
+      
+      - name: Create Release (if tag)
+        if: startsWith(github.ref, 'refs/tags/complete-v')
+        uses: softprops/action-gh-release@v1
+        with:
+          files: susa-complete-${{ env.SUSA_VERSION }}-windows.exe
+          body: |
+            ## SUSA Complete v${{ env.SUSA_VERSION }} - Windows Installer
+            
+            **All-in-one installer with CLI + IDE**
+            
+            ### Features
+            - ✅ SUSA CLI Compiler (added to PATH)
+            - ✅ SUSA IDE (desktop shortcut)
+            - ✅ SUSA sidebar branding
+            - ✅ SUSA logo icon
+            - ✅ .susa file association
+            - ✅ Examples and modules included
+            - ✅ Custom installation directory
+            
+            ### What's Included
+            - **CLI**: `susa.exe` compiler in PATH
+            - **IDE**: Full desktop IDE with Monaco editor
+            - **Examples**: Sample SUSA programs
+            - **Modules**: Standard library modules
+            
+            ### Installation
+            1. Download `susa-complete-${{ env.SUSA_VERSION }}-windows.exe`
+            2. Run the installer
+            3. Follow the wizard
+            4. CLI will be added to PATH automatically
+            5. IDE desktop shortcut will be created
+            6. Launch SUSA IDE or use `susa` command in terminal!
+            
+            ### Usage
+            - **CLI**: Open terminal and type `susa --version`
+            - **IDE**: Double-click SUSA IDE desktop icon
+            - **Files**: Double-click any `.susa` file to open in IDE
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
