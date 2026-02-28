@@ -1,0 +1,235 @@
+name: Build Windows Installers (CLI, IDE, Complete)
+
+on:
+  push:
+    branches: [ main ]
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+env:
+  SUSA_VERSION: "1.0.0"
+
+jobs:
+  build-cli:
+    name: Windows CLI Installer
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: mingw-w64-x86_64-gcc
+      
+      - name: Build SUSA Compiler
+        shell: msys2 {0}
+        run: |
+          cd cpp-core
+          g++ -std=c++17 -Wall -O2 -static -o susa.exe main.cpp
+          ls -lh susa.exe
+      
+      - name: Create LICENSE.txt
+        run: |
+          @"
+          MIT License
+          
+          Copyright (c) 2026 SUSA Team
+          
+          Permission is hereby granted, free of charge, to any person obtaining a copy
+          of this software and associated documentation files (the "Software"), to deal
+          in the Software without restriction.
+          "@ | Out-File -FilePath LICENSE.txt -Encoding ASCII
+      
+      - name: Create NSIS Installer Script
+        run: |
+          $nsi = @'
+          !define PRODUCT_NAME "SUSA CLI"
+          !define PRODUCT_VERSION "${{ env.SUSA_VERSION }}"
+          !include "MUI2.nsh"
+          !define MUI_ABORTWARNING
+          !insertmacro MUI_PAGE_WELCOME
+          !insertmacro MUI_PAGE_LICENSE "LICENSE.txt"
+          !insertmacro MUI_PAGE_DIRECTORY
+          !insertmacro MUI_PAGE_INSTFILES
+          !insertmacro MUI_PAGE_FINISH
+          !insertmacro MUI_UNPAGE_CONFIRM
+          !insertmacro MUI_UNPAGE_INSTFILES
+          !insertmacro MUI_LANGUAGE "English"
+          Name "${PRODUCT_NAME}"
+          OutFile "SUSA-CLI-Setup-${{ env.SUSA_VERSION }}.exe"
+          InstallDir "$PROGRAMFILES64\SUSA"
+          RequestExecutionLevel admin
+          Function .onInit
+            nsExec::Exec 'taskkill /F /IM susa.exe /T'
+          FunctionEnd
+          Section "Install"
+            SetOutPath "$INSTDIR"
+            File "cpp-core\susa.exe"
+            File "LICENSE.txt"
+            WriteUninstaller "$INSTDIR\uninstall-cli.exe"
+            EnVar::SetHKLM
+            EnVar::AddValue "PATH" "$INSTDIR"
+            WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SUSA-CLI" "DisplayName" "SUSA CLI"
+            WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SUSA-CLI" "UninstallString" "$INSTDIR\uninstall-cli.exe"
+          SectionEnd
+          Function un.onInit
+            nsExec::Exec 'taskkill /F /IM susa.exe /T'
+          FunctionEnd
+          Section "Uninstall"
+            Delete "$INSTDIR\susa.exe"
+            Delete "$INSTDIR\LICENSE.txt"
+            Delete "$INSTDIR\uninstall-cli.exe"
+            RMDir "$INSTDIR"
+            EnVar::SetHKLM
+            EnVar::DeleteValue "PATH" "$INSTDIR"
+            DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SUSA-CLI"
+          SectionEnd
+          '@
+          $nsi | Out-File -FilePath "installer-cli.nsi" -Encoding ASCII
+      
+      - uses: joncloud/makensis-action@v4
+        with:
+          script-file: installer-cli.nsi
+      
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-cli
+          path: SUSA-CLI-Setup-${{ env.SUSA_VERSION }}.exe
+
+  build-ide:
+    name: Windows IDE Installer
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Build IDE with Electron Builder
+        run: |
+          cd susa-ide/remix-of-susa-studio-ide-main
+          npm install
+          npm run dist:win
+      
+      - name: Find and Rename IDE Installer
+        run: |
+          $installer = Get-ChildItem -Path "susa-ide/remix-of-susa-studio-ide-main/dist-electron" -Filter "*.exe" -Recurse | Where-Object { $_.Name -notlike "*blockmap" } | Select-Object -First 1
+          if ($installer) {
+            Copy-Item $installer.FullName -Destination "SUSA-IDE-Setup-${{ env.SUSA_VERSION }}.exe"
+            Write-Host "Found installer: $($installer.Name)"
+          } else {
+            Write-Error "No installer found!"
+            exit 1
+          }
+      
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-ide
+          path: SUSA-IDE-Setup-${{ env.SUSA_VERSION }}.exe
+
+  build-complete:
+    name: Windows Complete Installer
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: mingw-w64-x86_64-gcc
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Build SUSA Compiler
+        shell: msys2 {0}
+        run: |
+          cd cpp-core
+          g++ -std=c++17 -Wall -O2 -static -o susa.exe main.cpp
+          ls -lh susa.exe
+      
+      - name: Build IDE
+        run: |
+          cd susa-ide/remix-of-susa-studio-ide-main
+          npm install
+          npm run build
+      
+      - name: Copy IDE build to staging
+        run: |
+          New-Item -ItemType Directory -Force -Path "complete-staging"
+          Copy-Item -Recurse "susa-ide/remix-of-susa-studio-ide-main/dist/*" "complete-staging/"
+          Copy-Item "cpp-core/susa.exe" "complete-staging/"
+      
+      - name: Create LICENSE.txt
+        run: |
+          @"
+          MIT License
+          
+          Copyright (c) 2026 SUSA Team
+          "@ | Out-File -FilePath LICENSE.txt -Encoding ASCII
+      
+      - name: Create NSIS Installer Script
+        run: |
+          $nsi = @'
+          !define PRODUCT_NAME "SUSA Complete"
+          !define PRODUCT_VERSION "${{ env.SUSA_VERSION }}"
+          !include "MUI2.nsh"
+          !define MUI_ABORTWARNING
+          !insertmacro MUI_PAGE_WELCOME
+          !insertmacro MUI_PAGE_LICENSE "LICENSE.txt"
+          !insertmacro MUI_PAGE_DIRECTORY
+          !insertmacro MUI_PAGE_INSTFILES
+          !insertmacro MUI_PAGE_FINISH
+          !insertmacro MUI_UNPAGE_CONFIRM
+          !insertmacro MUI_UNPAGE_INSTFILES
+          !insertmacro MUI_LANGUAGE "English"
+          Name "${PRODUCT_NAME}"
+          OutFile "SUSA-Complete-Setup-${{ env.SUSA_VERSION }}.exe"
+          InstallDir "$PROGRAMFILES64\SUSA"
+          RequestExecutionLevel admin
+          Function .onInit
+            nsExec::Exec 'taskkill /F /IM susa.exe /T'
+            nsExec::Exec 'taskkill /F /IM "SUSA IDE.exe" /T'
+          FunctionEnd
+          Section "Install"
+            SetOutPath "$INSTDIR"
+            File /r "complete-staging\*.*"
+            File "LICENSE.txt"
+            WriteUninstaller "$INSTDIR\uninstall.exe"
+            EnVar::SetHKLM
+            EnVar::AddValue "PATH" "$INSTDIR"
+            CreateShortCut "$DESKTOP\SUSA IDE.lnk" "$INSTDIR\SUSA IDE.exe"
+            CreateDirectory "$SMPROGRAMS\SUSA"
+            CreateShortCut "$SMPROGRAMS\SUSA\SUSA IDE.lnk" "$INSTDIR\SUSA IDE.exe"
+            WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SUSA" "DisplayName" "SUSA Complete"
+            WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SUSA" "UninstallString" "$INSTDIR\uninstall.exe"
+          SectionEnd
+          Function un.onInit
+            nsExec::Exec 'taskkill /F /IM susa.exe /T'
+            nsExec::Exec 'taskkill /F /IM "SUSA IDE.exe" /T'
+          FunctionEnd
+          Section "Uninstall"
+            RMDir /r "$INSTDIR"
+            Delete "$DESKTOP\SUSA IDE.lnk"
+            Delete "$SMPROGRAMS\SUSA\SUSA IDE.lnk"
+            RMDir "$SMPROGRAMS\SUSA"
+            EnVar::SetHKLM
+            EnVar::DeleteValue "PATH" "$INSTDIR"
+            DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SUSA"
+          SectionEnd
+          '@
+          $nsi | Out-File -FilePath "installer-complete.nsi" -Encoding ASCII
+      
+      - uses: joncloud/makensis-action@v4
+        with:
+          script-file: installer-complete.nsi
+      
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-complete
+          path: SUSA-Complete-Setup-${{ env.SUSA_VERSION }}.exe
