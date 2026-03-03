@@ -1,0 +1,42 @@
+{
+  "name": "susa-ide",
+  "version": "1.0.0",
+  "description": "SUSA Programming Language IDE",
+  "main": "dist/main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "npm run build:renderer && npm run build:electron",
+    "build:renderer": "react-scripts build",
+    "build:electron": "electron-builder --win --x64"
+  },
+  "build": {
+    "appId": "com.susa.ide",
+    "productName": "SUSA-IDE",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "dir",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "assets/icon.ico"
+    },
+    "files": [
+      "dist/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ]
+  },
+  "dependencies": {
+    "electron": "^28.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "electron-builder": "^24.9.1",
+    "react-scripts": "^5.0.1"
+  }
+}

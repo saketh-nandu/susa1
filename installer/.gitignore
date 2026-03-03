@@ -1,0 +1,15 @@
+# Build outputs
+build/
+dist/
+
+# Assets (if using custom ones)
+# Uncomment if you want to keep assets private
+# assets/*.ico
+# assets/*.bmp
+
+# NSIS temporary files
+*.nsi~
+*.nsh~
+
+# Test outputs
+test-results/
