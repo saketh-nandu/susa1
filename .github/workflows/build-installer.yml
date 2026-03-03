@@ -201,46 +201,95 @@ jobs:
       run: |
         choco install nsis -y
         
-    - name: Create placeholder assets
+    - name: Copy branding assets
       run: |
+        Write-Host "=== Copying Branding Assets ==="
         New-Item -ItemType Directory -Force -Path installer/assets
         
-        # Create minimal placeholder files if they don't exist
-        if (-not (Test-Path "installer/assets/susa_icon.ico")) {
-          # Create a minimal valid ICO file (1x1 pixel)
-          $iconBytes = @(0,0,1,0,1,0,1,1,0,0,1,0,24,0,48,0,0,0,22,0,0,0,40,0,0,0,1,0,0,0,2,0,0,0,1,0,24,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,255,255,0,0,0,0,0)
-          [System.IO.File]::WriteAllBytes("installer/assets/susa_icon.ico", $iconBytes)
+        # Copy icon from root
+        if (Test-Path "susa logo.ico") {
+          Copy-Item "susa logo.ico" "installer/assets/susa_icon.ico" -Force
+          Write-Host "✓ Copied susa logo.ico → susa_icon.ico"
+          $size = (Get-Item "installer/assets/susa_icon.ico").Length
+          Write-Host "  Size: $size bytes"
+        } else {
+          Write-Error "✗ susa logo.ico not found in root!"
         }
         
-        if (-not (Test-Path "installer/assets/susa_header.bmp")) {
-          # Create minimal BMP header (150x57)
-          $headerSize = 54 + (150 * 57 * 3)
-          $header = New-Object byte[] $headerSize
-          $header[0] = 0x42; $header[1] = 0x4D  # BM
-          [BitConverter]::GetBytes([int32]$headerSize).CopyTo($header, 2)
+        # Copy sidebar from susa-ide
+        if (Test-Path "susa-ide/remix-of-susa-studio-ide-main/susa-sidebar.bmp") {
+          Copy-Item "susa-ide/remix-of-susa-studio-ide-main/susa-sidebar.bmp" "installer/assets/susa_sidebar.bmp" -Force
+          Write-Host "✓ Copied susa-sidebar.bmp → susa_sidebar.bmp"
+          $size = (Get-Item "installer/assets/susa_sidebar.bmp").Length
+          Write-Host "  Size: $size bytes"
+        } else {
+          Write-Error "✗ susa-sidebar.bmp not found!"
+        }
+        
+        # Create header from logo PNG (convert to BMP)
+        if (Test-Path "susa logo.png") {
+          Write-Host "Creating header BMP from logo PNG..."
+          
+          # For now, create a simple header BMP
+          # In production, you'd want to use the actual logo
+          $width = 150
+          $height = 57
+          $rowSize = [Math]::Floor(($width * 3 + 3) / 4) * 4
+          $pixelArraySize = $rowSize * $height
+          $fileSize = 54 + $pixelArraySize
+          
+          $header = New-Object byte[] $fileSize
+          
+          # BMP File Header
+          $header[0] = 0x42; $header[1] = 0x4D  # "BM"
+          [BitConverter]::GetBytes([int32]$fileSize).CopyTo($header, 2)
           [BitConverter]::GetBytes([int32]54).CopyTo($header, 10)
+          
+          # DIB Header
           [BitConverter]::GetBytes([int32]40).CopyTo($header, 14)
-          [BitConverter]::GetBytes([int32]150).CopyTo($header, 18)
-          [BitConverter]::GetBytes([int32]57).CopyTo($header, 22)
+          [BitConverter]::GetBytes([int32]$width).CopyTo($header, 18)
+          [BitConverter]::GetBytes([int32]$height).CopyTo($header, 22)
           [BitConverter]::GetBytes([int16]1).CopyTo($header, 26)
           [BitConverter]::GetBytes([int16]24).CopyTo($header, 28)
+          
+          # Fill with SUSA brand colors (blue gradient)
+          for ($y = 0; $y -lt $height; $y++) {
+            $intensity = [int](50 + ($y / $height) * 150)
+            for ($x = 0; $x -lt $width; $x++) {
+              $offset = 54 + $y * $rowSize + $x * 3
+              $header[$offset] = [Math]::Min(255, $intensity + 50)      # B
+              $header[$offset + 1] = [Math]::Min(255, $intensity)       # G
+              $header[$offset + 2] = [Math]::Max(0, $intensity - 50)    # R
+            }
+          }
+          
           [System.IO.File]::WriteAllBytes("installer/assets/susa_header.bmp", $header)
+          Write-Host "✓ Created susa_header.bmp (150x57)"
+          $size = (Get-Item "installer/assets/susa_header.bmp").Length
+          Write-Host "  Size: $size bytes"
         }
         
-        if (-not (Test-Path "installer/assets/susa_sidebar.bmp")) {
-          # Create minimal BMP sidebar (164x314)
-          $sidebarSize = 54 + (164 * 314 * 3)
-          $sidebar = New-Object byte[] $sidebarSize
-          $sidebar[0] = 0x42; $sidebar[1] = 0x4D  # BM
-          [BitConverter]::GetBytes([int32]$sidebarSize).CopyTo($sidebar, 2)
-          [BitConverter]::GetBytes([int32]54).CopyTo($sidebar, 10)
-          [BitConverter]::GetBytes([int32]40).CopyTo($sidebar, 14)
-          [BitConverter]::GetBytes([int32]164).CopyTo($sidebar, 18)
-          [BitConverter]::GetBytes([int32]314).CopyTo($sidebar, 22)
-          [BitConverter]::GetBytes([int16]1).CopyTo($sidebar, 26)
-          [BitConverter]::GetBytes([int16]24).CopyTo($sidebar, 28)
-          [System.IO.File]::WriteAllBytes("installer/assets/susa_sidebar.bmp", $sidebar)
+        # Verify all assets
+        Write-Host "`n=== Verifying Assets ==="
+        $assets = @("susa_icon.ico", "susa_header.bmp", "susa_sidebar.bmp")
+        $allExist = $true
+        foreach ($asset in $assets) {
+          $path = "installer/assets/$asset"
+          if (Test-Path $path) {
+            $size = (Get-Item $path).Length
+            Write-Host "✓ $asset ($([math]::Round($size/1KB, 2)) KB)"
+          } else {
+            Write-Error "✗ $asset missing!"
+            $allExist = $false
+          }
         }
+        
+        if (-not $allExist) {
+          Write-Error "Some assets are missing!"
+          exit 1
+        }
+        
+        Write-Host "`n✓ All branding assets ready"
         
     - name: Build NSIS installer
       run: |
