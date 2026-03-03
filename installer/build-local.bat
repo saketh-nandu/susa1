@@ -17,16 +17,18 @@ if %ERRORLEVEL% NEQ 0 (
 )
 
 REM Check if CLI exists
-if not exist "..\cli\build\cpp-core.exe" (
-    echo ERROR: CLI not built!
-    echo Please build the CLI first:
-    echo   cd cpp-core
-    echo   mkdir build
-    echo   cd build
-    echo   cmake .. -G "Visual Studio 17 2022" -A x64
-    echo   cmake --build . --config Release
-    pause
-    exit /b 1
+if not exist "..\cpp-core\build\Release\susa.exe" (
+    if not exist "..\cpp-core\susa.exe" (
+        echo ERROR: CLI not built!
+        echo Please build the CLI first:
+        echo   cd cpp-core
+        echo   mkdir build
+        echo   cd build
+        echo   cmake .. -G "Visual Studio 17 2022" -A x64
+        echo   cmake --build . --config Release
+        pause
+        exit /b 1
+    )
 )
 
 REM Check if IDE exists

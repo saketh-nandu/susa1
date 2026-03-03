@@ -6,7 +6,7 @@
 !define PRODUCT_VERSION "1.0.0"
 !define PRODUCT_PUBLISHER "SUSA Development Team"
 !define PRODUCT_WEB_SITE "https://github.com/yourusername/susa"
-!define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\cpp-core.exe"
+!define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\susa.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
 
@@ -89,10 +89,10 @@ Section "SUSA CLI Compiler" SecCLI
   SetOutPath "$INSTDIR\cli"
   SetOverwrite on
   
-  File "..\cli\build\cpp-core.exe"
+  File "..\cpp-core\build\Release\susa.exe"
   
   ; Create registry keys
-  WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\cli\cpp-core.exe"
+  WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\cli\susa.exe"
   
   DetailPrint "SUSA CLI Compiler installed successfully"
 SectionEnd
@@ -127,7 +127,7 @@ Section -AdditionalIcons
   
   CreateDirectory "$SMPROGRAMS\$StartMenuFolder"
   CreateShortCut "$SMPROGRAMS\$StartMenuFolder\SUSA IDE.lnk" "$INSTDIR\ide\SUSA-IDE.exe"
-  CreateShortCut "$SMPROGRAMS\$StartMenuFolder\SUSA CLI.lnk" "cmd.exe" '/k "$INSTDIR\cli\cpp-core.exe --version"'
+  CreateShortCut "$SMPROGRAMS\$StartMenuFolder\SUSA CLI.lnk" "cmd.exe" '/k "$INSTDIR\cli\susa.exe --version"'
   CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Uninstall SUSA.lnk" "$INSTDIR\uninst.exe"
   
   !insertmacro MUI_STARTMENU_WRITE_END
@@ -292,7 +292,7 @@ FunctionEnd
 
 ; Kill SUSA processes
 Function un.KillSUSAProcesses
-  nsExec::ExecToLog 'taskkill /F /IM cpp-core.exe /T'
+  nsExec::ExecToLog 'taskkill /F /IM susa.exe /T'
   nsExec::ExecToLog 'taskkill /F /IM SUSA-IDE.exe /T'
   Sleep 1000
 FunctionEnd
