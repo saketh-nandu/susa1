@@ -35,15 +35,35 @@ jobs:
         
     - name: Verify CLI build
       run: |
+        Write-Host "=== Checking CLI Build Output ==="
+        
         if (Test-Path "cpp-core/build/Release/susa.exe") {
-          Write-Host "CLI build successful"
-          Get-Item cpp-core/build/Release/susa.exe
+          Write-Host "✓ CLI built successfully at: cpp-core/build/Release/susa.exe"
+          Get-Item "cpp-core/build/Release/susa.exe"
+          
+          # Also check if it runs
+          Write-Host "`nTesting CLI execution:"
+          & "cpp-core/build/Release/susa.exe" --version
         } elseif (Test-Path "cpp-core/susa.exe") {
-          Write-Host "Using existing susa.exe"
-          Get-Item cpp-core/susa.exe
+          Write-Host "✓ Using existing susa.exe at: cpp-core/susa.exe"
+          Get-Item "cpp-core/susa.exe"
+          
+          # Copy to expected location for artifact
+          Write-Host "`nCopying to build/Release directory..."
+          New-Item -ItemType Directory -Force -Path "cpp-core/build/Release"
+          Copy-Item "cpp-core/susa.exe" "cpp-core/build/Release/susa.exe"
         } else {
-          Write-Error "CLI build failed - susa.exe not found"
-          Get-ChildItem cpp-core/build -Recurse -Filter "*.exe" -ErrorAction SilentlyContinue
+          Write-Error "✗ CLI build failed - susa.exe not found"
+          Write-Host "`nSearching for any .exe files in cpp-core:"
+          Get-ChildItem "cpp-core" -Recurse -Filter "*.exe" -ErrorAction SilentlyContinue | Select-Object FullName
+          exit 1
+        }
+        
+        Write-Host "`nFinal verification:"
+        if (Test-Path "cpp-core/build/Release/susa.exe") {
+          Write-Host "✓ susa.exe ready for artifact upload"
+        } else {
+          Write-Error "✗ susa.exe not in expected location"
           exit 1
         }
         
@@ -53,7 +73,6 @@ jobs:
         name: susa-cli
         path: |
           cpp-core/build/Release/susa.exe
-          cpp-core/susa.exe
         retention-days: 1
       continue-on-error: false
 
@@ -135,6 +154,45 @@ jobs:
         name: susa-ide
         path: susa-ide/remix-of-susa-studio-ide-main/dist-electron/win-unpacked
         
+    - name: Verify downloaded artifacts
+      run: |
+        Write-Host "=== Verifying Downloaded Artifacts ==="
+        
+        # Check CLI
+        Write-Host "`nCLI Artifact:"
+        if (Test-Path "cpp-core/build/Release") {
+          Get-ChildItem "cpp-core/build/Release" -Recurse
+        } else {
+          Write-Error "CLI directory not found!"
+        }
+        
+        # Check IDE
+        Write-Host "`nIDE Artifact:"
+        if (Test-Path "susa-ide/remix-of-susa-studio-ide-main/dist-electron/win-unpacked") {
+          Get-ChildItem "susa-ide/remix-of-susa-studio-ide-main/dist-electron/win-unpacked" | Select-Object -First 20
+        } else {
+          Write-Error "IDE directory not found!"
+        }
+        
+        # Verify specific files exist
+        Write-Host "`nVerifying required files:"
+        $cliPath = "cpp-core/build/Release/susa.exe"
+        if (Test-Path $cliPath) {
+          Write-Host "✓ CLI found: $cliPath"
+          Get-Item $cliPath
+        } else {
+          Write-Error "✗ CLI not found: $cliPath"
+          Write-Host "Contents of cpp-core/build/Release:"
+          Get-ChildItem "cpp-core/build/Release" -ErrorAction SilentlyContinue
+        }
+        
+        $ideFiles = Get-ChildItem "susa-ide/remix-of-susa-studio-ide-main/dist-electron/win-unpacked" -ErrorAction SilentlyContinue
+        if ($ideFiles) {
+          Write-Host "✓ IDE files found: $($ideFiles.Count) items"
+        } else {
+          Write-Error "✗ IDE files not found"
+        }
+        
     - name: Create dist directory
       run: |
         New-Item -ItemType Directory -Force -Path dist
@@ -186,6 +244,42 @@ jobs:
         
     - name: Build NSIS installer
       run: |
+        Write-Host "=== Pre-build Directory Check ==="
+        Write-Host "`nCurrent directory:"
+        Get-Location
+        
+        Write-Host "`nDirectory structure:"
+        Get-ChildItem -Recurse -Depth 2 | Where-Object { $_.PSIsContainer -or $_.Extension -eq ".exe" } | Select-Object FullName
+        
+        Write-Host "`nChecking paths relative to installer directory:"
+        Push-Location installer
+        
+        $cliPath = "..\cpp-core\build\Release\susa.exe"
+        $idePath = "..\susa-ide\remix-of-susa-studio-ide-main\dist-electron\win-unpacked"
+        
+        Write-Host "`nCLI path check: $cliPath"
+        if (Test-Path $cliPath) {
+          Write-Host "✓ CLI file exists"
+          Get-Item $cliPath
+        } else {
+          Write-Error "✗ CLI file NOT found at: $cliPath"
+          Write-Host "Searching for susa.exe:"
+          Get-ChildItem .. -Recurse -Filter "susa.exe" | Select-Object FullName
+        }
+        
+        Write-Host "`nIDE path check: $idePath"
+        if (Test-Path $idePath) {
+          Write-Host "✓ IDE directory exists"
+          Get-ChildItem $idePath | Select-Object -First 10
+        } else {
+          Write-Error "✗ IDE directory NOT found at: $idePath"
+          Write-Host "Searching for dist-electron:"
+          Get-ChildItem .. -Recurse -Directory -Filter "dist-electron" | Select-Object FullName
+        }
+        
+        Pop-Location
+        
+        Write-Host "`n=== Running NSIS ==="
         & "C:\Program Files (x86)\NSIS\makensis.exe" /V4 installer/susa-installer.nsi
         
     - name: Verify installer
