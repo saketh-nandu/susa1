@@ -67,7 +67,7 @@ Var CreateDesktopShortcut
 !insertmacro MUI_PAGE_INSTFILES
 
 ; Finish page
-!define MUI_FINISHPAGE_RUN "$INSTDIR\ide\SUSA-IDE.exe"
+!define MUI_FINISHPAGE_RUN "$INSTDIR\ide\SUSA IDE.exe"
 !define MUI_FINISHPAGE_RUN_TEXT "Launch SUSA IDE"
 !define MUI_FINISHPAGE_SHOWREADME ""
 !define MUI_FINISHPAGE_SHOWREADME_TEXT "Open CLI Terminal"
@@ -117,7 +117,7 @@ Section /o "Add CLI to PATH" SecPath
 SectionEnd
 
 Section /o "Create Desktop Shortcut" SecDesktop
-  CreateShortCut "$DESKTOP\SUSA IDE.lnk" "$INSTDIR\ide\SUSA-IDE.exe" "" "$INSTDIR\ide\SUSA-IDE.exe" 0
+  CreateShortCut "$DESKTOP\SUSA IDE.lnk" "$INSTDIR\ide\SUSA IDE.exe" "" "$INSTDIR\ide\SUSA IDE.exe" 0
   
   DetailPrint "Desktop shortcut created"
 SectionEnd
@@ -126,7 +126,7 @@ Section -AdditionalIcons
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
   
   CreateDirectory "$SMPROGRAMS\$StartMenuFolder"
-  CreateShortCut "$SMPROGRAMS\$StartMenuFolder\SUSA IDE.lnk" "$INSTDIR\ide\SUSA-IDE.exe"
+  CreateShortCut "$SMPROGRAMS\$StartMenuFolder\SUSA IDE.lnk" "$INSTDIR\ide\SUSA IDE.exe"
   CreateShortCut "$SMPROGRAMS\$StartMenuFolder\SUSA CLI.lnk" "cmd.exe" '/k "$INSTDIR\cli\susa.exe --version"'
   CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Uninstall SUSA.lnk" "$INSTDIR\uninst.exe"
   
@@ -139,7 +139,7 @@ Section -Post
   ; Registry entries for Add/Remove Programs
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name)"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\ide\SUSA-IDE.exe"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\ide\SUSA IDE.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
@@ -195,6 +195,11 @@ SectionEnd
 ; Functions
 
 Function .onInit
+  ; Kill any running SUSA processes before installation
+  nsExec::ExecToLog 'taskkill /F /IM susa.exe /T'
+  nsExec::ExecToLog 'taskkill /F /IM "SUSA IDE.exe" /T'
+  Sleep 1000
+  
   ; Check if already installed
   ReadRegStr $R0 ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString"
   StrCmp $R0 "" done
@@ -206,7 +211,23 @@ Function .onInit
   
 uninst:
   ClearErrors
-  ExecWait '$R0 _?=$INSTDIR'
+  
+  ; Kill processes again before uninstall
+  nsExec::ExecToLog 'taskkill /F /IM susa.exe /T'
+  nsExec::ExecToLog 'taskkill /F /IM "SUSA IDE.exe" /T'
+  Sleep 2000
+  
+  ; Run uninstaller silently
+  ExecWait '$R0 /S _?=$INSTDIR'
+  
+  ; Wait for uninstall to complete
+  Sleep 2000
+  
+  ; Force delete any remaining files
+  RMDir /r "$INSTDIR\cli"
+  RMDir /r "$INSTDIR\ide"
+  Delete "$INSTDIR\uninst.exe"
+  RMDir "$INSTDIR"
   
 done:
 FunctionEnd
@@ -293,7 +314,7 @@ FunctionEnd
 ; Kill SUSA processes
 Function un.KillSUSAProcesses
   nsExec::ExecToLog 'taskkill /F /IM susa.exe /T'
-  nsExec::ExecToLog 'taskkill /F /IM SUSA-IDE.exe /T'
+  nsExec::ExecToLog 'taskkill /F /IM "SUSA IDE.exe" /T'
   Sleep 1000
 FunctionEnd
 
