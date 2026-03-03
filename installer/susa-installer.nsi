@@ -91,8 +91,10 @@ Section "SUSA CLI Compiler" SecCLI
   
   File "..\cpp-core\build\Release\susa.exe"
   
-  ; Create registry keys
+  ; Create registry keys for CLI
   WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\cli\susa.exe"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\App Paths\susa.exe" "" "$INSTDIR\cli\susa.exe"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\App Paths\susa.exe" "Path" "$INSTDIR\cli"
   
   DetailPrint "SUSA CLI Compiler installed successfully"
 SectionEnd
@@ -116,7 +118,9 @@ Section /o "Add CLI to PATH" SecPath
   DetailPrint "Added SUSA CLI to system PATH"
 SectionEnd
 
-Section /o "Create Desktop Shortcut" SecDesktop
+Section "Create Desktop Shortcut" SecDesktop
+  SectionIn 1  ; Selected by default
+  
   CreateShortCut "$DESKTOP\SUSA IDE.lnk" "$INSTDIR\ide\SUSA IDE.exe" "" "$INSTDIR\ide\SUSA IDE.exe" 0
   
   DetailPrint "Desktop shortcut created"
@@ -126,9 +130,26 @@ Section -AdditionalIcons
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
   
   CreateDirectory "$SMPROGRAMS\$StartMenuFolder"
-  CreateShortCut "$SMPROGRAMS\$StartMenuFolder\SUSA IDE.lnk" "$INSTDIR\ide\SUSA IDE.exe"
-  CreateShortCut "$SMPROGRAMS\$StartMenuFolder\SUSA CLI.lnk" "cmd.exe" '/k "$INSTDIR\cli\susa.exe --version"'
-  CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Uninstall SUSA.lnk" "$INSTDIR\uninst.exe"
+  
+  ; Create IDE shortcut with proper properties for Windows Search
+  CreateShortCut "$SMPROGRAMS\$StartMenuFolder\SUSA IDE.lnk" "$INSTDIR\ide\SUSA IDE.exe" \
+    "" "$INSTDIR\ide\SUSA IDE.exe" 0 SW_SHOWNORMAL \
+    "" "SUSA IDE - Professional Development Environment"
+  
+  ; Create CLI shortcut
+  CreateShortCut "$SMPROGRAMS\$StartMenuFolder\SUSA CLI.lnk" "cmd.exe" \
+    '/k "$INSTDIR\cli\susa.exe --version"' "" 0 SW_SHOWNORMAL \
+    "" "SUSA Command Line Interface"
+  
+  ; Create uninstaller shortcut
+  CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Uninstall SUSA.lnk" "$INSTDIR\uninst.exe" \
+    "" "$INSTDIR\uninst.exe" 0 SW_SHOWNORMAL \
+    "" "Uninstall SUSA Programming Language"
+  
+  ; Create a direct shortcut in Start Menu root for better discoverability
+  CreateShortCut "$SMPROGRAMS\SUSA IDE.lnk" "$INSTDIR\ide\SUSA IDE.exe" \
+    "" "$INSTDIR\ide\SUSA IDE.exe" 0 SW_SHOWNORMAL \
+    "" "SUSA IDE - Professional Development Environment"
   
   !insertmacro MUI_STARTMENU_WRITE_END
 SectionEnd
@@ -144,6 +165,18 @@ Section -Post
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
   
+  ; Register IDE in App Paths for Windows Search
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\App Paths\SUSA IDE.exe" "" "$INSTDIR\ide\SUSA IDE.exe"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\App Paths\SUSA IDE.exe" "Path" "$INSTDIR\ide"
+  
+  ; Register for Windows Search indexing
+  WriteRegStr HKLM "Software\SUSA" "InstallPath" "$INSTDIR"
+  WriteRegStr HKLM "Software\SUSA" "IDEPath" "$INSTDIR\ide\SUSA IDE.exe"
+  WriteRegStr HKLM "Software\SUSA" "CLIPath" "$INSTDIR\cli\susa.exe"
+  
+  ; Add to Windows Start Menu search index
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\StartMenu\Programs" "SUSA IDE" "$INSTDIR\ide\SUSA IDE.exe"
+  
   ; Calculate installed size
   ${GetSize} "$INSTDIR" "/S=0K" $0 $1 $2
   IntFmt $0 "0x%08X" $0
@@ -152,10 +185,10 @@ SectionEnd
 
 ; Section descriptions
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
-  !insertmacro MUI_DESCRIPTION_TEXT ${SecCLI} "SUSA command-line compiler (cpp-core.exe). Required component."
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecCLI} "SUSA command-line compiler (susa.exe). Required component."
   !insertmacro MUI_DESCRIPTION_TEXT ${SecIDE} "SUSA Integrated Development Environment. Required component."
   !insertmacro MUI_DESCRIPTION_TEXT ${SecPath} "Add SUSA CLI to system PATH for easy command-line access."
-  !insertmacro MUI_DESCRIPTION_TEXT ${SecDesktop} "Create a desktop shortcut for quick access to SUSA IDE."
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecDesktop} "Create a desktop shortcut for quick access to SUSA IDE. (Recommended)"
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 ; Uninstaller Section
@@ -176,6 +209,7 @@ Section Uninstall
   
   ; Remove shortcuts
   Delete "$DESKTOP\SUSA IDE.lnk"
+  Delete "$SMPROGRAMS\SUSA IDE.lnk"
   
   !insertmacro MUI_STARTMENU_GETFOLDER Application $StartMenuFolder
   Delete "$SMPROGRAMS\$StartMenuFolder\SUSA IDE.lnk"
@@ -186,6 +220,10 @@ Section Uninstall
   ; Remove registry keys
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
   DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
+  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\App Paths\SUSA IDE.exe"
+  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\App Paths\susa.exe"
+  DeleteRegKey HKLM "Software\SUSA"
+  DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\StartMenu\Programs" "SUSA IDE"
   
   SetAutoClose true
   
@@ -233,7 +271,7 @@ done:
 FunctionEnd
 
 Function LaunchCLI
-  ExecShell "open" "cmd.exe" '/k "cd /d $INSTDIR\cli && cpp-core.exe --version"'
+  ExecShell "open" "cmd.exe" '/k "cd /d $INSTDIR\cli && susa.exe --version"'
 FunctionEnd
 
 ; Add to PATH function
