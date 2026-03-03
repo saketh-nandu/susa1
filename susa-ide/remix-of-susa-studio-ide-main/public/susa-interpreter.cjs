@@ -60,19 +60,34 @@ class SUSAInterpreter {
       // PRIORITY: Try C++ core first for best performance
       const possibleCommands = [
         // First try current working directory
+        path.join(cwd, 'susa.exe'),
         path.join(cwd, 'susa-cpp.exe'),
         // Try Downloads/SUSA directory
+        path.join(userDownloads, 'susa.exe'),
         path.join(userDownloads, 'susa-cpp.exe'),
         // Try SUSA_HOME environment variable
+        susaHome ? path.join(susaHome, 'susa.exe') : null,
         susaHome ? path.join(susaHome, 'susa-cpp.exe') : null,
         // Try common installation directories
+        'C:\\Program Files\\SUSA\\cli\\susa.exe',
+        'C:\\Program Files\\SUSA\\susa.exe',
         'C:\\Program Files\\SUSA\\susa-cpp.exe',
+        'C:\\Program Files (x86)\\SUSA\\cli\\susa.exe',
+        'C:\\Program Files (x86)\\SUSA\\susa.exe',
         'C:\\Program Files (x86)\\SUSA\\susa-cpp.exe',
+        path.join(process.env.PROGRAMFILES || 'C:\\Program Files', 'SUSA', 'cli', 'susa.exe'),
+        path.join(process.env.PROGRAMFILES || 'C:\\Program Files', 'SUSA', 'susa.exe'),
         path.join(process.env.PROGRAMFILES || 'C:\\Program Files', 'SUSA', 'susa-cpp.exe'),
+        path.join(process.env['PROGRAMFILES(X86)'] || 'C:\\Program Files (x86)', 'SUSA', 'cli', 'susa.exe'),
+        path.join(process.env['PROGRAMFILES(X86)'] || 'C:\\Program Files (x86)', 'SUSA', 'susa.exe'),
         path.join(process.env['PROGRAMFILES(X86)'] || 'C:\\Program Files (x86)', 'SUSA', 'susa-cpp.exe'),
+        'C:\\Users\\' + os.userInfo().username + '\\AppData\\Local\\Programs\\SUSA\\susa.exe',
         'C:\\Users\\' + os.userInfo().username + '\\AppData\\Local\\Programs\\SUSA\\susa-cpp.exe',
+        path.join(process.env.LOCALAPPDATA || '', 'Programs', 'SUSA', 'susa.exe'),
         path.join(process.env.LOCALAPPDATA || '', 'Programs', 'SUSA', 'susa-cpp.exe'),
         // Try PATH commands
+        'susa',
+        'susa.exe',
         'susa-cpp',
         'susa-cpp.exe',
         // Then try SUSA CLI (which will use C++ core if available)
@@ -81,7 +96,6 @@ class SUSAInterpreter {
         susaHome ? path.join(susaHome, 'susa.bat') : null,
         'C:\\Program Files\\SUSA\\susa.bat',
         'C:\\Program Files (x86)\\SUSA\\susa.bat',
-        'susa',
         'susa.bat'
       ].filter(cmd => cmd !== null); // Remove null entries
       
@@ -143,8 +157,8 @@ class SUSAInterpreter {
 
       // Determine execution command based on CLI type
       let execArgs;
-      if (cliCommand.includes('susa-cpp')) {
-        // C++ core - direct execution
+      if (cliCommand.includes('susa-cpp') || cliCommand.endsWith('susa.exe') || cliCommand === 'susa' || cliCommand === 'susa.exe') {
+        // C++ core - direct execution (susa.exe, susa-cpp.exe, or susa command)
         console.log(`🚀 Executing with C++ core: ${cliCommand}`);
         execArgs = [tempFile];
       } else {
