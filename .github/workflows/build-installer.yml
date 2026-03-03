@@ -65,69 +65,52 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
       
-    - name: Check IDE directory
-      id: check-ide
-      run: |
-        if (Test-Path "susa-ide/package.json") {
-          Write-Host "Using susa-ide directory"
-          echo "ide_dir=susa-ide" >> $env:GITHUB_OUTPUT
-        } elseif (Test-Path "ide/package.json") {
-          Write-Host "Using ide directory"
-          echo "ide_dir=ide" >> $env:GITHUB_OUTPUT
-        } else {
-          Write-Host "No IDE found, will create placeholder"
-          echo "ide_dir=none" >> $env:GITHUB_OUTPUT
-        }
-      
     - name: Setup Node.js
-      if: steps.check-ide.outputs.ide_dir != 'none'
       uses: actions/setup-node@v4
       with:
         node-version: '20'
         
     - name: Install dependencies
-      if: steps.check-ide.outputs.ide_dir != 'none'
-      working-directory: ${{ steps.check-ide.outputs.ide_dir }}
+      working-directory: susa-ide/remix-of-susa-studio-ide-main
       run: npm install
       
-    - name: Build Electron IDE
-      if: steps.check-ide.outputs.ide_dir != 'none'
-      working-directory: ${{ steps.check-ide.outputs.ide_dir }}
+    - name: Build Vite app
+      working-directory: susa-ide/remix-of-susa-studio-ide-main
       run: npm run build
+      
+    - name: Build Electron IDE
+      working-directory: susa-ide/remix-of-susa-studio-ide-main
+      run: npm run dist:win
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       continue-on-error: true
         
-    - name: Create placeholder IDE
-      if: steps.check-ide.outputs.ide_dir == 'none'
-      run: |
-        New-Item -ItemType Directory -Force -Path ide/dist/win-unpacked
-        Write-Host "Created placeholder IDE directory"
-        
     - name: Verify IDE build
       run: |
-        $ideDir = "${{ steps.check-ide.outputs.ide_dir }}"
-        if ($ideDir -eq "none") {
-          $idePath = "ide/dist/win-unpacked"
-        } else {
-          $idePath = "$ideDir/dist/win-unpacked"
+        Write-Host "Checking for IDE build outputs..."
+        
+        # Check dist-electron directory
+        if (Test-Path "susa-ide/remix-of-susa-studio-ide-main/dist-electron") {
+          Write-Host "✓ dist-electron directory found"
+          Get-ChildItem "susa-ide/remix-of-susa-studio-ide-main/dist-electron" -Recurse -Filter "*.exe" | ForEach-Object {
+            Write-Host "  Found: $($_.FullName)"
+          }
         }
         
-        if (Test-Path $idePath) {
-          Write-Host "IDE directory exists: $idePath"
-          Get-ChildItem $idePath -ErrorAction SilentlyContinue
+        # Check for win-unpacked
+        if (Test-Path "susa-ide/remix-of-susa-studio-ide-main/dist-electron/win-unpacked") {
+          Write-Host "✓ win-unpacked directory found"
+          Get-ChildItem "susa-ide/remix-of-susa-studio-ide-main/dist-electron/win-unpacked"
         } else {
-          Write-Host "Creating placeholder IDE directory"
-          New-Item -ItemType Directory -Force -Path $idePath
+          Write-Host "⚠ win-unpacked not found, checking alternatives..."
+          Get-ChildItem "susa-ide/remix-of-susa-studio-ide-main/dist-electron" -ErrorAction SilentlyContinue
         }
         
     - name: Upload IDE artifact
       uses: actions/upload-artifact@v4
       with:
         name: susa-ide
-        path: |
-          ide/dist/win-unpacked/**/*
-          susa-ide/dist/win-unpacked/**/*
+        path: susa-ide/remix-of-susa-studio-ide-main/dist-electron/win-unpacked/**/*
         retention-days: 1
       continue-on-error: false
 
@@ -150,7 +133,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: susa-ide
-        path: ide/dist/win-unpacked
+        path: susa-ide/remix-of-susa-studio-ide-main/dist-electron/win-unpacked
         
     - name: Create dist directory
       run: |

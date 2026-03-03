@@ -103,7 +103,7 @@ Section "SUSA IDE" SecIDE
   SetOutPath "$INSTDIR\ide"
   SetOverwrite on
   
-  File /r "..\ide\dist\win-unpacked\*.*"
+  File /r "..\susa-ide\remix-of-susa-studio-ide-main\dist-electron\win-unpacked\*.*"
   
   DetailPrint "SUSA IDE installed successfully"
 SectionEnd

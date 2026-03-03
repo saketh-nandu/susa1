@@ -70,15 +70,15 @@ ls -lh cpp-core/build/Release/cpp-core.exe
 ## ⚡ Step 4: Build IDE (5-10 minutes)
 
 ```bash
-cd ide
+cd susa-ide/remix-of-susa-studio-ide-main
 npm install
-npm run build
-cd ..
+npm run dist:win
+cd ../..
 ```
 
 **Verify:**
 ```bash
-ls -lh ide/dist/win-unpacked/SUSA-IDE.exe
+ls -lh susa-ide/remix-of-susa-studio-ide-main/dist-electron/win-unpacked/
 ```
 
 ---
@@ -373,7 +373,7 @@ cd installer && powershell.exe -ExecutionPolicy Bypass -File create-placeholder-
 cd cpp-core/build && cmake --build . --config Release && cd ../..
 
 # Build IDE
-cd ide && npm run build && cd ..
+cd susa-ide/remix-of-susa-studio-ide-main && npm run dist:win && cd ../..
 
 # Build installer
 cd installer && cmd //c build-local.bat && cd ..

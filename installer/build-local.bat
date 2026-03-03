@@ -32,12 +32,12 @@ if not exist "..\cpp-core\build\Release\susa.exe" (
 )
 
 REM Check if IDE exists
-if not exist "..\ide\dist\win-unpacked" (
+if not exist "..\susa-ide\remix-of-susa-studio-ide-main\dist-electron\win-unpacked" (
     echo ERROR: IDE not built!
     echo Please build the IDE first:
-    echo   cd ide
+    echo   cd susa-ide\remix-of-susa-studio-ide-main
     echo   npm install
-    echo   npm run build
+    echo   npm run dist:win
     pause
     exit /b 1
 )
