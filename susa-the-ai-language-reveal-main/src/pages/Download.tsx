@@ -26,7 +26,7 @@ const Download = () => {
       linux: "https://www.dropbox.com/scl/fi/4xoc3dgplxq6j5cdkr11z/susa-ide_1.0.0_amd64.deb?rlkey=jo0xknm5ivdndnw9bcq34eb7w&st=29vpfr2s&dl=1"
     },
     complete: {
-      windows: "https://www.dropbox.com/scl/fi/h6bszksoi1l8nf7ruzyel/SUSA-Complete-Setup-1.0.0.exe?rlkey=gooxjdfphkefg6ed1emer7a0r&st=8oax4vx4&dl=1",
+      windows: "https://www.dropbox.com/scl/fi/9fbeezjwdqed7kzfvh72d/SUSA-Setup.exe?rlkey=wokbdpw1v8mr8yetjwcl2flfv&st=y9zefma7&dl=1",
       macos: "https://www.dropbox.com/scl/fi/kdc835w57ero4whgc7hdr/SUSA-Complete-1.0.0.pkg?rlkey=onun45hzwddqnuwsayqtp76oy&st=a8ojsge1&dl=1",
       linux: "https://www.dropbox.com/scl/fi/pgohm89sr8y8e7uq8cuie/susa-complete_1.0.0_amd64.deb?rlkey=i4r95hv1t04zy72umzp9q186z&st=07whtdm3&dl=1"
     }

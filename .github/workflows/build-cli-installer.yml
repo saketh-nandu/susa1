@@ -1,0 +1,287 @@
+name: Build SUSA CLI Installer
+
+on:
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'cpp-core/**'
+      - 'installer-cli/**'
+      - '.github/workflows/build-cli-installer.yml'
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-cli-installer:
+    runs-on: windows-latest
+    
+    steps:
+      # ================================
+      # 1. Checkout Repository
+      # ================================
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      
+      # ================================
+      # 2. Setup Build Environment
+      # ================================
+      - name: Setup MSVC
+        uses: microsoft/setup-msbuild@v1.1
+      
+      - name: Setup MinGW
+        uses: egor-tensin/setup-mingw@v2
+        with:
+          platform: x64
+      
+      # ================================
+      # 3. Build SUSA CLI
+      # ================================
+      - name: Build SUSA CLI Compiler
+        shell: cmd
+        run: |
+          echo Building SUSA CLI...
+          cd cpp-core
+          
+          if exist build rmdir /s /q build
+          mkdir build
+          cd build
+          
+          echo Configuring with CMake...
+          cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release
+          
+          echo Compiling...
+          cmake --build . --config Release
+          
+          echo Build complete!
+          dir
+      
+      - name: Verify CLI Build
+        shell: cmd
+        run: |
+          echo Verifying SUSA CLI executable...
+          
+          if exist cpp-core\build\susa.exe (
+            echo ✓ Found susa.exe
+            cpp-core\build\susa.exe --version
+          ) else if exist cpp-core\susa.exe (
+            echo ✓ Found susa.exe in cpp-core root
+            cpp-core\susa.exe --version
+          ) else (
+            echo ✗ ERROR: susa.exe not found!
+            echo Searching for executable...
+            dir cpp-core /s /b | findstr /i "\.exe$"
+            exit /b 1
+          )
+      
+      # ================================
+      # 4. Prepare Installer Files
+      # ================================
+      - name: Prepare Installer Directory
+        shell: cmd
+        run: |
+          echo Preparing installer files...
+          
+          mkdir installer-cli\dist\cli
+          
+          REM Copy CLI executable
+          if exist cpp-core\build\susa.exe (
+            copy cpp-core\build\susa.exe installer-cli\dist\cli\susa.exe
+          ) else if exist cpp-core\susa.exe (
+            copy cpp-core\susa.exe installer-cli\dist\cli\susa.exe
+          ) else (
+            echo ERROR: Cannot find susa.exe
+            exit /b 1
+          )
+          
+          echo ✓ CLI copied to installer directory
+          dir installer-cli\dist\cli
+      
+      - name: Create Branding Assets
+        shell: pwsh
+        run: |
+          Write-Host "Creating installer branding assets..."
+          
+          New-Item -ItemType Directory -Force -Path "installer-cli/assets"
+          
+          # Copy real SUSA logo if exists
+          if (Test-Path "susa logo.ico") {
+            Copy-Item "susa logo.ico" "installer-cli/assets/susa.ico"
+            Write-Host "✓ Copied susa.ico ($(((Get-Item 'susa logo.ico').Length / 1KB).ToString('F2')) KB)"
+          } else {
+            Write-Host "⚠ susa logo.ico not found, creating placeholder"
+            # Create minimal ICO placeholder
+            $bytes = [byte[]](0,0,1,0,1,0,16,16,0,0,1,0,32,0,104,4,0,0,22,0,0,0)
+            [System.IO.File]::WriteAllBytes("installer-cli/assets/susa.ico", $bytes)
+          }
+          
+          # Copy sidebar image if exists
+          if (Test-Path "susa-sidebar.bmp") {
+            Copy-Item "susa-sidebar.bmp" "installer-cli/assets/susa-sidebar.bmp"
+            Write-Host "✓ Copied susa-sidebar.bmp ($(((Get-Item 'susa-sidebar.bmp').Length / 1KB).ToString('F2')) KB)"
+          } else {
+            Write-Host "⚠ susa-sidebar.bmp not found, creating placeholder"
+            Add-Type -AssemblyName System.Drawing
+            $bmp = New-Object System.Drawing.Bitmap(164, 314)
+            $graphics = [System.Drawing.Graphics]::FromImage($bmp)
+            $graphics.Clear([System.Drawing.Color]::FromArgb(0, 120, 215))
+            $bmp.Save("installer-cli/assets/susa-sidebar.bmp")
+            $graphics.Dispose()
+            $bmp.Dispose()
+          }
+          
+          # Create header image (SUSA colors)
+          Write-Host "Creating header image..."
+          Add-Type -AssemblyName System.Drawing
+          $header = New-Object System.Drawing.Bitmap(150, 57)
+          $graphics = [System.Drawing.Graphics]::FromImage($header)
+          $graphics.Clear([System.Drawing.Color]::FromArgb(0, 120, 215))
+          $header.Save("installer-cli/assets/susa-header.bmp")
+          $graphics.Dispose()
+          $header.Dispose()
+          
+          Write-Host "✓ Branding assets ready"
+          Get-ChildItem "installer-cli/assets"
+      
+      - name: Create License File
+        shell: pwsh
+        run: |
+          $license = @"
+MIT License
+
+Copyright (c) 2024 SUSA Programming Language
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+"@
+          
+          $license | Out-File -FilePath "installer-cli/license.txt" -Encoding UTF8
+          Write-Host "✓ License file created"
+      
+      # ================================
+      # 5. Install NSIS
+      # ================================
+      - name: Install NSIS
+        shell: pwsh
+        run: |
+          Write-Host "Installing NSIS..."
+          choco install nsis -y
+          
+          Write-Host "Verifying NSIS installation..."
+          & "C:\Program Files (x86)\NSIS\makensis.exe" /VERSION
+      
+      # ================================
+      # 6. Build Installer
+      # ================================
+      - name: Build NSIS Installer
+        shell: cmd
+        run: |
+          echo Building SUSA CLI installer...
+          cd installer-cli
+          
+          echo Current directory contents:
+          dir
+          
+          echo Dist directory:
+          dir dist\cli
+          
+          echo Assets directory:
+          dir assets
+          
+          echo Running makensis...
+          "C:\Program Files (x86)\NSIS\makensis.exe" /V4 susa-cli-installer.nsi
+          
+          if exist SUSA-CLI-Setup.exe (
+            echo ✓ Installer built successfully!
+            dir SUSA-CLI-Setup.exe
+          ) else (
+            echo ✗ ERROR: Installer build failed!
+            exit /b 1
+          )
+      
+      # ================================
+      # 7. Test Installer
+      # ================================
+      - name: Test Installer
+        shell: cmd
+        run: |
+          echo Testing installer properties...
+          cd installer-cli
+          
+          if exist SUSA-CLI-Setup.exe (
+            echo File size:
+            dir SUSA-CLI-Setup.exe | findstr "SUSA-CLI-Setup.exe"
+            
+            echo ✓ Installer is ready for distribution
+          ) else (
+            echo ✗ Installer not found
+            exit /b 1
+          )
+      
+      # ================================
+      # 8. Upload Artifacts
+      # ================================
+      - name: Upload CLI Installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: SUSA-CLI-Installer
+          path: installer-cli/SUSA-CLI-Setup.exe
+          retention-days: 90
+      
+      - name: Upload Build Logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-logs
+          path: |
+            cpp-core/build/*.log
+            installer-cli/*.log
+          retention-days: 30
+      
+      # ================================
+      # 9. Create Release (on tag)
+      # ================================
+      - name: Create Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v1
+        with:
+          files: installer-cli/SUSA-CLI-Setup.exe
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      # ================================
+      # 10. Summary
+      # ================================
+      - name: Build Summary
+        if: success()
+        shell: pwsh
+        run: |
+          Write-Host ""
+          Write-Host "================================" -ForegroundColor Green
+          Write-Host "✓ SUSA CLI INSTALLER BUILD SUCCESS" -ForegroundColor Green
+          Write-Host "================================" -ForegroundColor Green
+          Write-Host ""
+          Write-Host "Installer: SUSA-CLI-Setup.exe"
+          Write-Host "Size: $((Get-Item installer-cli/SUSA-CLI-Setup.exe).Length / 1MB) MB"
+          Write-Host ""
+          Write-Host "Download from: Actions → Artifacts"
+          Write-Host ""

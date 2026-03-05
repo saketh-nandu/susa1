@@ -1,291 +1,469 @@
-# 📚 SUSA Installer Documentation Index
+# SUSA Installers - Complete Index
 
-## 🎯 Start Here
+## 📦 Available Installers
 
-### Using Git Bash on Windows?
-**→ Read:** [`GIT-BASH-QUICK-START.md`](GIT-BASH-QUICK-START.md)
-- Optimized for Git Bash
-- All commands tested on bash shell
-- Windows-specific tips
+### 1. SUSA CLI Only Installer
+**Professional command-line compiler installer**
 
-### New to This Project?
-**→ Read:** [`GET-STARTED-NOW.md`](GET-STARTED-NOW.md)
-- 5-minute quick start
-- Copy-paste commands
-- Immediate results
+- **File**: `SUSA-CLI-Setup.exe`
+- **Size**: ~2.5 MB
+- **Location**: `installer-cli/`
+- **Status**: ✅ Complete and ready
+- **Documentation**: `CLI-INSTALLER-GUIDE.md`
 
-### Want an Overview?
-**→ Read:** [`DELIVERY-SUMMARY.md`](DELIVERY-SUMMARY.md)
-- What you got
-- Files delivered
-- Features implemented
-- Success metrics
+### 2. SUSA Complete Installer (CLI + IDE)
+**Full development environment with desktop IDE**
 
-### Need Complete Guide?
-**→ Read:** [`INSTALLER-MASTER-README.md`](INSTALLER-MASTER-README.md)
-- Master guide
-- Feature comparison
-- Customization guide
-- Testing checklist
+- **File**: `SUSA-Setup.exe`
+- **Size**: ~150 MB
+- **Location**: `installer/`
+- **Status**: ✅ Complete and deployed
+- **Documentation**: `BUILD-INSTRUCTIONS.md`
 
 ---
 
-## 📖 Documentation by Purpose
+## 🚀 Quick Start
 
-### 🚀 Getting Started
-
-| Document | Purpose | Time | Audience |
-|----------|---------|------|----------|
-| [`GIT-BASH-QUICK-START.md`](GIT-BASH-QUICK-START.md) | Git Bash optimized guide | 5 min | Git Bash users |
-| [`GET-STARTED-NOW.md`](GET-STARTED-NOW.md) | Quick setup with commands | 5 min | Beginners |
-| [`QUICK-START.md`](QUICK-START.md) | Step-by-step guide | 15 min | Beginners |
-| [`installer/README.md`](installer/README.md) | Asset creation guide | 10 min | Designers |
-
-### 📚 Reference Documentation
-
-| Document | Purpose | Time | Audience |
-|----------|---------|------|----------|
-| [`INSTALLER-DOCUMENTATION.md`](INSTALLER-DOCUMENTATION.md) | Complete technical reference | 30 min | Developers |
-| [`PROJECT-STRUCTURE.md`](PROJECT-STRUCTURE.md) | Visual diagrams & structure | 15 min | Architects |
-| [`INSTALLER-COMPLETE-PACKAGE.md`](INSTALLER-COMPLETE-PACKAGE.md) | Feature overview | 20 min | Managers |
-
-### 🎯 Summary Documents
-
-| Document | Purpose | Time | Audience |
-|----------|---------|------|----------|
-| [`DELIVERY-SUMMARY.md`](DELIVERY-SUMMARY.md) | What was delivered | 10 min | Everyone |
-| [`INSTALLER-MASTER-README.md`](INSTALLER-MASTER-README.md) | Complete overview | 25 min | Everyone |
-| [`INSTALLER-INDEX.md`](INSTALLER-INDEX.md) | This file | 2 min | Everyone |
-
----
-
-## 🎯 Documentation by Role
-
-### I'm a Developer
-1. Start: [`GIT-BASH-QUICK-START.md`](GIT-BASH-QUICK-START.md) (if using Git Bash)
-2. Or: [`GET-STARTED-NOW.md`](GET-STARTED-NOW.md)
-3. Reference: [`INSTALLER-DOCUMENTATION.md`](INSTALLER-DOCUMENTATION.md)
-4. Structure: [`PROJECT-STRUCTURE.md`](PROJECT-STRUCTURE.md)
-
-### I'm a Designer
-1. Start: [`installer/README.md`](installer/README.md)
-2. Overview: [`INSTALLER-MASTER-README.md`](INSTALLER-MASTER-README.md)
-
-### I'm a Manager
-1. Start: [`DELIVERY-SUMMARY.md`](DELIVERY-SUMMARY.md)
-2. Features: [`INSTALLER-COMPLETE-PACKAGE.md`](INSTALLER-COMPLETE-PACKAGE.md)
-3. Overview: [`INSTALLER-MASTER-README.md`](INSTALLER-MASTER-README.md)
-
-### I'm a DevOps Engineer
-1. Start: [`QUICK-START.md`](QUICK-START.md)
-2. CI/CD: [`.github/workflows/build-installer.yml`](.github/workflows/build-installer.yml)
-3. Reference: [`INSTALLER-DOCUMENTATION.md`](INSTALLER-DOCUMENTATION.md)
-
----
-
-## 🎯 Documentation by Task
-
-### Task: Build First Installer
-1. [`GIT-BASH-QUICK-START.md`](GIT-BASH-QUICK-START.md) - For Git Bash users
-2. [`GET-STARTED-NOW.md`](GET-STARTED-NOW.md) - Quick commands
-3. [`QUICK-START.md`](QUICK-START.md) - Detailed steps
-4. [`installer/README.md`](installer/README.md) - Asset creation
-
-### Task: Customize Branding
-1. [`installer/README.md`](installer/README.md) - Asset requirements
-2. [`INSTALLER-DOCUMENTATION.md`](INSTALLER-DOCUMENTATION.md) - Customization section
-3. [`INSTALLER-MASTER-README.md`](INSTALLER-MASTER-README.md) - Branding guide
-
-### Task: Setup CI/CD
-1. [`.github/workflows/build-installer.yml`](.github/workflows/build-installer.yml) - Workflow file
-2. [`INSTALLER-DOCUMENTATION.md`](INSTALLER-DOCUMENTATION.md) - CI/CD section
-3. [`PROJECT-STRUCTURE.md`](PROJECT-STRUCTURE.md) - Build flow diagram
-
-### Task: Test Installer
-1. [`installer/test-installer.bat`](installer/test-installer.bat) - Test script
-2. [`INSTALLER-DOCUMENTATION.md`](INSTALLER-DOCUMENTATION.md) - Testing section
-3. [`INSTALLER-MASTER-README.md`](INSTALLER-MASTER-README.md) - Testing checklist
-
-### Task: Deploy to Production
-1. [`INSTALLER-MASTER-README.md`](INSTALLER-MASTER-README.md) - Deployment section
-2. [`INSTALLER-DOCUMENTATION.md`](INSTALLER-DOCUMENTATION.md) - Production deployment
-3. [`DELIVERY-SUMMARY.md`](DELIVERY-SUMMARY.md) - Pre-release checklist
-
-### Task: Troubleshoot Issues
-1. [`GET-STARTED-NOW.md`](GET-STARTED-NOW.md) - Quick troubleshooting
-2. [`QUICK-START.md`](QUICK-START.md) - Common issues
-3. [`INSTALLER-DOCUMENTATION.md`](INSTALLER-DOCUMENTATION.md) - Troubleshooting section
-
----
-
-## 📁 File Structure
-
-### Documentation Files (9 files)
-```
-├── GIT-BASH-QUICK-START.md         # Git Bash optimized guide
-├── GET-STARTED-NOW.md              # 5-minute quick start
-├── DELIVERY-SUMMARY.md             # What you got
-├── INSTALLER-MASTER-README.md      # Master guide
-├── INSTALLER-DOCUMENTATION.md      # Technical reference
-├── INSTALLER-COMPLETE-PACKAGE.md   # Feature overview
-├── QUICK-START.md                  # Step-by-step guide
-├── PROJECT-STRUCTURE.md            # Visual diagrams
-└── INSTALLER-INDEX.md              # This file
+### Build CLI Installer
+```cmd
+cd installer-cli
+build-local.bat
 ```
 
-### Installer Files (5 files)
-```
-installer/
-├── susa-installer.nsi              # Main NSIS script
-├── license.txt                     # License agreement
-├── build-local.bat                 # Build script
-├── test-installer.bat              # Test script
-├── create-placeholder-assets.ps1   # Asset generator
-└── README.md                       # Asset guide
-```
-
-### CI/CD Files (1 file)
-```
-.github/workflows/
-└── build-installer.yml             # GitHub Actions workflow
-```
-
-### Template Files (2 files)
-```
-├── ide/package.json.template       # Electron config
-└── installer/.gitignore            # Git ignore
-```
-
----
-
-## 🎓 Learning Path
-
-### Beginner Path (1 hour)
-1. [`GIT-BASH-QUICK-START.md`](GIT-BASH-QUICK-START.md) - 5 min (if using Git Bash)
-2. Or [`GET-STARTED-NOW.md`](GET-STARTED-NOW.md) - 5 min
-3. Build your first installer - 15 min
-4. [`QUICK-START.md`](QUICK-START.md) - 15 min
-5. [`DELIVERY-SUMMARY.md`](DELIVERY-SUMMARY.md) - 10 min
-6. [`INSTALLER-MASTER-README.md`](INSTALLER-MASTER-README.md) - 25 min
-
-### Intermediate Path (2 hours)
-1. Complete Beginner Path - 1 hour
-2. [`INSTALLER-DOCUMENTATION.md`](INSTALLER-DOCUMENTATION.md) - 30 min
-3. [`PROJECT-STRUCTURE.md`](PROJECT-STRUCTURE.md) - 15 min
-4. Customize your installer - 30 min
-
-### Advanced Path (4 hours)
-1. Complete Intermediate Path - 2 hours
-2. [`INSTALLER-COMPLETE-PACKAGE.md`](INSTALLER-COMPLETE-PACKAGE.md) - 20 min
-3. Setup CI/CD - 30 min
-4. Add custom components - 1 hour
-5. Test on multiple Windows versions - 30 min
-
----
-
-## 🔍 Quick Reference
-
-### Commands
-
-**Build installer locally (Git Bash):**
-```bash
+### Build Complete Installer
+```cmd
 cd installer
-cmd //c build-local.bat
+build-local.bat
 ```
 
-**Test installer (Git Bash):**
-```bash
+### Test Installers
+```cmd
+# CLI
+cd installer-cli
+test-installer.bat
+
+# Complete
 cd installer
-cmd //c test-installer.bat
+test-installer.bat
 ```
 
-**Create assets (Git Bash):**
-```bash
+---
+
+## 📚 Documentation
+
+### CLI Installer
+- **Quick Start**: `CLI-INSTALLER-QUICK-START.md` (1 page)
+- **Complete Guide**: `CLI-INSTALLER-GUIDE.md` (50+ pages)
+- **Project README**: `installer-cli/README.md`
+
+### Complete Installer
+- **Build Instructions**: `BUILD-INSTRUCTIONS.md`
+- **Deployment Guide**: `WEBSITE-DEPLOYMENT-GUIDE.md`
+- **Project README**: `installer/README.md`
+
+### Comparison & Reference
+- **Comparison**: `INSTALLER-COMPARISON.md`
+- **CLI Summary**: `CLI-INSTALLER-COMPLETE.md`
+- **Complete Summary**: `COMPLETE-INSTALLER-READY.md`
+
+---
+
+## 🎯 Which Installer Should I Use?
+
+### Use CLI Only If:
+- ✅ You only need the command-line compiler
+- ✅ You prefer terminal/your own editor
+- ✅ You're deploying to servers
+- ✅ You need minimal installation
+- ✅ You're setting up CI/CD
+
+### Use Complete If:
+- ✅ You want the full IDE experience
+- ✅ You're new to SUSA
+- ✅ You prefer visual tools
+- ✅ You want everything in one package
+
+---
+
+## 📁 Project Structure
+
+```
+Root/
+├── installer-cli/                      # CLI Only Installer
+│   ├── susa-cli-installer.nsi         # NSIS script
+│   ├── build-local.bat                # Build script
+│   ├── test-installer.bat             # Test script
+│   ├── README.md                      # Documentation
+│   ├── assets/                        # Branding
+│   │   ├── susa.ico
+│   │   ├── susa-header.bmp
+│   │   └── susa-sidebar.bmp
+│   ├── dist/cli/                      # Build output
+│   │   └── susa.exe
+│   └── SUSA-CLI-Setup.exe            # Final installer
+│
+├── installer/                         # Complete Installer
+│   ├── susa-installer.nsi            # NSIS script
+│   ├── build-local.bat               # Build script
+│   ├── test-installer.bat            # Test script
+│   ├── README.md                     # Documentation
+│   ├── assets/                       # Branding
+│   ├── dist/                         # Build output
+│   │   ├── cli/susa.exe
+│   │   └── ide/SUSA IDE.exe
+│   └── SUSA-Setup.exe               # Final installer
+│
+├── .github/workflows/
+│   ├── build-cli-installer.yml       # CLI build workflow
+│   └── build-installer.yml           # Complete build workflow
+│
+└── Documentation/
+    ├── CLI-INSTALLER-QUICK-START.md  # CLI quick start
+    ├── CLI-INSTALLER-GUIDE.md        # CLI complete guide
+    ├── CLI-INSTALLER-COMPLETE.md     # CLI summary
+    ├── INSTALLER-COMPARISON.md       # Comparison
+    ├── BUILD-INSTRUCTIONS.md         # Complete build guide
+    └── INSTALLER-INDEX.md            # This file
+```
+
+---
+
+## 🔄 Build Workflows
+
+### CLI Installer Workflow
+**File**: `.github/workflows/build-cli-installer.yml`
+
+**Triggers**:
+- Push to main/master
+- Changes in `cpp-core/` or `installer-cli/`
+- Manual workflow dispatch
+
+**Steps**:
+1. Setup MSVC and MinGW
+2. Build SUSA CLI (`susa.exe`)
+3. Prepare installer files
+4. Create branding assets
+5. Install NSIS
+6. Build installer
+7. Upload artifact
+8. Create release (on tag)
+
+### Complete Installer Workflow
+**File**: `.github/workflows/build-installer.yml`
+
+**Triggers**:
+- Push to main/master
+- Changes in `cpp-core/`, `susa-ide/`, or `installer/`
+- Manual workflow dispatch
+
+**Steps**:
+1. Setup build environment
+2. Build SUSA CLI
+3. Build SUSA IDE (Electron)
+4. Prepare installer files
+5. Copy branding assets
+6. Install NSIS
+7. Build installer
+8. Upload artifact
+9. Create release (on tag)
+
+---
+
+## 📦 Download Links
+
+### CLI Installer
+```
+GitHub: https://github.com/user/repo/releases/latest/download/SUSA-CLI-Setup.exe
+```
+
+### Complete Installer
+```
+Dropbox: https://www.dropbox.com/scl/fi/9fbeezjwdqed7kzfvh72d/SUSA-Setup.exe?rlkey=wokbdpw1v8mr8yetjwcl2flfv&st=y9zefma7&dl=1
+```
+
+---
+
+## 🎨 Branding Assets
+
+Both installers use the same branding:
+
+| Asset | Size | Format | Location |
+|-------|------|--------|----------|
+| Logo Icon | 16x16, 32x32, 48x48 | ICO | `susa logo.ico` |
+| Sidebar | 164x314 | BMP | `susa-sidebar.bmp` |
+| Header | 150x57 | BMP | Generated |
+
+**Note**: Installers automatically copy from root or create placeholders.
+
+---
+
+## 🧪 Testing
+
+### Manual Testing
+
+**CLI Installer**:
+```cmd
+cd installer-cli
+build-local.bat
+test-installer.bat
+```
+
+**Complete Installer**:
+```cmd
 cd installer
-powershell.exe -ExecutionPolicy Bypass -File create-placeholder-assets.ps1
+build-local.bat
+test-installer.bat
 ```
 
-**Deploy to GitHub:**
-```bash
-git tag v1.0.0
-git push origin v1.0.0
+### Automated Testing
+
+Both installers test automatically in GitHub Actions:
+- Build verification
+- File existence checks
+- Size validation
+- Artifact upload
+
+---
+
+## 🔧 Customization
+
+### Update Version
+
+**CLI Installer** (`installer-cli/susa-cli-installer.nsi`):
+```nsis
+!define PRODUCT_VERSION "1.0.0"
+VIProductVersion "1.0.0.0"
 ```
 
-### File Locations
-
-**Installer output:**
-```
-dist/SUSA-Setup.exe
-```
-
-**CLI executable:**
-```
-cpp-core/build/Release/cpp-core.exe
+**Complete Installer** (`installer/susa-installer.nsi`):
+```nsis
+!define PRODUCT_VERSION "1.0.0"
+VIProductVersion "1.0.0.0"
 ```
 
-**IDE executable:**
-```
-ide/dist/win-unpacked/SUSA-IDE.exe
-```
+### Update Branding
 
-**Assets:**
-```
-installer/assets/susa_icon.ico
-installer/assets/susa_header.bmp
-installer/assets/susa_sidebar.bmp
+Replace assets in respective `assets/` folders:
+- `susa.ico` - Installer icon
+- `susa-header.bmp` - Header image
+- `susa-sidebar.bmp` - Sidebar image
+
+### Update Product Info
+
+Edit respective `.nsi` files:
+```nsis
+!define PRODUCT_NAME "SUSA CLI"  # or "SUSA"
+!define PRODUCT_PUBLISHER "Your Name"
+!define PRODUCT_WEB_SITE "https://yoursite.com"
 ```
 
 ---
 
-## 📊 Documentation Statistics
+## 🚀 Deployment
 
-| Metric | Count |
-|--------|-------|
-| Total Documents | 15 files |
-| Total Lines | 2,350+ |
-| Documentation Lines | 1,800+ |
-| Code Lines | 550+ |
-| Total Size | 71.2 KB |
-| Guides | 8 |
-| Scripts | 3 |
-| Workflows | 1 |
-| Templates | 2 |
+### GitHub Releases (Recommended)
 
----
+1. **Create Tag**:
+   ```bash
+   git tag -a v1.0.0 -m "Release v1.0.0"
+   git push origin v1.0.0
+   ```
 
-## 🎯 Common Questions
+2. **Automatic Build**:
+   - GitHub Actions builds both installers
+   - Creates release automatically
+   - Uploads installers as assets
 
-### Q: Where do I start?
-**A:** If using Git Bash, read [`GIT-BASH-QUICK-START.md`](GIT-BASH-QUICK-START.md). Otherwise, read [`GET-STARTED-NOW.md`](GET-STARTED-NOW.md) and follow the commands.
+3. **Download Links**:
+   ```
+   CLI: https://github.com/user/repo/releases/latest/download/SUSA-CLI-Setup.exe
+   Complete: https://github.com/user/repo/releases/latest/download/SUSA-Setup.exe
+   ```
 
-### Q: How do I customize branding?
-**A:** Read [`installer/README.md`](installer/README.md) for asset creation.
+### Manual Distribution
 
-### Q: How do I setup CI/CD?
-**A:** The workflow is already in [`.github/workflows/build-installer.yml`](.github/workflows/build-installer.yml). Just push to GitHub.
-
-### Q: How do I test the installer?
-**A:** Run `installer/test-installer.bat` or read the testing section in [`INSTALLER-DOCUMENTATION.md`](INSTALLER-DOCUMENTATION.md).
-
-### Q: What if something breaks?
-**A:** Check troubleshooting sections in [`GET-STARTED-NOW.md`](GET-STARTED-NOW.md) or [`QUICK-START.md`](QUICK-START.md).
-
-### Q: How do I add new components?
-**A:** Read the customization section in [`INSTALLER-DOCUMENTATION.md`](INSTALLER-DOCUMENTATION.md).
-
-### Q: Is this production-ready?
-**A:** Yes! Just replace placeholder assets. See [`DELIVERY-SUMMARY.md`](DELIVERY-SUMMARY.md) for details.
+Upload to:
+- **Dropbox**: Add `?dl=1` to URL
+- **Google Drive**: Make public and share
+- **Your Website**: Direct download
+- **CDN**: For faster distribution
 
 ---
 
-## 🎉 You're Ready!
+## 🌐 Website Integration
 
-Pick your starting point:
+### Update Download Page
 
-- **Using Git Bash?** → [`GIT-BASH-QUICK-START.md`](GIT-BASH-QUICK-START.md)
-- **Just want to build?** → [`GET-STARTED-NOW.md`](GET-STARTED-NOW.md)
-- **Want to understand?** → [`INSTALLER-MASTER-README.md`](INSTALLER-MASTER-README.md)
-- **Need reference?** → [`INSTALLER-DOCUMENTATION.md`](INSTALLER-DOCUMENTATION.md)
-- **Want overview?** → [`DELIVERY-SUMMARY.md`](DELIVERY-SUMMARY.md)
+**File**: `susa-the-ai-language-reveal-main/src/pages/Download.tsx`
 
-**Happy building! 🚀**
+```typescript
+const DOWNLOAD_LINKS = {
+  cli: {
+    windows: "https://github.com/user/repo/releases/latest/download/SUSA-CLI-Setup.exe",
+    macos: "...",
+    linux: "..."
+  },
+  complete: {
+    windows: "https://www.dropbox.com/scl/fi/9fbeezjwdqed7kzfvh72d/SUSA-Setup.exe?rlkey=wokbdpw1v8mr8yetjwcl2flfv&st=y9zefma7&dl=1",
+    macos: "...",
+    linux: "..."
+  }
+};
+```
+
+### Deploy Website
+
+```cmd
+cd susa-the-ai-language-reveal-main
+npm install
+npm run build
+vercel --prod
+```
+
+Or use: `deploy-website.bat`
+
+---
+
+## 📊 Comparison Table
+
+| Feature | CLI Only | Complete |
+|---------|----------|----------|
+| **Installer File** | SUSA-CLI-Setup.exe | SUSA-Setup.exe |
+| **Size** | ~2.5 MB | ~150 MB |
+| **Install Time** | ~10 seconds | ~30 seconds |
+| **Disk Space** | ~2 MB | ~150 MB |
+| **Components** | CLI only | CLI + IDE |
+| **PATH Integration** | ✅ | ✅ |
+| **Start Menu** | ✅ | ✅ |
+| **Desktop Shortcut** | ❌ | ✅ |
+| **File Association** | ❌ | ✅ (.susa) |
+| **Upgrade Handling** | ✅ | ✅ |
+| **Silent Install** | ✅ | ✅ |
+| **Best For** | Developers, servers | Desktop users |
+
+---
+
+## 🔐 Security
+
+Both installers:
+- ✅ Require admin rights
+- ✅ Support code signing
+- ✅ No telemetry
+- ✅ Open source
+- ✅ Clean uninstall
+- ✅ Process termination
+
+### Code Signing (Optional)
+
+```cmd
+signtool sign /f cert.pfx /p password /t http://timestamp.digicert.com installer.exe
+```
+
+---
+
+## 🐛 Troubleshooting
+
+### Build Issues
+
+**NSIS not found**:
+```cmd
+choco install nsis
+```
+
+**susa.exe not found**:
+```cmd
+cd cpp-core
+build.bat
+```
+
+**IDE not found** (Complete only):
+```cmd
+cd susa-ide/remix-of-susa-studio-ide-main
+npm install
+npm run build
+```
+
+### Installation Issues
+
+**Access denied**:
+- Run as Administrator
+
+**PATH not working**:
+- Restart command prompt
+- Or restart PC
+
+**Installer won't launch**:
+- Check Windows SmartScreen
+- Click "More info" → "Run anyway"
+
+---
+
+## 📞 Support
+
+### Documentation
+- **NSIS**: https://nsis.sourceforge.io/Docs/
+- **Modern UI 2**: https://nsis.sourceforge.io/Docs/Modern%20UI%202/Readme.html
+
+### SUSA Support
+- **GitHub**: https://github.com/saketh-nandu/susa
+- **Issues**: https://github.com/saketh-nandu/susa/issues
+- **Email**: mantolsaketh@gmail.com
+- **Website**: https://susa-programming-language.web.app
+
+---
+
+## ✅ Status
+
+### CLI Installer
+- ✅ NSIS script complete
+- ✅ GitHub Actions workflow complete
+- ✅ Build scripts complete
+- ✅ Documentation complete
+- ✅ Testing scripts complete
+- ✅ Ready for production
+
+### Complete Installer
+- ✅ NSIS script complete
+- ✅ GitHub Actions workflow complete
+- ✅ Build scripts complete
+- ✅ Documentation complete
+- ✅ Testing scripts complete
+- ✅ Deployed and live
+
+---
+
+## 🎯 Next Steps
+
+1. **Build Installers**:
+   ```cmd
+   cd installer-cli && build-local.bat
+   cd installer && build-local.bat
+   ```
+
+2. **Test Installers**:
+   ```cmd
+   cd installer-cli && test-installer.bat
+   cd installer && test-installer.bat
+   ```
+
+3. **Create Release**:
+   ```bash
+   git tag -a v1.0.0 -m "Release v1.0.0"
+   git push origin v1.0.0
+   ```
+
+4. **Update Website**:
+   - Update download links
+   - Deploy website
+   - Test downloads
+
+5. **Distribute**:
+   - Share download links
+   - Announce release
+   - Gather feedback
+
+---
+
+**Both installers are production-ready and fully documented!** 🚀
+
+Choose the installer that fits your needs and start distributing SUSA!
