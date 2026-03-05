@@ -144,29 +144,25 @@ jobs:
       - name: Create License File
         shell: pwsh
         run: |
-          @"
-MIT License
-
-Copyright (c) 2024 SUSA Programming Language
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the Software), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-"@ | Out-File -FilePath "installer-cli/license.txt" -Encoding UTF8
+          $licenseText = "MIT License`n`n"
+          $licenseText += "Copyright (c) 2024 SUSA Programming Language`n`n"
+          $licenseText += "Permission is hereby granted, free of charge, to any person obtaining a copy`n"
+          $licenseText += "of this software and associated documentation files (the Software), to deal`n"
+          $licenseText += "in the Software without restriction, including without limitation the rights`n"
+          $licenseText += "to use, copy, modify, merge, publish, distribute, sublicense, and/or sell`n"
+          $licenseText += "copies of the Software, and to permit persons to whom the Software is`n"
+          $licenseText += "furnished to do so, subject to the following conditions:`n`n"
+          $licenseText += "The above copyright notice and this permission notice shall be included in all`n"
+          $licenseText += "copies or substantial portions of the Software.`n`n"
+          $licenseText += "THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR`n"
+          $licenseText += "IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,`n"
+          $licenseText += "FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE`n"
+          $licenseText += "AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER`n"
+          $licenseText += "LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,`n"
+          $licenseText += "OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE`n"
+          $licenseText += "SOFTWARE."
+          
+          $licenseText | Out-File -FilePath "installer-cli/license.txt" -Encoding UTF8
           Write-Host "✓ License file created"
       
       # ================================
