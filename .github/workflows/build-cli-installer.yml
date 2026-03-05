@@ -24,11 +24,8 @@ jobs:
       # ================================
       # 2. Setup Build Environment
       # ================================
-      - name: Setup MinGW
-        shell: pwsh
-        run: |
-          choco install mingw -y
-          refreshenv
+      - name: Setup MSVC
+        uses: ilammy/msvc-dev-cmd@v1
       
       # ================================
       # 3. Build SUSA CLI
@@ -43,8 +40,8 @@ jobs:
           New-Item -ItemType Directory -Force -Path build
           cd build
           
-          Write-Host "Compiling with g++..."
-          g++ -std=c++17 -O2 -o susa.exe ../main.cpp
+          Write-Host "Compiling with MSVC cl.exe..."
+          cl.exe /EHsc /O2 /std:c++17 /Fe:susa.exe ../main.cpp
           
           if (Test-Path "susa.exe") {
             Write-Host "✓ Build successful"
