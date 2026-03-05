@@ -4,11 +4,8 @@ on:
   push:
     branches: [ main, master ]
     paths:
-      - 'cpp-core/**'
       - 'installer-cli/**'
       - '.github/workflows/build-cli-installer.yml'
-  pull_request:
-    branches: [ main, master ]
   workflow_dispatch:
 
 jobs:
