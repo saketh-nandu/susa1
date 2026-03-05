@@ -2,11 +2,9 @@ name: Build SUSA Installer
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ disabled-temporarily ]
     tags:
       - 'v*'
-  pull_request:
-    branches: [ main ]
   workflow_dispatch:
 
 env:
