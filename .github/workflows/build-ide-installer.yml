@@ -1,0 +1,203 @@
+name: Build SUSA IDE Installer
+
+on:
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'susa-ide/**'
+      - 'installer-ide/**'
+      - '.github/workflows/build-ide-installer.yml'
+  workflow_dispatch:
+
+jobs:
+  build-ide-installer:
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Build SUSA IDE
+        shell: pwsh
+        run: |
+          Write-Host "Building SUSA IDE..."
+          cd susa-ide/remix-of-susa-studio-ide-main
+          
+          Write-Host "Installing dependencies..."
+          npm install
+          
+          Write-Host "Building Vite app..."
+          npm run build
+          
+          Write-Host "Building Electron app..."
+          npm run dist:win
+      
+      - name: Verify IDE Build
+        shell: pwsh
+        run: |
+          Write-Host "Verifying IDE build..."
+          
+          $idePath = "susa-ide/remix-of-susa-studio-ide-main/dist-electron/win-unpacked"
+          
+          if (Test-Path $idePath) {
+            Write-Host "✓ IDE built successfully"
+            Get-ChildItem $idePath | Select-Object -First 10
+          } else {
+            Write-Error "✗ IDE build failed"
+            exit 1
+          }
+      
+      - name: Prepare Installer Directory
+        shell: pwsh
+        run: |
+          Write-Host "Preparing installer files..."
+          
+          New-Item -ItemType Directory -Force -Path "installer-ide/dist/ide"
+          
+          $source = "susa-ide/remix-of-susa-studio-ide-main/dist-electron/win-unpacked"
+          $dest = "installer-ide/dist/ide"
+          
+          if (Test-Path $source) {
+            Copy-Item -Path "$source\*" -Destination $dest -Recurse -Force
+            Write-Host "✓ IDE files copied to installer directory"
+            Get-ChildItem $dest | Select-Object -First 10
+          } else {
+            Write-Error "✗ Cannot find IDE build"
+            exit 1
+          }
+      
+      - name: Create Branding Assets
+        shell: pwsh
+        run: |
+          Write-Host "Creating installer branding assets..."
+          
+          New-Item -ItemType Directory -Force -Path "installer-ide/assets"
+          
+          if (Test-Path "susa logo.ico") {
+            Copy-Item "susa logo.ico" "installer-ide/assets/susa.ico"
+            Write-Host "✓ Copied susa.ico"
+          } else {
+            Write-Host "⚠ susa logo.ico not found, creating placeholder"
+            $bytes = [byte[]](0,0,1,0,1,0,16,16,0,0,1,0,32,0,104,4,0,0,22,0,0,0)
+            [System.IO.File]::WriteAllBytes("installer-ide/assets/susa.ico", $bytes)
+          }
+          
+          if (Test-Path "susa-sidebar.bmp") {
+            Copy-Item "susa-sidebar.bmp" "installer-ide/assets/susa-sidebar.bmp"
+            Write-Host "✓ Copied susa-sidebar.bmp"
+          } else {
+            Write-Host "⚠ Creating placeholder sidebar"
+            Add-Type -AssemblyName System.Drawing
+            $bmp = New-Object System.Drawing.Bitmap(164, 314)
+            $graphics = [System.Drawing.Graphics]::FromImage($bmp)
+            $graphics.Clear([System.Drawing.Color]::FromArgb(0, 120, 215))
+            $bmp.Save("installer-ide/assets/susa-sidebar.bmp")
+            $graphics.Dispose()
+            $bmp.Dispose()
+          }
+          
+          Write-Host "Creating header image..."
+          Add-Type -AssemblyName System.Drawing
+          $header = New-Object System.Drawing.Bitmap(150, 57)
+          $graphics = [System.Drawing.Graphics]::FromImage($header)
+          $graphics.Clear([System.Drawing.Color]::FromArgb(0, 120, 215))
+          $header.Save("installer-ide/assets/susa-header.bmp")
+          $graphics.Dispose()
+          $header.Dispose()
+          
+          Write-Host "✓ Branding assets ready"
+      
+      - name: Create License File
+        shell: pwsh
+        run: |
+          $licenseText = "MIT License`n`n"
+          $licenseText += "Copyright (c) 2024 SUSA Programming Language`n`n"
+          $licenseText += "Permission is hereby granted, free of charge, to any person obtaining a copy`n"
+          $licenseText += "of this software and associated documentation files (the Software), to deal`n"
+          $licenseText += "in the Software without restriction, including without limitation the rights`n"
+          $licenseText += "to use, copy, modify, merge, publish, distribute, sublicense, and/or sell`n"
+          $licenseText += "copies of the Software, and to permit persons to whom the Software is`n"
+          $licenseText += "furnished to do so, subject to the following conditions:`n`n"
+          $licenseText += "The above copyright notice and this permission notice shall be included in all`n"
+          $licenseText += "copies or substantial portions of the Software.`n`n"
+          $licenseText += "THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR`n"
+          $licenseText += "IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,`n"
+          $licenseText += "FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE`n"
+          $licenseText += "AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER`n"
+          $licenseText += "LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,`n"
+          $licenseText += "OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE`n"
+          $licenseText += "SOFTWARE."
+          
+          $licenseText | Out-File -FilePath "installer-ide/license.txt" -Encoding UTF8
+          Write-Host "✓ License file created"
+      
+      - name: Install NSIS
+        shell: pwsh
+        run: |
+          Write-Host "Installing NSIS..."
+          choco install nsis -y
+          & "C:\Program Files (x86)\NSIS\makensis.exe" /VERSION
+      
+      - name: Build NSIS Installer
+        shell: pwsh
+        run: |
+          Write-Host "Building SUSA IDE installer..."
+          cd installer-ide
+          
+          Write-Host "Current directory contents:"
+          Get-ChildItem
+          
+          Write-Host "`nDist directory:"
+          Get-ChildItem dist\ide | Select-Object -First 10
+          
+          Write-Host "`nAssets directory:"
+          Get-ChildItem assets
+          
+          Write-Host "`nRunning makensis..."
+          & "C:\Program Files (x86)\NSIS\makensis.exe" /V4 susa-ide-installer.nsi
+          
+          if (Test-Path "SUSA-IDE-Setup.exe") {
+            Write-Host "✓ Installer built successfully!"
+            Get-Item "SUSA-IDE-Setup.exe"
+          } else {
+            Write-Error "✗ Installer build failed!"
+            exit 1
+          }
+      
+      - name: Upload IDE Installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: SUSA-IDE-Installer
+          path: installer-ide/SUSA-IDE-Setup.exe
+          retention-days: 90
+      
+      - name: Create Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v1
+        with:
+          files: installer-ide/SUSA-IDE-Setup.exe
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Build Summary
+        if: success()
+        shell: pwsh
+        run: |
+          Write-Host ""
+          Write-Host "================================" -ForegroundColor Green
+          Write-Host "✓ SUSA IDE INSTALLER BUILD SUCCESS" -ForegroundColor Green
+          Write-Host "================================" -ForegroundColor Green
+          Write-Host ""
+          Write-Host "Installer: SUSA-IDE-Setup.exe"
+          Write-Host "Size: $([math]::Round((Get-Item installer-ide/SUSA-IDE-Setup.exe).Length / 1MB, 2)) MB"
+          Write-Host ""
+          Write-Host "Download from: Actions → Artifacts"
+          Write-Host ""
