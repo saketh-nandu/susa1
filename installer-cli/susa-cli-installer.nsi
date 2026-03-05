@@ -19,6 +19,7 @@
 !include "FileFunc.nsh"
 !include "LogicLib.nsh"
 !include "x64.nsh"
+!include "WordFunc.nsh"
 
 ; ================================
 ; Installer Settings
@@ -233,8 +234,12 @@ Function AddToPath
   ; Read current PATH
   ReadRegStr $0 HKLM "SYSTEM\CurrentControlSet\Control\Session Manager\Environment" "Path"
   
-  ; Check if already in PATH
-  ${StrStr} $1 $0 "$INSTDIR"
+  ; Check if already in PATH using StrContains
+  Push $0
+  Push "$INSTDIR"
+  Call StrContains
+  Pop $1
+  
   ${If} $1 == ""
     ; Not in PATH, add it
     StrCpy $1 "$0;$INSTDIR"
@@ -251,6 +256,48 @@ Function AddToPath
   Pop $2
   Pop $1
   Pop $0
+FunctionEnd
+
+; Helper function to check if string contains substring
+Function StrContains
+  Exch $1 ; needle
+  Exch
+  Exch $0 ; haystack
+  Push $2
+  Push $3
+  Push $4
+  Push $5
+  
+  StrCpy $2 -1
+  StrLen $3 $1
+  StrLen $4 $0
+  IntOp $4 $4 - $3
+  
+  ${If} $4 < 0
+    StrCpy $0 ""
+    Goto done
+  ${EndIf}
+  
+  loop:
+    IntOp $2 $2 + 1
+    ${If} $2 > $4
+      StrCpy $0 ""
+      Goto done
+    ${EndIf}
+    StrCpy $5 $0 $3 $2
+    ${If} $5 == $1
+      StrCpy $0 $1
+      Goto done
+    ${EndIf}
+    Goto loop
+  
+  done:
+  Pop $5
+  Pop $4
+  Pop $3
+  Pop $2
+  Pop $1
+  Exch $0
 FunctionEnd
 
 ; ================================
@@ -305,40 +352,22 @@ SectionEnd
 Function un.RemoveFromPath
   Push $0
   Push $1
-  Push $2
-  Push $3
   
   ; Read current PATH
   ReadRegStr $0 HKLM "SYSTEM\CurrentControlSet\Control\Session Manager\Environment" "Path"
   
-  ; Remove our directory from PATH
-  StrCpy $1 ""
-  StrCpy $2 $0 1 0
-  StrCpy $3 0
+  ; Simple replace: remove ;INSTDIR and INSTDIR;
+  Push $0
+  Push ";$INSTDIR"
+  Push ""
+  Call un.StrReplace
+  Pop $1
   
-  ${While} $2 != ""
-    IntOp $3 $3 + 1
-    StrCpy $2 $0 1 $3
-    
-    ${If} $2 == ";"
-      ${OrIf} $2 == ""
-      StrCpy $2 $0 $3
-      
-      ${StrStr} $4 $2 "$INSTDIR"
-      ${If} $4 == ""
-        ${If} $1 != ""
-          StrCpy $1 "$1;$2"
-        ${Else}
-          StrCpy $1 $2
-        ${EndIf}
-      ${EndIf}
-      
-      IntOp $3 $3 + 1
-      StrCpy $0 $0 "" $3
-      StrCpy $3 0
-      StrCpy $2 $0 1 0
-    ${EndIf}
-  ${EndWhile}
+  Push $1
+  Push "$INSTDIR;"
+  Push ""
+  Call un.StrReplace
+  Pop $1
   
   ; Write updated PATH
   WriteRegExpandStr HKLM "SYSTEM\CurrentControlSet\Control\Session Manager\Environment" "Path" $1
@@ -348,10 +377,46 @@ Function un.RemoveFromPath
   
   DetailPrint "Removed from system PATH"
   
-  Pop $3
-  Pop $2
   Pop $1
   Pop $0
+FunctionEnd
+
+; Helper function for string replace in uninstaller
+Function un.StrReplace
+  Exch $2 ; new
+  Exch
+  Exch $1 ; old
+  Exch 2
+  Exch $0 ; string
+  Push $3
+  Push $4
+  Push $5
+  
+  StrLen $3 $1
+  StrCpy $4 0
+  
+  loop:
+    StrCpy $5 $0 $3 $4
+    StrCmp $5 $1 found
+    StrCmp $5 "" done
+    IntOp $4 $4 + 1
+    Goto loop
+  
+  found:
+    StrCpy $5 $0 $4
+    IntOp $4 $4 + $3
+    StrCpy $0 $0 "" $4
+    StrCpy $0 "$5$2$0"
+    StrCpy $4 0
+    Goto loop
+  
+  done:
+    Pop $5
+    Pop $4
+    Pop $3
+    Pop $2
+    Pop $1
+    Exch $0
 FunctionEnd
 
 ; ================================
